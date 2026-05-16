@@ -10,7 +10,7 @@
         "androidVersion": "14",
         "buildDate": "19-12-2025",
         "maintainer": "Alpha",
-        "fileSize": "1.8 GB",
+        "fileSize": "1.8GB",
         "downloadLink": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperMINT_OS2.0.20.0.UMSCNXM_SANTONI-alpha269-14.0-r1.zip/download",
         "installationGuide": [
           "Wipe Dalvik, Cache, System, Vendor, Data",
@@ -35,7 +35,7 @@
         "androidVersion": "14",
         "buildDate": "08-09-2025",
         "maintainer": "alpha269",
-        "fileSize": "Unknown",
+        "fileSize": "1.9GB",
         "downloadLink": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperOS-3.0.0.18.MOD-alpha269-Santoni-REV2-14.0.zip/download",
         "installationGuide": [
           "Wipe Dalvik, Cache, System, Vendor, Data",
@@ -44,7 +44,7 @@
           "Reboot to system",
           "The ROM might feel a bit laggy on its first boot, give it time to settle down"
         ],
-        "recommendedRecovery": "OrangeFox",
+        "recommendedRecovery": "OrangeFox R11.1_5 (https://t.me/jabiyeff_caf/114)",
         "bugs": [
           "Fingerprint",
           "idk"
@@ -61,11 +61,11 @@
       },
       {
         "id": "santoni_hyperui_os202030",
-        "name": "HyperUI | OS2.2.203.0",
+        "name": "HyperUI 2.2.203.0",
         "androidVersion": "14",
         "buildDate": "15-06-2025",
         "maintainer": "Alpha",
-        "fileSize": "Unknown",
+        "fileSize": "1.9GB",
         "downloadLink": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperUI-OS2.2.203.0.CN-santoni-14.zip/download",
         "installationGuide": [
           "Wipe Dalvik, Cache, System, Vendor, Data",
@@ -74,7 +74,7 @@
           "Reboot to system",
           "ROM needs time to settle down, it might feel laggy in the first"
         ],
-        "recommendedRecovery": "OrangeFox",
+        "recommendedRecovery": "OrangeFox R11.1_5 (https://t.me/jabiyeff_caf/114)",
         "bugs": [
           "Fingerprint (not tested on 4gb ram model)"
         ],
@@ -93,7 +93,7 @@
         "androidVersion": "14",
         "buildDate": "13-04-2025",
         "maintainer": "Alpha",
-        "fileSize": "Unknown",
+        "fileSize": "2.02GB",
         "downloadLink": "https://drive.google.com/file/d/14X_pLGJ7kzTWGe0KWwZQswpbJGNK_CH1/view?usp=drive_link",
         "installationGuide": [
           "Wipe Dalvik, Cache, System, Vendor, Data",
@@ -102,7 +102,7 @@
           "Reboot to system",
           "Important: ROM needs time to settle & optimize battery and performance (4 - 5 hours)"
         ],
-        "recommendedRecovery": "OrangeFox",
+        "recommendedRecovery": "OrangeFox R11.1_5 (https://t.me/jabiyeff_caf/114)",
         "bugs": [
           "FPC Fingerprint (usually on 2gb/3gb ram)",
           "Vibration"
@@ -116,11 +116,11 @@
       },
       {
         "id": "santoni_miui1203",
-        "name": "MIUI 12.0.3 Global ID Stable",
+        "name": "MIUI 12.0.3 Global ID",
         "androidVersion": "10",
         "buildDate": "07-05-2024",
         "maintainer": "Alpha",
-        "fileSize": "Unknown",
+        "fileSize": "1.38GB",
         "downloadLink": "https://drive.google.com/file/d/10m6wPigjtsF77J5V81wkQgvF-wrOOVFL/view?usp=drivesdk",
         "installationGuide": [
           "Wipe Dalvik, Cache, System, Vendor, Data",
@@ -129,7 +129,7 @@
           "Reboot to system",
           "Note: A force reboot might be required to boot the rom"
         ],
-        "recommendedRecovery": "OrangeFox",
+        "recommendedRecovery": "OrangeFox R11.1_5 (https://t.me/jabiyeff_caf/114)",
         "bugs": [
           "Let us know"
         ],
