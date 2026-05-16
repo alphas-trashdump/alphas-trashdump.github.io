@@ -359,7 +359,7 @@
             const [selectedRom, setSelectedRom] = useState(null);
 
             useEffect(() => {
-                fetch('res/data.json')
+                fetch('./res/data.json')
                     .then(response => response.json())
                     .then(data => {
                         setRomDatabase(data);
