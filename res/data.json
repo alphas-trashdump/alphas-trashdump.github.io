@@ -48,7 +48,7 @@
           "Wipe Dalvik, Cache, System, Vendor, Data",
           "Format Data > Yes",
           "Flash ROM zip",
-          "Reboot to system"
+          "Reboot to system",
           "First boot will take 10-15 minutes"
         ],
         "recommendedRecovery": "OrangeFox R12.1 (https://t.me/Nova_CloudTM_V2/313)",
@@ -58,7 +58,7 @@
         ],
         "changelog": [
           "ytta aja",
-          "Lag? Disable Google service in Settings >Additional Settings>  Account and Sync > Basic Google Services to disable Google Play Store/service",
+          "Lag? Disable Google service in Settings >Additional Settings>  Account and Sync > Basic Google Services to disable Google Play Store/service"
         ]
       }
     ]
