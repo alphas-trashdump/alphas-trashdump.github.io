@@ -104,8 +104,8 @@
 
         .glass-card.selected {
             background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(16, 185, 129, 0.3);
-            box-shadow: 0 0 40px rgba(16, 185, 129, 0.1), inset 0 1px 0 rgba(255,255,255,0.15);
+            border-color: rgba(167, 139, 250, 0.3);
+            box-shadow: 0 0 40px rgba(167, 139, 250, 0.1), inset 0 1px 0 rgba(255,255,255,0.15);
         }
 
         .glass-card-sm {
@@ -136,7 +136,7 @@
         .particle {
             position: fixed;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(167,139,250,0.15) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
             animation: float-particle 20s ease-in-out infinite;
@@ -156,7 +156,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-<body class="overflow-x-hidden selection:bg-emerald-500/30">
+<body class="overflow-x-hidden selection:bg-violet-500/30">
 
     <div id="root"></div>
 
@@ -218,7 +218,7 @@
                     <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <h1 className="text-xl font-bold tracking-tight text-white/90 font-display">
-                                Alpha's <span className="text-emerald-400">trashdump</span>
+                                Alpha's <span className="text-violet-400">trashdump</span>
                             </h1>
                         </div>
                         <div className="liquid-target glass-orb">
@@ -250,11 +250,10 @@
                 className="glass-card-sm p-5 flex flex-col justify-between group"
             >
                 <div className="card-content">
-                    <h3 className="text-lg font-medium text-white group-hover:text-emerald-400 transition-colors duration-300 font-display">{rom.name}</h3>
-                    <p className="text-sm text-emerald-400/70 mt-1 font-medium">Android {rom.androidVersion}</p>
+                    <h3 className="text-lg font-medium text-white group-hover:text-violet-400 transition-colors duration-300 font-display">{rom.name}</h3>
+                    <p className="text-sm text-violet-400/70 mt-1 font-medium">Android {rom.androidVersion}</p>
                 </div>
                 
-                {/* UPDATED: Maintainer field added here under build date */}
                 <div className="card-content mt-6 flex flex-col gap-2 text-xs text-white/40 font-mono">
                     <div className="flex items-center justify-between">
                         <span>Build: {rom.buildDate}</span>
@@ -285,9 +284,8 @@
                             <div>
                                 <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight font-display">{rom.name}</h2>
                                 
-                                {/* UPDATED: Maintainer added to modal header next to Android version */}
                                 <div className="flex items-center gap-3 mt-1.5">
-                                    <p className="text-emerald-400 font-medium text-sm sm:text-base">Android {rom.androidVersion}</p>
+                                    <p className="text-violet-400 font-medium text-sm sm:text-base">Android {rom.androidVersion}</p>
                                     <span className="w-1 h-1 rounded-full bg-white/20"></span>
                                     <p className="text-white/50 text-xs sm:text-sm font-medium">By {rom.maintainer || "Unknown"}</p>
                                 </div>
@@ -340,7 +338,7 @@
                                         href={rom.downloadLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex justify-center items-center px-8 py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold shadow-[0_0_25px_rgba(16,185,129,0.25)] hover:shadow-[0_0_35px_rgba(16,185,129,0.4)] transition-all duration-300 font-display text-sm"
+                                        className="inline-flex justify-center items-center px-8 py-3.5 rounded-full bg-violet-500 hover:bg-violet-400 text-black font-bold shadow-[0_0_25px_rgba(139,92,246,0.25)] hover:shadow-[0_0_35px_rgba(167,139,250,0.4)] transition-all duration-300 font-display text-sm"
                                     >
                                         Download {rom.fileSize}
                                     </a>
@@ -373,9 +371,9 @@
 
             return (
                 <div className="min-h-screen relative">
-                    <div className="blob w-[500px] h-[500px] bg-emerald-900/15 -top-[100px] -left-[100px]" />
-                    <div className="blob w-[400px] h-[400px] bg-blue-900/10 bottom-[10%] right-[-100px]" />
-                    <div className="blob w-[300px] h-[300px] bg-emerald-800/10 top-[40%] left-[60%]" />
+                    <div className="blob w-[500px] h-[500px] bg-violet-900/15 -top-[100px] -left-[100px]" />
+                    <div className="blob w-[400px] h-[400px] bg-indigo-900/10 bottom-[10%] right-[-100px]" />
+                    <div className="blob w-[300px] h-[300px] bg-violet-800/10 top-[40%] left-[60%]" />
 
                     <Particles />
                     <Header />
@@ -402,7 +400,7 @@
                                 {selectedDevice && (
                                     <section className="animate-fade-in">
                                         <h2 className="text-2xl font-medium tracking-tight mb-6 font-display text-white/90">
-                                            Available ROMs for <span className="text-emerald-400/80">{selectedDevice.codename}</span>
+                                            Available ROMs for <span className="text-violet-400/80">{selectedDevice.codename}</span>
                                         </h2>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                                             {selectedDevice.roms.map((rom) => (
