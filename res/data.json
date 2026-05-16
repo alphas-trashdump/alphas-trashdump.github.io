@@ -5,7 +5,7 @@
     "codename": "santoni",
     "roms": [
       {
-        "id": "santoni_hypermint2",
+        "id": "santoni_mint20200",
         "name": "HyperMint 2",
         "androidVersion": "14",
         "buildDate": "19-12-2025",
@@ -33,17 +33,17 @@
   },
   {
     "id": "Mi8937",
-    "name": "Xiaomi MSM8937",
+    "name": "Redmi 3S/3X, 4, 4A, 4X, 5A, Note 5A/Y1",
     "codename": "Mi8937",
     "roms": [
       {
-        "id": "mi8937_hos1",
-        "name": "HyperOS 1.0 WeabooUI",
+        "id": "mi8937_hos10150",
+        "name": "HyperOS 1.0.15.0",
         "androidVersion": "14",
         "buildDate": "17-02-2026",
-        "maintainer": "Novz",
+        "maintainer": "Alpha",
         "fileSize": "1.8 GB",
-        "downloadLink": "https://t.me/Mi8937_4_19/118",
+        "downloadLink": "https://t.me/Mi8937_4_19/98",
         "installationGuide": [
           "Wipe Dalvik, Cache, System, Vendor, Data",
           "Format Data > Yes",
@@ -57,8 +57,8 @@
           "Bluetooth Audio"
         ],
         "changelog": [
-          "ytta aja",
-          "Lag? Disable Google service in Settings >Additional Settings> Account and Sync > Basic Google Services to disable Google Play Store/service"
+          "Include Bahasa Indonesian (🇮🇩) & Russian (🇷🇺)",
+          "Add some additional settings & improve overall fluency"
         ]
       }
     ]
