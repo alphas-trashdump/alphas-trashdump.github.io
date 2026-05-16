@@ -1,0 +1,66 @@
+[
+  {
+    "id": "santoni",
+    "name": "Redmi 4X",
+    "codename": "santoni",
+    "roms": [
+      {
+        "id": "santoni_hypermint2",
+        "name": "HyperMint 2",
+        "androidVersion": "14",
+        "buildDate": "19-12-2025",
+        "maintainer": "Alpha",
+        "fileSize": "1.8 GB",
+        "downloadLink": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperMINT_OS2.0.20.0.UMSCNXM_SANTONI-alpha269-14.0-r1.zip/download",
+        "installationGuide": [
+          "Wipe Dalvik, Cache, System, Vendor, Data",
+          "Format Data > Yes",
+          "Flash ROM zip",
+          "Reboot to system"
+          "First boot will take 10-15 minutes"
+        ],
+        "recommendedRecovery": "OrangeFox R11.1_5 (https://t.me/jabiyeff_caf/114)",
+        "bugs": [
+          "Fingerprint Unlock",
+          "Vibration"
+        ],
+        "changelog": [
+          "Based on CN Stable",
+          "Support Indonesian and Russian language"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "Mi8937",
+    "name": "Xiaomi MSM8937",
+    "codename": "Mi8937",
+    "roms": [
+      {
+        "id": "mi8937_hos1",
+        "name": "HyperOS 1.0 WeabooUI",
+        "androidVersion": "14",
+        "buildDate": "17-02-2026",
+        "maintainer": "Novz",
+        "fileSize": "1.8 GB",
+        "downloadLink": "https://t.me/Mi8937_4_19/118",
+        "installationGuide": [
+          "Wipe Dalvik, Cache, System, Vendor, Data",
+          "Format Data > Yes",
+          "Flash ROM zip",
+          "Reboot to system"
+          "First boot will take 10-15 minutes"
+        ],
+        "recommendedRecovery": "OrangeFox R12.1 (https://t.me/Nova_CloudTM_V2/313)",
+        "bugs": [
+          "Fingerprint",
+          "Bluetooth Audio"
+        ],
+        "changelog": [
+          "ytta aja",
+          "Lag? Disable Google service in Settings >Additional Settings>  Account and Sync > Basic Google Services to disable Google Play Store/service",
+        ]
+      }
+    ]
+  }
+]
