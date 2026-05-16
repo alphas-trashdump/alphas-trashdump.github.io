@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha's trashdump</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/naughtyduk/liquidGL@main/scripts/liquidGL.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        display: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #050505;
+            color: white;
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
+        /* Liquid Target Base */
+        .liquid-target {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: clip;
+            will-change: transform;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+        }
+
+        /* Standard Cards */
+        .glass-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            padding: 1.2px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 25%, rgba(255, 255, 255, 0.02) 50%, rgba(255, 255, 255, 0.08) 75%, rgba(255, 255, 255, 0.2) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .glass-card .card-content { position: relative; z-index: 3; }
+
+        .glass-card.selected {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.1), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+
+        .glass-card-sm {
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .glass-card-sm:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .glass-modal {
+            position: relative;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: float-particle 20s ease-in-out infinite;
+        }
+
+        @keyframes float-particle {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            25% { transform: translate(30px, -50px) scale(1.1); opacity: 0.5; }
+            50% { transform: translate(-20px, -80px) scale(0.9); opacity: 0.4; }
+            75% { transform: translate(40px, -30px) scale(1.05); opacity: 0.3; }
+        }
+
+        .blob { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; }
+    </style>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="overflow-x-hidden selection:bg-emerald-500/30">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const Particles = () => {
+            const particles = Array.from({ length: 6 }, (_, i) => ({
+                id: i,
+                size: Math.random() * 200 + 100,
+                left: Math.random() * 100,
+                top: Math.random() * 100,
+                delay: Math.random() * 10,
+                duration: Math.random() * 15 + 15,
+            }));
+
+            return (
+                <>
+                    {particles.map(p => (
+                        <div
+                            key={p.id}
+                            className="particle"
+                            style={{
+                                width: p.size,
+                                height: p.size,
+                                left: `${p.left}%`,
+                                top: `${p.top}%`,
+                                animationDelay: `${p.delay}s`,
+                                animationDuration: `${p.duration}s`,
+                            }}
+                        />
+                    ))}
+                </>
+            );
+        };
+
+        const Header = () => {
+            useEffect(() => {
+                if (typeof window.liquidGL !== 'undefined') {
+                    setTimeout(() => {
+                        window.liquidGL({
+                            target: ".liquid-target",
+                            refraction: 0.05,
+                            bevelDepth: 0.052,
+                            bevelWidth: 0.211,
+                            frost: 7,
+                            shadow: false,
+                            specular: true,
+                            tilt: false,
+                            tiltFactor: 5,
+                            reveal: "fade",
+                        });
+                    }, 500);
+                }
+            }, []);
+
+            return (
+                <header className="fixed top-0 left-0 right-0 z-50 bg-[#050505]/60 backdrop-blur-md border-b border-white/5">
+                    <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <h1 className="text-xl font-bold tracking-tight text-white/90 font-display">
+                                Alpha's <span className="text-emerald-400">trashdump</span>
+                            </h1>
+                        </div>
+                        <div className="liquid-target glass-orb">
+                            <img src="./res/logo.webp" alt="Logo" className="w-full h-full object-cover rounded-full relative z-[3]" />
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+
+        const DeviceCard = ({ device, onClick, isSelected }) => (
+            <button
+                onClick={() => onClick(device)}
+                className={`glass-card w-full p-6 text-left group ${isSelected ? 'selected' : ''}`}
+            >
+                <div className="card-content">
+                    <h2 className="text-2xl font-semibold text-white mb-1 font-display">{device.name}</h2>
+                    <p className="text-sm font-mono text-white/40">{device.codename}</p>
+                    <div className="mt-4 inline-flex items-center px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.08] text-xs text-white/60 font-medium backdrop-blur-sm">
+                        {device.roms.length} ROMs available
+                    </div>
+                </div>
+            </button>
+        );
+
+        const RomCard = ({ rom, onClick }) => (
+            <div 
+                onClick={() => onClick(rom)}
+                className="glass-card-sm p-5 flex flex-col justify-between group"
+            >
+                <div className="card-content">
+                    <h3 className="text-lg font-medium text-white group-hover:text-emerald-400 transition-colors duration-300 font-display">{rom.name}</h3>
+                    <p className="text-sm text-emerald-400/70 mt-1 font-medium">Android {rom.androidVersion}</p>
+                </div>
+                
+                {/* UPDATED: Maintainer field added here under build date */}
+                <div className="card-content mt-6 flex flex-col gap-2 text-xs text-white/40 font-mono">
+                    <div className="flex items-center justify-between">
+                        <span>Build: {rom.buildDate}</span>
+                        <span className="bg-white/[0.08] border border-white/[0.06] px-2.5 py-1 rounded-lg text-white/70">{rom.fileSize}</span>
+                    </div>
+                    <div>
+                        Maintainer: <span className="text-white/70">{rom.maintainer || "Unknown"}</span>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const RomDetailsModal = ({ rom, onClose }) => {
+            useEffect(() => {
+                document.body.style.overflow = 'hidden';
+                return () => { document.body.style.overflow = 'unset'; }
+            }, []);
+
+            return (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 animate-fade-in">
+                    <div 
+                        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+                        onClick={onClose}
+                    />
+
+                    <div className="glass-modal w-full max-w-2xl max-h-[90vh] flex flex-col relative z-10">
+                        <div className="p-6 md:p-8 border-b border-white/10 shrink-0 flex justify-between items-start bg-[#0a0a0a]/80">
+                            <div>
+                                <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight font-display">{rom.name}</h2>
+                                
+                                {/* UPDATED: Maintainer added to modal header next to Android version */}
+                                <div className="flex items-center gap-3 mt-1.5">
+                                    <p className="text-emerald-400 font-medium text-sm sm:text-base">Android {rom.androidVersion}</p>
+                                    <span className="w-1 h-1 rounded-full bg-white/20"></span>
+                                    <p className="text-white/50 text-xs sm:text-sm font-medium">By {rom.maintainer || "Unknown"}</p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={onClose}
+                                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 hover:border-white/20 transition-all duration-200 shrink-0"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1">
+                            <div className="space-y-8 text-white/80 pb-4">
+                                <section>
+                                    <h4 className="text-xs tracking-widest text-white/30 uppercase font-bold mb-3 font-display">Installation Guide</h4>
+                                    <ol className="list-decimal list-inside space-y-3 bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6">
+                                        {rom.installationGuide.map((step, idx) => (
+                                            <li key={idx} className="text-sm pl-2 leading-relaxed">{step}</li>
+                                        ))}
+                                    </ol>
+                                </section>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <section>
+                                        <h4 className="text-xs tracking-widest text-white/30 uppercase font-bold mb-3 font-display">Changelog</h4>
+                                        <ul className="list-disc list-inside space-y-2 text-sm bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 h-full">
+                                            {rom.changelog.map((log, idx) => (
+                                                <li key={idx} className="pl-1 leading-relaxed">{log}</li>
+                                            ))}
+                                        </ul>
+                                    </section>
+
+                                    <section>
+                                        <h4 className="text-xs tracking-widest text-rose-400/40 uppercase font-bold mb-3 font-display">Known Bugs</h4>
+                                        <ul className="list-disc list-inside space-y-2 text-sm text-rose-300/70 bg-rose-500/[0.04] border border-rose-500/10 rounded-2xl p-6 h-full">
+                                            {rom.bugs.map((bug, idx) => (
+                                                <li key={idx} className="pl-1 leading-relaxed">{bug}</li>
+                                            ))}
+                                        </ul>
+                                    </section>
+                                </div>
+
+                                <section className="flex flex-col sm:flex-row sm:items-center justify-between bg-white/[0.03] rounded-2xl p-6 border border-white/[0.06] gap-4">
+                                    <div>
+                                        <h4 className="text-xs text-white/30 uppercase font-bold font-display tracking-wider">Recommended Recovery</h4>
+                                        <p className="text-sm font-mono mt-1.5 text-white/80">{rom.recommendedRecovery}</p>
+                                    </div>
+                                    <a 
+                                        href={rom.downloadLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex justify-center items-center px-8 py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold shadow-[0_0_25px_rgba(16,185,129,0.25)] hover:shadow-[0_0_35px_rgba(16,185,129,0.4)] transition-all duration-300 font-display text-sm"
+                                    >
+                                        Download {rom.fileSize}
+                                    </a>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [romDatabase, setRomDatabase] = useState([]);
+            const [isLoading, setIsLoading] = useState(true);
+            const [selectedDevice, setSelectedDevice] = useState(null);
+            const [selectedRom, setSelectedRom] = useState(null);
+
+            useEffect(() => {
+                fetch('res/data.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        setRomDatabase(data);
+                        setIsLoading(false);
+                    })
+                    .catch(error => {
+                        console.error("Error loading JSON:", error);
+                        setIsLoading(false);
+                    });
+            }, []);
+
+            return (
+                <div className="min-h-screen relative">
+                    <div className="blob w-[500px] h-[500px] bg-emerald-900/15 -top-[100px] -left-[100px]" />
+                    <div className="blob w-[400px] h-[400px] bg-blue-900/10 bottom-[10%] right-[-100px]" />
+                    <div className="blob w-[300px] h-[300px] bg-emerald-800/10 top-[40%] left-[60%]" />
+
+                    <Particles />
+                    <Header />
+
+                    <main className="max-w-7xl mx-auto px-6 pt-32 pb-20 relative z-10">
+                        {isLoading ? (
+                            <div className="text-center text-white/50 mt-20 animate-pulse font-mono">Loading database...</div>
+                        ) : (
+                            <>
+                                <section className="mb-16">
+                                    <h2 className="text-3xl font-medium tracking-tight mb-8 font-display text-white/90">Select your device</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {romDatabase.map((device) => (
+                                            <DeviceCard 
+                                                key={device.id} 
+                                                device={device} 
+                                                isSelected={selectedDevice?.id === device.id}
+                                                onClick={setSelectedDevice} 
+                                            />
+                                        ))}
+                                    </div>
+                                </section>
+
+                                {selectedDevice && (
+                                    <section className="animate-fade-in">
+                                        <h2 className="text-2xl font-medium tracking-tight mb-6 font-display text-white/90">
+                                            Available ROMs for <span className="text-emerald-400/80">{selectedDevice.codename}</span>
+                                        </h2>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                            {selectedDevice.roms.map((rom) => (
+                                                <RomCard 
+                                                    key={rom.id} 
+                                                    rom={rom} 
+                                                    onClick={setSelectedRom} 
+                                                />
+                                            ))}
+                                        </div>
+                                    </section>
+                                )}
+                            </>
+                        )}
+                    </main>
+
+                    {selectedRom && (
+                        <RomDetailsModal 
+                            rom={selectedRom} 
+                            onClose={() => setSelectedRom(null)} 
+                        />
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
