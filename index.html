@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alpha's trashdump</title>
+    <script>
+        (function() {
+            var mem = navigator.deviceMemory;
+            var cpu = navigator.hardwareConcurrency;
+            if ((mem && mem <= 4) || (cpu && cpu <= 4)) {
+                document.documentElement.classList.add('low-end-device');
+            }
+        })();
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/3.33.0/minified.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,6 +52,15 @@
         }
         .animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
         #fallback { padding: 2rem; text-align: center; color: #a1a1aa; font-size: 13px; }
+        
+        .low-end-device * {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            filter: none !important;
+        }
+        .low-end-device [class*="blur-"]:not([class*="backdrop-blur"]) {
+            display: none !important;
+        }
     </style>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
