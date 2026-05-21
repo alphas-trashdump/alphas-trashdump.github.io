@@ -8,19 +8,19 @@
 				"id":"santoni_coloros1502601",
 				"name":" ColorOS 15.0.2.601",
 				"androidVersion":"15",
-				"buildDate":"19-05-2025",
+				"buildDate":"19-05-2026",
 				"maintainer":"cat",
 				"maintainerLink":"https://t.me/friendlycatt",
-				"fileSize":"null GB",
+				"fileSize":"3.7 GB",
 				"additionalFiles":[
 					{
 						"name":"Files",
-						"url":"https://t.me/santoniport/39224"
+						"url":"https://t.me/Nova_ChatTm/248176"
 					}
 				],
-				"downloadLink":"null",
+				"downloadLink":"https://drive.google.com/file/d/1_r9TOc-9xOj5zWfUe3fxtHhbQgtUzvjR/view?usp=sharing",
 				"recoveryDownloadLink":"https://t.me/jabiyeff_caf/114",
-				"screenshotsLink":"null",
+				"screenshotsLink":"https://t.me/Nova_ChatTm/245495?single",
 				"installationGuide":[
 					"Flash Repartition zip",
 					"Wipe Dalvik, Cache, System, Vendor, Data",
@@ -37,8 +37,7 @@
 					"Bluetooth"
 				],
 				"changelog":[
-					"Based on Mi 6X port",
-					"blah blah"
+					"Based on Mi 6X port"
 				]
 			},
 			{
