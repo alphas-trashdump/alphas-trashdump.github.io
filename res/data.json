@@ -230,43 +230,5 @@
 				"maintainerId": "alpha"
 			}
 		]
-	},
-	{
-		"id": "m55xq",
-		"name": "Samsung Galaxy M55",
-		"codename": "m55xq",
-		"roms": [
-			{
-				"id": "m55xq_cos1600201",
-				"name": "ColorOS 16.0.0.201",
-				"androidVersion": "16",
-				"buildDate": "21-10-2025",
-				"maintainer": "Alpha",
-				"maintainerLink": "https://t.me/alpha269",
-				"fileSize": "3.0 GB",
-				"downloadLink": "https://pixeldrain.com/u/Rp5ytWhH",
-				"recoveryDownloadLink": null,
-				"screenshotsLink": "https://t.me/M55_5G/1800/9485?single",
-				"additionalFiles": [
-					{
-						"name": "Permissive Kernel",
-						"url": "https://t.me/M55_5G/1800/11895"
-					}
-				],
-				"installationGuide": [
-					"Extract .zip and install using DSU sideloader",
-					"Use permissive kernel for better stability"
-				],
-				"bugs": [
-					"Fingerprint",
-					"Power button delay",
-					"Bluetooth"
-				],
-				"changelog": [
-					"Initial port"
-				],
-				"maintainerId": "alpha"
-			}
-		]
 	}
 ]
