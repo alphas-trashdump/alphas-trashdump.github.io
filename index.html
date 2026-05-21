@@ -89,6 +89,8 @@
         const IconTerminal = ({size=14}) => <svg {...baseSvg(size)}><path d="m4 5 6 6-6 6"/><path d="M12 19h8"/></svg>;
         const IconFileText = ({size=14}) => <svg {...baseSvg(size)}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>;
         const IconBug = ({size=14}) => <svg {...baseSvg(size)}><rect width="8" height="14" x="8" y="6" rx="4"/><path d="m19 7-3 2"/><path d="m5 7 3 2"/><path d="m19 19-3-2"/><path d="m5 19 3-2"/><path d="M20 13h-4"/><path d="M4 13h4"/><path d="m10 4 1 2"/><path d="m14 4-1 2"/></svg>;
+        const IconBadge = ({size=12}) => <svg {...baseSvg(size)}><path d="m9 12 2 2 4-4"/><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4Z"/></svg>;
+        const IconStack = ({size=14}) => <svg {...baseSvg(size)}><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>;
 
         const isTelegramLink = (url) => {
             if (!url) return false;
@@ -109,10 +111,14 @@
             return <a href={href} target="_blank" rel="noopener noreferrer" onClick={handleClick} className={className} title={title}>{children}</a>;
         };
 
-        const Maintainer = ({ name, link }) => {
-            const label = name || "Unknown";
+        let PROFILES = {};
+        const Maintainer = ({ name, link, id }) => {
+            const profile = id ? PROFILES[id] : null;
+            const label = (profile && profile.displayName) || name || "Unknown";
             const inner = (<><IconUser size={12}/><span>{label}</span></>);
-            if (link) return <SmartLink href={link} className="inline-flex items-center gap-1.5 text-zinc-300 hover:text-white transition-colors">{inner}</SmartLink>;
+            const cls = "inline-flex items-center gap-1.5 text-zinc-300 hover:text-white transition-colors";
+            if (profile) return <a href={`#/maintainer/${profile.id}`} className={cls}>{inner}</a>;
+            if (link) return <SmartLink href={link} className={cls}>{inner}</SmartLink>;
             return <span className="inline-flex items-center gap-1.5 text-zinc-500">{inner}</span>;
         };
 
@@ -154,6 +160,7 @@
                 if (parts[2] === 'rom' && parts[3]) return { view: 'rom', deviceId: parts[1], romId: parts[3] };
                 return { view: 'device', deviceId: parts[1] };
             }
+            if (parts[0] === 'maintainer' && parts[1]) return { view: 'maintainer', maintainerId: parts[1] };
             return { view: 'home' };
         };
 
@@ -220,7 +227,7 @@
                     <span className="shrink-0 text-[9px] font-medium px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-white/10">Android {rom.androidVersion}</span>
                 </div>
                 <div className="mt-4 pt-3 border-t border-white/5 text-[11px] text-zinc-500 flex items-center justify-between">
-                    <Maintainer name={rom.maintainer} link={rom.maintainerLink} />
+                    <Maintainer name={rom.maintainer} link={rom.maintainerLink} id={rom.maintainerId} />
                     <span className="text-zinc-600"><IconArrowRight size={14}/></span>
                 </div>
             </a>
@@ -289,7 +296,7 @@
                             <h1 className="serif-display text-4xl text-zinc-50 leading-[1.1] mb-3 drop-shadow-md break-words">{rom.name}</h1>
                             
                             <div className="text-xs text-zinc-400 flex items-center gap-1.5">
-                                Maintained by <Maintainer name={rom.maintainer} link={rom.maintainerLink} />
+                                Maintained by <Maintainer name={rom.maintainer} link={rom.maintainerLink} id={rom.maintainerId} />
                             </div>
                         </header>
 
@@ -362,6 +369,105 @@
             );
         };
 
+        const MaintainerView = ({ profile, devices }) => {
+            const initials = (profile.displayName || '?').trim().slice(0,2).toUpperCase();
+            const accent = profile.accentColor || '#7c5cff';
+            const maintained = [];
+            devices.forEach(d => d.roms.forEach(r => {
+                if (r.maintainerId === profile.id) maintained.push({ device:d, rom:r });
+            }));
+
+            return (
+                <section className="w-full py-2">
+                    <Breadcrumb items={[{label:'Devices', href:'#'}, {label: profile.displayName}]} />
+
+                    <div className="mx-4 rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl shadow-2xl overflow-hidden">
+                        <div className="p-5">
+                            <div className="flex items-start gap-4">
+                                <div className="relative shrink-0">
+                                    {profile.avatar ? (
+                                        <img src={profile.avatar} alt="" loading="lazy" decoding="async"
+                                            className="w-20 h-20 rounded-full object-cover border-4 border-[#050505] bg-zinc-900"
+                                            style={{ boxShadow: `0 0 0 1px ${accent}40` }} />
+                                    ) : (
+                                        <div className="w-20 h-20 rounded-full border-4 border-[#050505] flex items-center justify-center text-zinc-50 font-semibold text-xl"
+                                            style={{ backgroundColor: accent }}>{initials}</div>
+                                    )}
+                                </div>
+                                <div className="min-w-0 flex-1 pt-1">
+                                    <h1 className="serif-display text-3xl text-zinc-50 leading-tight drop-shadow-md break-words">{profile.displayName}</h1>
+                                    <div className="mt-0.5 text-[11px] font-mono text-zinc-400 break-all">{profile.tag}</div>
+                                    {profile.pronouns && (
+                                        <div className="mt-1 text-[10px] text-zinc-500">{profile.pronouns}</div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {profile.bio && (
+                                <div className="mt-4">
+                                    <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500 mb-2">About me</div>
+                                    <p className="text-xs leading-relaxed text-zinc-300">{profile.bio}</p>
+                                </div>
+                            )}
+
+                            {profile.badges && profile.badges.length > 0 && (
+                                <div className="mt-4">
+                                    <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500 mb-2">Badges</div>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {profile.badges.map((b,i) => (
+                                            <span key={i} className="inline-flex items-center gap-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-[10px] font-medium text-zinc-200">
+                                                <IconBadge size={10}/>{b}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {profile.links && profile.links.length > 0 && (
+                                <div className="mt-4">
+                                    <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500 mb-2">Connections</div>
+                                    <div className="flex flex-col gap-1.5">
+                                        {profile.links.map((l,i) => (
+                                            <SmartLink key={i} href={l.url}
+                                                className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-xs text-zinc-200 active:bg-white/10 transition-all">
+                                                <span className="inline-flex items-center gap-1.5"><IconLink size={12}/>{l.label}</span>
+                                                <IconExternal size={12}/>
+                                            </SmartLink>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="mt-8 px-4">
+                        <h2 className="text-sm font-semibold text-zinc-100 flex items-center gap-1.5 mb-3">
+                            <IconStack size={14} className="text-zinc-400"/> Maintained ROMs
+                            <span className="text-[10px] font-medium text-zinc-500">({maintained.length})</span>
+                        </h2>
+                        {maintained.length === 0 ? (
+                            <div className="p-6 text-center text-xs text-zinc-500 border border-white/10 bg-white/5 rounded-xl">No ROMs yet.</div>
+                        ) : (
+                            <div className="flex flex-col gap-3">
+                                {maintained.map(({device,rom}) => (
+                                    <a key={`${device.id}-${rom.id}`} href={`#/device/${device.id}/rom/${rom.id}`}
+                                        className="block p-4 rounded-xl border border-white/10 bg-white/[0.02] active:bg-white/[0.04] active:border-white/20 transition-all">
+                                        <div className="flex items-start justify-between gap-3">
+                                            <div className="min-w-0 flex-1">
+                                                <div className="text-sm font-medium text-zinc-100 leading-snug">{rom.name}</div>
+                                                <div className="text-[10px] text-zinc-500 mt-1">{device.name} · <span className="font-mono">{device.codename}</span></div>
+                                            </div>
+                                            <span className="shrink-0 text-[9px] font-medium px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-white/10">Android {rom.androidVersion}</span>
+                                        </div>
+                                    </a>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </section>
+            );
+        };
+
         const NotFound = ({ message }) => (
             <div className="w-full px-4 py-20 text-center">
                 <h1 className="serif-display text-4xl text-zinc-50 mb-3 drop-shadow-md">Not found</h1>
@@ -372,6 +478,7 @@
 
         const App = () => {
             const [romDatabase, setRomDatabase] = useState([]);
+            const [profiles, setProfiles] = useState({});
             const [isLoading, setIsLoading] = useState(true);
             const [tgUrl, setTgUrl] = useState(null);
             const [usingDemo, setUsingDemo] = useState(false);
@@ -399,8 +506,20 @@
                     .catch(() => { setRomDatabase(DEMO_DATA); setUsingDemo(true); setIsLoading(false); });
             }, []);
 
+            useEffect(() => {
+                fetch('./res/maintainers.json')
+                    .then(r => r.ok ? r.json() : {})
+                    .then(data => {
+                        const obj = (data && typeof data === 'object' && !Array.isArray(data)) ? data : {};
+                        PROFILES = obj;
+                        setProfiles(obj);
+                    })
+                    .catch(() => {});
+            }, []);
+
             const device = route.deviceId ? romDatabase.find(d => d.id === route.deviceId) : null;
             const rom = device && route.romId ? device.roms.find(r => r.id === route.romId) : null;
+            const profile = route.maintainerId ? profiles[route.maintainerId] : null;
 
             return (
                 <div className="min-h-screen flex flex-col">
@@ -412,7 +531,7 @@
                             </div>
                         </div>
                     )}
-                    <main key={`${route.view}-${route.deviceId || ''}-${route.romId || ''}`} className="animate-fade-in flex-1">
+                    <main key={`${route.view}-${route.deviceId || ''}-${route.romId || ''}-${route.maintainerId || ''}`} className="animate-fade-in flex-1">
                         {isLoading ? (
                             <div className="w-full px-4 py-20 text-center text-zinc-500 text-xs font-medium">Loading repository...</div>
                         ) : route.view === 'home' ? (
@@ -421,6 +540,8 @@
                             device ? <DeviceView device={device} /> : <NotFound message="That device doesn't exist." />
                         ) : route.view === 'rom' ? (
                             (device && rom) ? <RomView device={device} rom={rom} /> : <NotFound message="That ROM doesn't exist." />
+                        ) : route.view === 'maintainer' ? (
+                            profile ? <MaintainerView profile={profile} devices={romDatabase} /> : <NotFound message="That maintainer doesn't exist." />
                         ) : <NotFound message="Page not found." />}
                     </main>
                     {tgUrl && <TelegramModal url={tgUrl} onClose={() => setTgUrl(null)} />}

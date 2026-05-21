@@ -1,27 +1,27 @@
 [
 	{
-		"id":"santoni",
-		"name":"Redmi 4X",
-		"codename":"santoni",
-		"roms":[
+		"id": "santoni",
+		"name": "Redmi 4X",
+		"codename": "santoni",
+		"roms": [
 			{
-				"id":"santoni_coloros1502601",
-				"name":" ColorOS 15.0.2.601",
-				"androidVersion":"15",
-				"buildDate":"19-05-2026",
-				"maintainer":"cat",
-				"maintainerLink":"https://t.me/friendlycatt",
-				"fileSize":"3.7 GB",
-				"additionalFiles":[
+				"id": "santoni_coloros1502601",
+				"name": " ColorOS 15.0.2.601",
+				"androidVersion": "15",
+				"buildDate": "19-05-2026",
+				"maintainer": "cat",
+				"maintainerLink": "https://t.me/friendlycatt",
+				"fileSize": "3.7 GB",
+				"additionalFiles": [
 					{
-						"name":"Files",
-						"url":"https://t.me/Nova_ChatTm/248176"
+						"name": "Files",
+						"url": "https://t.me/Nova_ChatTm/248914?single"
 					}
 				],
-				"downloadLink":"https://drive.google.com/file/d/1_r9TOc-9xOj5zWfUe3fxtHhbQgtUzvjR/view?usp=sharing",
-				"recoveryDownloadLink":"https://t.me/jabiyeff_caf/114",
-				"screenshotsLink":"https://t.me/Nova_ChatTm/245495?single",
-				"installationGuide":[
+				"downloadLink": "https://drive.google.com/file/d/1_r9TOc-9xOj5zWfUe3fxtHhbQgtUzvjR/view?usp=sharing",
+				"recoveryDownloadLink": "https://t.me/jabiyeff_caf/114",
+				"screenshotsLink": "https://t.me/Nova_ChatTm/245495?single",
+				"installationGuide": [
 					"Flash Repartition zip",
 					"Wipe Dalvik, Cache, System, Vendor, Data",
 					"Format Data > Yes",
@@ -30,66 +30,68 @@
 					"Reboot to system",
 					"First boot will take 10-15 minutes"
 				],
-				"bugs":[
+				"bugs": [
 					"Fingerprint",
 					"Brightness (use provided app)",
 					"Hotspot",
 					"Bluetooth"
 				],
-				"changelog":[
+				"changelog": [
 					"Based on Mi 6X port"
-				]
+				],
+				"maintainerId": "cat"
 			},
 			{
-				"id":"santoni_mint20200",
-				"name":"HyperMint 2",
-				"androidVersion":"14",
-				"buildDate":"19-12-2025",
-				"maintainer":"Alpha",
-				"maintainerLink":"https://t.me/alpha269",
-				"fileSize":"1.8 GB",
-				"downloadLink":"https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperMINT_OS2.0.20.0.UMSCNXM_SANTONI-alpha269-14.0-r1.zip/download",
-				"recoveryDownloadLink":"https://t.me/jabiyeff_caf/114",
-				"screenshotsLink":"https://t.me/santoniport/48710?single",
-				"installationGuide":[
+				"id": "santoni_mint20200",
+				"name": "HyperMint 2",
+				"androidVersion": "14",
+				"buildDate": "19-12-2025",
+				"maintainer": "Alpha",
+				"maintainerLink": "https://t.me/alpha269",
+				"fileSize": "1.8 GB",
+				"downloadLink": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperMINT_OS2.0.20.0.UMSCNXM_SANTONI-alpha269-14.0-r1.zip/download",
+				"recoveryDownloadLink": "https://t.me/jabiyeff_caf/114",
+				"screenshotsLink": "https://t.me/santoniport/48710?single",
+				"installationGuide": [
 					"Wipe Dalvik, Cache, System, Vendor, Data",
 					"Format Data > Yes",
 					"Flash ROM zip",
 					"Reboot to system",
 					"First boot will take 10-15 minutes"
 				],
-				"bugs":[
+				"bugs": [
 					"Fingerprint Unlock",
 					"Vibration"
 				],
-				"changelog":[
+				"changelog": [
 					"Based on CN Stable",
 					"Support Indonesian and Russian language"
-				]
+				],
+				"maintainerId": "alpha"
 			},
 			{
-				"id":"santoni_hyperos3lite",
-				"name":"HyperOS 3 Lite (a.k.a FakeOS 3)",
-				"androidVersion":"14",
-				"buildDate":"08-09-2025",
-				"maintainer":"Alpha",
-				"maintainerLink":"https://t.me/alpha269",
-				"fileSize":"1.9 GB",
-				"downloadLink":"https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperOS-3.0.0.18.MOD-alpha269-Santoni-REV2-14.0.zip/download",
-				"recoveryDownloadLink":"https://t.me/jabiyeff_caf/114",
-				"screenshotsLink":"https://t.me/santoniport/47980?single",
-				"installationGuide":[
+				"id": "santoni_hyperos3lite",
+				"name": "HyperOS 3 Lite (a.k.a FakeOS 3)",
+				"androidVersion": "14",
+				"buildDate": "08-09-2025",
+				"maintainer": "Alpha",
+				"maintainerLink": "https://t.me/alpha269",
+				"fileSize": "1.9 GB",
+				"downloadLink": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperOS-3.0.0.18.MOD-alpha269-Santoni-REV2-14.0.zip/download",
+				"recoveryDownloadLink": "https://t.me/jabiyeff_caf/114",
+				"screenshotsLink": "https://t.me/santoniport/47980?single",
+				"installationGuide": [
 					"Wipe Dalvik, Cache, System, Vendor, Data",
 					"Format Data > Yes",
 					"Flash ROM zip",
 					"Reboot to system",
 					"The ROM might feel a bit laggy on its first boot, give it time to settle down"
 				],
-				"bugs":[
+				"bugs": [
 					"Fingerprint",
 					"idk"
 				],
-				"changelog":[
+				"changelog": [
 					"Based on HyperOS 1",
 					"Add Android 16 easter egg",
 					"Add option to switch display to 360p resolution, lol",
@@ -97,167 +99,173 @@
 					"Fixed an issue where password lock could not be set",
 					"Add ability to register two faces for face unlocking",
 					"Fix Charging animation"
-				]
+				],
+				"maintainerId": "alpha"
 			},
 			{
-				"id":"santoni_hyperui_os202030",
-				"name":"HyperUI 2.2.203.0",
-				"androidVersion":"14",
-				"buildDate":"15-06-2025",
-				"maintainer":"Alpha",
-				"maintainerLink":"https://t.me/alpha269",
-				"fileSize":"1.9 GB",
-				"downloadLink":"https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperUI-OS2.2.203.0.CN-santoni-14.zip/download",
-				"recoveryDownloadLink":"https://t.me/jabiyeff_caf/114",
-				"screenshotsLink":"https://t.me/AlazisSantoni/374?single",
-				"installationGuide":[
+				"id": "santoni_hyperui_os202030",
+				"name": "HyperUI 2.2.203.0",
+				"androidVersion": "14",
+				"buildDate": "15-06-2025",
+				"maintainer": "Alpha",
+				"maintainerLink": "https://t.me/alpha269",
+				"fileSize": "1.9 GB",
+				"downloadLink": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperUI-OS2.2.203.0.CN-santoni-14.zip/download",
+				"recoveryDownloadLink": "https://t.me/jabiyeff_caf/114",
+				"screenshotsLink": "https://t.me/AlazisSantoni/374?single",
+				"installationGuide": [
 					"Wipe Dalvik, Cache, System, Vendor, Data",
 					"Format Data > Yes",
 					"Flash ROM zip",
 					"Reboot to system",
 					"ROM needs time to settle down, it might feel laggy in the first"
 				],
-				"bugs":[
+				"bugs": [
 					"Fingerprint (not tested on 4gb ram model)"
 				],
-				"changelog":[
+				"changelog": [
 					"Based on leaked HyperUI for sweet",
 					"Includes Indonesian & Russian Language (for other languages: flash this module)",
 					"Remove FindDevice by default",
 					"Switch to vndk34",
 					"Add Circle to Search support (requires Google app)",
 					"Some optimization"
-				]
+				],
+				"maintainerId": "alpha"
 			},
 			{
-				"id":"santoni_hyperos2020v2",
-				"name":"HyperOS 2.0.2.0 Beta v2",
-				"androidVersion":"14",
-				"buildDate":"13-04-2025",
-				"maintainer":"Alpha",
-				"maintainerLink":"https://t.me/alpha269",
-				"fileSize":"2.02 GB",
-				"downloadLink":"https://drive.google.com/file/d/14X_pLGJ7kzTWGe0KWwZQswpbJGNK_CH1/view?usp=drive_link",
-				"recoveryDownloadLink":"https://t.me/jabiyeff_caf/114",
-				"screenshotsLink":"https://t.me/AlazisSantoni/350?single",
-				"installationGuide":[
+				"id": "santoni_hyperos2020v2",
+				"name": "HyperOS 2.0.2.0 Beta v2",
+				"androidVersion": "14",
+				"buildDate": "13-04-2025",
+				"maintainer": "Alpha",
+				"maintainerLink": "https://t.me/alpha269",
+				"fileSize": "2.02 GB",
+				"downloadLink": "https://drive.google.com/file/d/14X_pLGJ7kzTWGe0KWwZQswpbJGNK_CH1/view?usp=drive_link",
+				"recoveryDownloadLink": "https://t.me/jabiyeff_caf/114",
+				"screenshotsLink": "https://t.me/AlazisSantoni/350?single",
+				"installationGuide": [
 					"Wipe Dalvik, Cache, System, Vendor, Data",
 					"Format Data > Yes",
 					"Flash ROM zip",
 					"Reboot to system",
 					"Important: ROM needs time to settle & optimize battery and performance (4 - 5 hours)"
 				],
-				"bugs":[
+				"bugs": [
 					"FPC Fingerprint (usually on 2gb/3gb ram)",
 					"Vibration"
 				],
-				"changelog":[
+				"changelog": [
 					"Fixed: Hotspot, Bluetooth Pairing, Face Unlock, Empty Dynamic Island Text",
 					"Based on Redmi K50 Gaming (ingres)",
 					"Add 130+ depth wallpapers",
 					"Play Integrity passes by default"
-				]
+				],
+				"maintainerId": "alpha"
 			},
 			{
-				"id":"santoni_miui1203",
-				"name":"MIUI 12.0.3 Global ID",
-				"androidVersion":"10",
-				"buildDate":"07-05-2024",
-				"maintainer":"Alpha",
-				"maintainerLink":"https://t.me/alpha269",
-				"fileSize":"1.38 GB",
-				"downloadLink":"https://drive.google.com/file/d/10m6wPigjtsF77J5V81wkQgvF-wrOOVFL/view?usp=drivesdk",
-				"recoveryDownloadLink":"https://t.me/jabiyeff_caf/114",
-				"screenshotsLink":"https://t.me/trashdumpalpha/300?single",
-				"installationGuide":[
+				"id": "santoni_miui1203",
+				"name": "MIUI 12.0.3 Global ID",
+				"androidVersion": "10",
+				"buildDate": "07-05-2024",
+				"maintainer": "Alpha",
+				"maintainerLink": "https://t.me/alpha269",
+				"fileSize": "1.38 GB",
+				"downloadLink": "https://drive.google.com/file/d/10m6wPigjtsF77J5V81wkQgvF-wrOOVFL/view?usp=drivesdk",
+				"recoveryDownloadLink": "https://t.me/jabiyeff_caf/114",
+				"screenshotsLink": "https://t.me/trashdumpalpha/300?single",
+				"installationGuide": [
 					"Wipe Dalvik, Cache, System, Vendor, Data",
 					"Format Data > Yes",
 					"Flash ROM zip",
 					"Reboot to system",
 					"Note: A force reboot might be required to boot the rom"
 				],
-				"bugs":[
+				"bugs": [
 					"Let us know"
 				],
-				"changelog":[
+				"changelog": [
 					"Add few modded apps",
 					"Fix Offline Charging",
 					"Banking apps work maybe?",
 					"Added DolbyAtmos",
 					"Added XiaomiParts",
 					"Added Advanced reboot"
-				]
+				],
+				"maintainerId": "alpha"
 			}
 		]
 	},
 	{
-		"id":"Mi8937",
-		"name":"Redmi 3S/3X, 4, 4A, 4X, 5A, Note 5A/Y1",
-		"codename":"Mi8937",
-		"roms":[
+		"id": "Mi8937",
+		"name": "Redmi 3S/3X, 4, 4A, 4X, 5A, Note 5A/Y1",
+		"codename": "Mi8937",
+		"roms": [
 			{
-				"id":"mi8937_hos10150",
-				"name":"HyperOS 1.0.15.0",
-				"androidVersion":"14",
-				"buildDate":"17-02-2026",
-				"maintainer":"Alpha",
-				"maintainerLink":"https://t.me/alpha269",
-				"fileSize":"1.8 GB",
-				"downloadLink":"https://t.me/Mi8937_4_19/98",
-				"recoveryDownloadLink":"https://t.me/Nova_CloudTM_V2/313",
-				"screenshotsLink":"https://t.me/Mi8937_4_19/89?single",
-				"installationGuide":[
+				"id": "mi8937_hos10150",
+				"name": "HyperOS 1.0.15.0",
+				"androidVersion": "14",
+				"buildDate": "17-02-2026",
+				"maintainer": "Alpha",
+				"maintainerLink": "https://t.me/alpha269",
+				"fileSize": "1.8 GB",
+				"downloadLink": "https://t.me/Mi8937_4_19/98",
+				"recoveryDownloadLink": "https://t.me/Nova_CloudTM_V2/313",
+				"screenshotsLink": "https://t.me/Mi8937_4_19/89?single",
+				"installationGuide": [
 					"Wipe Dalvik, Cache, System, Vendor, Data",
 					"Format Data > Yes",
 					"Flash ROM zip",
 					"Reboot to system",
 					"First boot will take 10-15 minutes"
 				],
-				"bugs":[
+				"bugs": [
 					"Fingerprint",
 					"Bluetooth Audio"
 				],
-				"changelog":[
+				"changelog": [
 					"Include Bahasa Indonesian (🇮🇩) & Russian (🇷🇺)",
 					"Add some additional settings & improve overall fluency"
-				]
+				],
+				"maintainerId": "alpha"
 			}
 		]
 	},
 	{
-		"id":"m55xq",
-		"name":"Samsung Galaxy M55",
-		"codename":"m55xq",
-		"roms":[
+		"id": "m55xq",
+		"name": "Samsung Galaxy M55",
+		"codename": "m55xq",
+		"roms": [
 			{
-				"id":"m55xq_cos1600201",
-				"name":"ColorOS 16.0.0.201",
-				"androidVersion":"16",
-				"buildDate":"21-10-2025",
-				"maintainer":"Alpha",
-				"maintainerLink":"https://t.me/alpha269",
-				"fileSize":"3.0 GB",
-				"downloadLink":"https://pixeldrain.com/u/Rp5ytWhH",
-				"recoveryDownloadLink":null,
-				"screenshotsLink":"https://t.me/M55_5G/1800/9485?single",
-				"additionalFiles":[
+				"id": "m55xq_cos1600201",
+				"name": "ColorOS 16.0.0.201",
+				"androidVersion": "16",
+				"buildDate": "21-10-2025",
+				"maintainer": "Alpha",
+				"maintainerLink": "https://t.me/alpha269",
+				"fileSize": "3.0 GB",
+				"downloadLink": "https://pixeldrain.com/u/Rp5ytWhH",
+				"recoveryDownloadLink": null,
+				"screenshotsLink": "https://t.me/M55_5G/1800/9485?single",
+				"additionalFiles": [
 					{
-						"name":"Permissive Kernel",
-						"url":"https://t.me/M55_5G/1800/11895"
+						"name": "Permissive Kernel",
+						"url": "https://t.me/M55_5G/1800/11895"
 					}
 				],
-				"installationGuide":[
+				"installationGuide": [
 					"Extract .zip and install using DSU sideloader",
 					"Use permissive kernel for better stability"
 				],
-				"bugs":[
+				"bugs": [
 					"Fingerprint",
 					"Power button delay",
 					"Bluetooth"
 				],
-				"changelog":[
+				"changelog": [
 					"Initial port"
-				]
+				],
+				"maintainerId": "alpha"
 			}
 		]
 	}
