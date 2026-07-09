@@ -201,6 +201,45 @@
 		"name": "Redmi 3S/3X, 4, 4A, 4X, 5A, Note 5A/Y1",
 		"codename": "Mi8937",
 		"roms": [
+		    {
+				"id": "mi8937_hos303130",
+				"name": "HyperOS 3.0.313.0 (3.1)",
+				"androidVersion": "16 | BETA",
+				"buildDate": "04-06-2026",
+				"maintainer": "Alpha",
+				"maintainerLink": "https://t.me/alpha269",
+				"fileSize": "2.38 GB",
+				"additionalFiles": [
+					{
+						"name": "Repartition (Santoni Only)",
+						"url": "https://drive.google.com/file/d/1alGfV1uz8IgJ_xdVCsK7Xo_lrEP-tcOp/view"
+					}
+				],
+				"downloadLink": "https://drive.google.com/drive/folders/1Hbg5CR0F3rO3JQElsEoHnalpuGcNDYs_",
+				"recoveryDownloadLink": "https://t.me/mithorium_archive/548",
+				"screenshotsLink": null,
+				"installationGuide": [
+					"Flash repartition zip",
+					"Format data > yes",
+					"Wipe system, vendor, cache, dalvik, internal storage, and data",
+					"Optional: Change File system of data and cache to F2FS",
+					"Flash ROM zip",
+					"First boot will take 10-15 minutes"
+				],
+				"bugs": [
+					"Fingerprint",
+					"Bluetooth",
+					"File transfer (MTP)",
+					"High battery consumption"
+				],
+				"changelog": [
+					"Initial HyperOS 3.1 Android 16 Port",
+					"Ported from Redmi K70 (vermeer)",
+					"Google Play Services included (Enable in Settings > Additional Settings > Account & Sync)",
+					"Support for santoni, ugg, and land"
+				],
+				"maintainerId": "alpha"
+			},
 			{
 				"id": "mi8937_hos10150",
 				"name": "HyperOS 1.0.15.0",
