@@ -1,0 +1,25 @@
+name: validate data
+
+on:
+  push:
+    branches: [main]
+    paths: ["data/**", "tools/**", ".github/workflows/validate-data.yml"]
+  pull_request:
+    paths: ["data/**", "tools/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate every release file
+        run: python3 tools/build_index.py --check
+      - name: Fail if data/index.json is stale
+        run: python3 tools/build_index.py --verify-fresh

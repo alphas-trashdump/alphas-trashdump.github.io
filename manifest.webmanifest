@@ -1,0 +1,18 @@
+{
+  "name": "alpha's trashdump",
+  "short_name": "trashdump",
+  "description": "Custom ROM ports for Xiaomi msm8937 devices.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#101A20",
+  "theme_color": "#101A20",
+  "icons": [
+    {
+      "src": "res/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

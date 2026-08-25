@@ -1,0 +1,42 @@
+{
+  "alpha": {
+    "id": "alpha",
+    "name": "Alpha",
+    "tag": "@alpha269",
+    "pronouns": "he/him",
+    "bio": "doing random shts",
+    "avatar": "res/maintainers/alpha.jpg",
+    "accent": "#f0a92e",
+    "badges": ["owner", "developer"],
+    "links": [
+      { "label": "Telegram", "url": "https://t.me/alpha269" }
+    ]
+  },
+  "cat": {
+    "id": "cat",
+    "name": "cat",
+    "tag": "@friendlycatt",
+    "bio": "erofs lover",
+    "avatar": "res/maintainers/cat.png",
+    "accent": "#5cc98a",
+    "badges": ["developer"],
+    "links": [
+      { "label": "Telegram", "url": "https://t.me/friendlycatt" }
+    ]
+  },
+  "revamp": {
+    "id": "revamp",
+    "name": "Revamp",
+    "tag": "@revvmp",
+    "pronouns": "he/him",
+    "bio": "AL | 20 y.o",
+    "avatar": "res/maintainers/revamp.jpg",
+    "accent": "#7aa2f7",
+    "badges": ["developer"],
+    "links": [
+      { "label": "Telegram", "url": "https://t.me/revvmp" },
+      { "label": "GitHub", "url": "https://github.com/idonthaveausernamesorry" },
+      { "label": "Instagram", "url": "https://instagram.com/120bpm130bpm140bpm150bpm160bpm" }
+    ]
+  }
+}

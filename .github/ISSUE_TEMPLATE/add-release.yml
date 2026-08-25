@@ -1,0 +1,182 @@
+name: Add or update a ROM release
+description: Publish a new build, or update an existing one, straight to the website.
+title: "[release] "
+labels: ["release"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill this in from your phone. When you submit, a bot writes the JSON,
+        optimises your screenshots and pushes them - the site is live in about a minute.
+
+        Only the repo owner and collaborators can trigger the bot.
+        To **update** an existing release, put its id in the "Release id" field.
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device
+      description: Pick an existing target, or choose "new device" and fill the two fields below.
+      options:
+        - santoni
+        - Mi8937
+        - new device
+    validations:
+      required: true
+
+  - type: input
+    id: new_device_codename
+    attributes:
+      label: New device codename
+      description: Only if you picked "new device" above. Lowercase, no spaces.
+      placeholder: land
+
+  - type: input
+    id: new_device_name
+    attributes:
+      label: New device marketing name
+      placeholder: Redmi 3S
+
+  - type: input
+    id: name
+    attributes:
+      label: ROM name
+      description: Include the version. This is the heading shown on the site.
+      placeholder: HyperOS 3.0.313.0
+    validations:
+      required: true
+
+  - type: input
+    id: release_id
+    attributes:
+      label: Release id
+      description: Leave empty for a new release. Fill it to overwrite an existing one (it is the last part of the release URL).
+      placeholder: hyperos-3-0-313-0
+
+  - type: input
+    id: android
+    attributes:
+      label: Android version
+      placeholder: "16"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: channel
+    attributes:
+      label: Channel
+      options:
+        - stable
+        - beta
+        - experimental
+    validations:
+      required: true
+
+  - type: input
+    id: date
+    attributes:
+      label: Build date
+      description: YYYY-MM-DD. Leave empty to use today.
+      placeholder: 2026-06-04
+
+  - type: input
+    id: size
+    attributes:
+      label: File size
+      placeholder: 2.38 GB
+
+  - type: dropdown
+    id: maintainer
+    attributes:
+      label: Maintainer
+      options:
+        - alpha
+        - cat
+        - revamp
+    validations:
+      required: true
+
+  - type: input
+    id: supports
+    attributes:
+      label: Also supports
+      description: Comma separated codenames, if this build covers more than one device.
+      placeholder: santoni, ugg, land
+
+  - type: textarea
+    id: mirrors
+    attributes:
+      label: Download mirrors
+      description: One per line, "Label | URL". Add as many as you want - the first one is the primary button.
+      placeholder: |
+        SourceForge | https://sourceforge.net/projects/.../download
+        Google Drive | https://drive.google.com/file/d/.../view
+        Telegram | https://t.me/channel/123
+    validations:
+      required: true
+
+  - type: textarea
+    id: extras
+    attributes:
+      label: Required extra files
+      description: One per line, "Label | URL". Repartition zips, fix zips, firmware.
+      placeholder: |
+        Repartition (santoni only) | https://drive.google.com/file/d/...
+        Setup fix | https://t.me/channel/456
+
+  - type: input
+    id: recovery
+    attributes:
+      label: Recommended recovery
+      description: URL, or "Label | URL".
+      placeholder: https://t.me/mithorium_archive/548
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag or paste images here. They get resized, converted to webp and committed to the repo.
+
+  - type: textarea
+    id: install
+    attributes:
+      label: Install steps
+      description: One step per line, in order.
+      placeholder: |
+        Flash the repartition zip
+        Format data > yes
+        Wipe system, vendor, cache, dalvik and data
+        Flash the ROM zip
+        First boot takes 10-15 minutes
+    validations:
+      required: true
+
+  - type: textarea
+    id: bugs
+    attributes:
+      label: Known bugs
+      description: One per line.
+      placeholder: |
+        Fingerprint
+        Bluetooth
+
+  - type: textarea
+    id: changelog
+    attributes:
+      label: Changelog
+      description: One entry per line.
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Extra note
+      description: Optional. Leave it empty and no note is shown at all. One or two sentences.
+
+  - type: dropdown
+    id: note_style
+    attributes:
+      label: How should the note look?
+      description: Only matters if you filled the note above.
+      options:
+        - Highlighted callout
+        - Plain line under the title

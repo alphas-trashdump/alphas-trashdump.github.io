@@ -1,0 +1,44 @@
+{
+  "id": "miui-12-0-3",
+  "device": "santoni",
+  "name": "MIUI 12.0.3 Global ID",
+  "shortName": "MIUI 12",
+  "android": "10",
+  "channel": "stable",
+  "date": "2024-05-07",
+  "size": "1.38 GB",
+  "maintainer": "alpha",
+  "supports": [],
+  "mirrors": [
+    {
+      "label": "Google Drive",
+      "url": "https://drive.google.com/file/d/10m6wPigjtsF77J5V81wkQgvF-wrOOVFL/view?usp=drivesdk",
+      "primary": true
+    }
+  ],
+  "extras": [],
+  "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+  },
+  "screenshots": [],
+  "screenshotsAlbum": "https://t.me/trashdumpalpha/300?single",
+  "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system"
+  ],
+  "bugs": [
+    "Let us know"
+  ],
+  "changelog": [
+    "A few modded apps added",
+    "Offline charging fixed",
+    "Banking apps work, probably",
+    "Dolby Atmos added",
+    "XiaomiParts added",
+    "Advanced reboot added"
+  ],
+  "notes": "A force reboot may be required for the ROM to boot the first time."
+}

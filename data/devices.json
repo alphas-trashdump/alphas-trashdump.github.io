@@ -1,0 +1,18 @@
+[
+  {
+    "codename": "Mi8937",
+    "name": "Mi8937 family",
+    "fullName": "Redmi 3S/3X, 4, 4A, 4X, 5A, Note 5A/Y1",
+    "soc": "Snapdragon 425/430/435",
+    "family": true,
+    "order": 1
+  },
+  {
+    "codename": "santoni",
+    "name": "Redmi 4X",
+    "fullName": "Xiaomi Redmi 4X (santoni)",
+    "soc": "Snapdragon 435",
+    "family": false,
+    "order": 2
+  }
+]

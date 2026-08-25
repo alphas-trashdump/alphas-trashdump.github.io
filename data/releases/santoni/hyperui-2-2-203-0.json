@@ -1,0 +1,45 @@
+{
+  "id": "hyperui-2-2-203-0",
+  "device": "santoni",
+  "name": "HyperUI 2.2.203.0",
+  "shortName": "HyperUI",
+  "android": "14",
+  "channel": "stable",
+  "date": "2025-06-15",
+  "size": "1.9 GB",
+  "maintainer": "alpha",
+  "supports": [],
+  "mirrors": [
+    {
+      "label": "SourceForge",
+      "url": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperUI-OS2.2.203.0.CN-santoni-14.zip/download",
+      "primary": true
+    }
+  ],
+  "extras": [],
+  "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+  },
+  "screenshots": [],
+  "screenshotsAlbum": "https://t.me/AlazisSantoni/374?single",
+  "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system",
+    "The ROM needs time to settle, it may feel laggy at first"
+  ],
+  "bugs": [
+    "Fingerprint - untested on the 4 GB RAM model"
+  ],
+  "changelog": [
+    "Based on the leaked HyperUI for sweet",
+    "Indonesian and Russian language included - other languages need a separate module",
+    "FindDevice removed by default",
+    "Switched to vndk34",
+    "Circle to Search support - requires the Google app",
+    "General optimisation"
+  ],
+  "notes": null
+}

@@ -1,0 +1,113 @@
+name: publish release
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: publish-release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: contains(github.event.issue.labels.*.name, 'release')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject submissions from outsiders
+        if: ${{ !contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: [
+                "Thanks. This submission is **not** published automatically because you are not a",
+                "collaborator on this repo. A maintainer has to review it and copy it over.",
+              ].join("\n"),
+            });
+            core.setFailed("author is not a collaborator");
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install --quiet pyyaml pillow
+
+      - name: Dump issue body
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: printf '%s' "$ISSUE_BODY" > /tmp/issue-body.md
+
+      - name: Apply the submission
+        id: apply
+        continue-on-error: true
+        run: |
+          MODE=add
+          if ${{ contains(github.event.issue.labels.*.name, 'remove') }}; then MODE=remove; fi
+          python3 tools/publish_issue.py --body-file /tmp/issue-body.md --mode "$MODE"
+
+      - name: Rebuild the site index
+        id: build
+        if: steps.apply.outputs.ok == 'true'
+        continue-on-error: true
+        run: python3 tools/build_index.py
+
+      - name: Commit and push
+        id: push
+        if: steps.apply.outputs.ok == 'true' && steps.build.outcome == 'success'
+        run: |
+          git config user.name  "trashdump-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data res
+          if git diff --cached --quiet; then
+            echo "nothing changed"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "${{ steps.apply.outputs.title }} (#${{ github.event.issue.number }})"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Report back
+        uses: actions/github-script@v7
+        env:
+          OK: ${{ steps.apply.outputs.ok }}
+          SUMMARY: ${{ steps.apply.outputs.summary }}
+          BUILD: ${{ steps.build.outcome }}
+          CHANGED: ${{ steps.push.outputs.changed }}
+          SHA: ${{ steps.push.outputs.sha }}
+        with:
+          script: |
+            const { OK, SUMMARY, BUILD, CHANGED, SHA } = process.env;
+            const ok = OK === 'true' && BUILD === 'success';
+            const lines = [SUMMARY || 'Something went wrong before I could parse the form.'];
+            if (ok && CHANGED === 'true') {
+              lines.push('', `Committed as \`${SHA}\`. The site updates within a minute: https://alphas-trashdump.github.io/`);
+            } else if (ok) {
+              lines.push('', 'No file actually changed - the data was already identical.');
+            } else if (OK === 'true' && BUILD !== 'success') {
+              lines.push('', 'The data validator rejected the result. See the workflow log for the exact reason.');
+            } else {
+              lines.push('', 'Fix the form above and I will retry automatically when you save the edit.');
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number, body: lines.join('\n'),
+            });
+            if (ok) {
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.issue.number, state: 'closed', state_reason: 'completed',
+              });
+            } else {
+              core.setFailed('publish failed');
+            }

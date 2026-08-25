@@ -1,0 +1,50 @@
+{
+  "id": "coloros-15-0-2-601",
+  "device": "santoni",
+  "name": "ColorOS 15.0.2.601",
+  "shortName": "ColorOS 15",
+  "android": "15",
+  "channel": "beta",
+  "date": "2026-05-19",
+  "size": "3.7 GB",
+  "maintainer": "cat",
+  "supports": [],
+  "mirrors": [
+    {
+      "label": "Google Drive",
+      "url": "https://drive.google.com/file/d/1_r9TOc-9xOj5zWfUe3fxtHhbQgtUzvjR/view?usp=sharing",
+      "primary": true
+    }
+  ],
+  "extras": [
+    {
+      "label": "Required files",
+      "url": "https://t.me/Nova_ChatTm/248914?single"
+    }
+  ],
+  "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+  },
+  "screenshots": [],
+  "screenshotsAlbum": "https://t.me/Nova_ChatTm/245495?single",
+  "install": [
+    "Flash the repartition zip",
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Flash the setup fix zip",
+    "Reboot to system",
+    "First boot takes 10-15 minutes"
+  ],
+  "bugs": [
+    "Fingerprint",
+    "Brightness - use the provided app",
+    "Hotspot",
+    "Bluetooth"
+  ],
+  "changelog": [
+    "Based on the Mi 6X port"
+  ],
+  "notes": null
+}

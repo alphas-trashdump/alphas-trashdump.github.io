@@ -1,0 +1,42 @@
+{
+  "id": "hypermint-2",
+  "device": "santoni",
+  "name": "HyperMint 2",
+  "shortName": null,
+  "android": "14",
+  "channel": "stable",
+  "date": "2025-12-19",
+  "size": "1.8 GB",
+  "maintainer": "alpha",
+  "supports": [],
+  "mirrors": [
+    {
+      "label": "SourceForge",
+      "url": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperMINT_OS2.0.20.0.UMSCNXM_SANTONI-alpha269-14.0-r1.zip/download",
+      "primary": true
+    }
+  ],
+  "extras": [],
+  "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+  },
+  "screenshots": [],
+  "screenshotsAlbum": "https://t.me/santoniport/48710?single",
+  "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system",
+    "First boot takes 10-15 minutes"
+  ],
+  "bugs": [
+    "Fingerprint unlock",
+    "Vibration"
+  ],
+  "changelog": [
+    "Based on CN stable",
+    "Indonesian and Russian language support"
+  ],
+  "notes": null
+}

@@ -1,0 +1,42 @@
+{
+  "id": "hyperos-1-0-15-0",
+  "device": "Mi8937",
+  "name": "HyperOS 1.0.15.0",
+  "shortName": null,
+  "android": "14",
+  "channel": "stable",
+  "date": "2026-02-17",
+  "size": "1.8 GB",
+  "maintainer": "alpha",
+  "supports": [],
+  "mirrors": [
+    {
+      "label": "Telegram",
+      "url": "https://t.me/Mi8937_4_19/98",
+      "primary": true
+    }
+  ],
+  "extras": [],
+  "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/Nova_CloudTM_V2/313"
+  },
+  "screenshots": [],
+  "screenshotsAlbum": "https://t.me/Mi8937_4_19/89?single",
+  "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system",
+    "First boot takes 10-15 minutes"
+  ],
+  "bugs": [
+    "Fingerprint",
+    "Bluetooth audio"
+  ],
+  "changelog": [
+    "Includes Bahasa Indonesia and Russian",
+    "Extra settings toggles and general fluency work"
+  ],
+  "notes": null
+}

@@ -1,0 +1,43 @@
+{
+  "id": "hyperos-2-0-2-0-beta-v2",
+  "device": "santoni",
+  "name": "HyperOS 2.0.2.0 Beta v2",
+  "shortName": "HyperOS 2",
+  "android": "14",
+  "channel": "beta",
+  "date": "2025-04-13",
+  "size": "2.02 GB",
+  "maintainer": "alpha",
+  "supports": [],
+  "mirrors": [
+    {
+      "label": "Google Drive",
+      "url": "https://drive.google.com/file/d/14X_pLGJ7kzTWGe0KWwZQswpbJGNK_CH1/view?usp=drive_link",
+      "primary": true
+    }
+  ],
+  "extras": [],
+  "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+  },
+  "screenshots": [],
+  "screenshotsAlbum": "https://t.me/AlazisSantoni/350?single",
+  "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system"
+  ],
+  "bugs": [
+    "FPC fingerprint - usually on the 2 GB / 3 GB RAM models",
+    "Vibration"
+  ],
+  "changelog": [
+    "Fixed hotspot, bluetooth pairing, face unlock and the empty dynamic island text",
+    "Based on Redmi K50 Gaming (ingres)",
+    "130+ depth wallpapers added",
+    "Play Integrity passes by default"
+  ],
+  "notes": "The ROM needs 4-5 hours to settle and optimise battery and performance after the first boot."
+}

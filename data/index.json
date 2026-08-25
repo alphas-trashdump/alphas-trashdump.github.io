@@ -1,0 +1,479 @@
+{
+ "generated": "2026-08-25T02:54:32+00:00",
+ "counts": {
+  "devices": 2,
+  "releases": 8
+ },
+ "devices": [
+  {
+   "codename": "Mi8937",
+   "name": "Mi8937 family",
+   "fullName": "Redmi 3S/3X, 4, 4A, 4X, 5A, Note 5A/Y1",
+   "soc": "Snapdragon 425/430/435",
+   "family": true,
+   "order": 1,
+   "releaseCount": 2,
+   "latest": "hyperos-3-0-313-0"
+  },
+  {
+   "codename": "santoni",
+   "name": "Redmi 4X",
+   "fullName": "Xiaomi Redmi 4X (santoni)",
+   "soc": "Snapdragon 435",
+   "family": false,
+   "order": 2,
+   "releaseCount": 6,
+   "latest": "coloros-15-0-2-601"
+  }
+ ],
+ "maintainers": {
+  "alpha": {
+   "id": "alpha",
+   "name": "Alpha",
+   "tag": "@alpha269",
+   "pronouns": "he/him",
+   "bio": "doing random shts",
+   "avatar": "res/maintainers/alpha.jpg",
+   "accent": "#f0a92e",
+   "badges": [
+    "owner",
+    "developer"
+   ],
+   "links": [
+    {
+     "label": "Telegram",
+     "url": "https://t.me/alpha269"
+    }
+   ]
+  },
+  "cat": {
+   "id": "cat",
+   "name": "cat",
+   "tag": "@friendlycatt",
+   "bio": "erofs lover",
+   "avatar": "res/maintainers/cat.png",
+   "accent": "#5cc98a",
+   "badges": [
+    "developer"
+   ],
+   "links": [
+    {
+     "label": "Telegram",
+     "url": "https://t.me/friendlycatt"
+    }
+   ]
+  },
+  "revamp": {
+   "id": "revamp",
+   "name": "Revamp",
+   "tag": "@revvmp",
+   "pronouns": "he/him",
+   "bio": "AL | 20 y.o",
+   "avatar": "res/maintainers/revamp.jpg",
+   "accent": "#7aa2f7",
+   "badges": [
+    "developer"
+   ],
+   "links": [
+    {
+     "label": "Telegram",
+     "url": "https://t.me/revvmp"
+    },
+    {
+     "label": "GitHub",
+     "url": "https://github.com/idonthaveausernamesorry"
+    },
+    {
+     "label": "Instagram",
+     "url": "https://instagram.com/120bpm130bpm140bpm150bpm160bpm"
+    }
+   ]
+  }
+ },
+ "releases": [
+  {
+   "id": "hyperos-3-0-313-0",
+   "device": "Mi8937",
+   "name": "HyperOS 3.0.313.0",
+   "shortName": "HyperOS 3.1",
+   "android": "16",
+   "channel": "beta",
+   "date": "2026-06-04",
+   "size": "2.38 GB",
+   "maintainer": "alpha",
+   "supports": [
+    "santoni",
+    "ugg",
+    "land"
+   ],
+   "mirrors": [
+    {
+     "label": "Google Drive",
+     "url": "https://drive.google.com/drive/folders/1Hbg5CR0F3rO3JQElsEoHnalpuGcNDYs_",
+     "primary": true
+    }
+   ],
+   "extras": [
+    {
+     "label": "Repartition (santoni only)",
+     "url": "https://drive.google.com/file/d/1alGfV1uz8IgJ_xdVCsK7Xo_lrEP-tcOp/view"
+    }
+   ],
+   "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/mithorium_archive/548"
+   },
+   "screenshots": [],
+   "screenshotsAlbum": null,
+   "install": [
+    "Flash the repartition zip",
+    "Format data > yes",
+    "Wipe system, vendor, cache, dalvik, internal storage and data",
+    "Optional: change the filesystem of data and cache to F2FS",
+    "Flash the ROM zip",
+    "First boot takes 10-15 minutes"
+   ],
+   "bugs": [
+    "Fingerprint",
+    "Bluetooth",
+    "File transfer (MTP)",
+    "High battery consumption"
+   ],
+   "changelog": [
+    "Initial HyperOS 3.1 / Android 16 port",
+    "Ported from Redmi K70 (vermeer)",
+    "Google Play Services included - enable in Settings > Additional settings > Account & sync",
+    "Supports santoni, ugg and land"
+   ],
+   "notes": null,
+   "noteStyle": "callout",
+   "_source": "data/releases/Mi8937/hyperos-3-0-313-0.json"
+  },
+  {
+   "id": "coloros-15-0-2-601",
+   "device": "santoni",
+   "name": "ColorOS 15.0.2.601",
+   "shortName": "ColorOS 15",
+   "android": "15",
+   "channel": "beta",
+   "date": "2026-05-19",
+   "size": "3.7 GB",
+   "maintainer": "cat",
+   "supports": [],
+   "mirrors": [
+    {
+     "label": "Google Drive",
+     "url": "https://drive.google.com/file/d/1_r9TOc-9xOj5zWfUe3fxtHhbQgtUzvjR/view?usp=sharing",
+     "primary": true
+    }
+   ],
+   "extras": [
+    {
+     "label": "Required files",
+     "url": "https://t.me/Nova_ChatTm/248914?single"
+    }
+   ],
+   "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+   },
+   "screenshots": [],
+   "screenshotsAlbum": "https://t.me/Nova_ChatTm/245495?single",
+   "install": [
+    "Flash the repartition zip",
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Flash the setup fix zip",
+    "Reboot to system",
+    "First boot takes 10-15 minutes"
+   ],
+   "bugs": [
+    "Fingerprint",
+    "Brightness - use the provided app",
+    "Hotspot",
+    "Bluetooth"
+   ],
+   "changelog": [
+    "Based on the Mi 6X port"
+   ],
+   "notes": null,
+   "noteStyle": "callout",
+   "_source": "data/releases/santoni/coloros-15-0-2-601.json"
+  },
+  {
+   "id": "hyperos-1-0-15-0",
+   "device": "Mi8937",
+   "name": "HyperOS 1.0.15.0",
+   "shortName": null,
+   "android": "14",
+   "channel": "stable",
+   "date": "2026-02-17",
+   "size": "1.8 GB",
+   "maintainer": "alpha",
+   "supports": [],
+   "mirrors": [
+    {
+     "label": "Telegram",
+     "url": "https://t.me/Mi8937_4_19/98",
+     "primary": true
+    }
+   ],
+   "extras": [],
+   "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/Nova_CloudTM_V2/313"
+   },
+   "screenshots": [],
+   "screenshotsAlbum": "https://t.me/Mi8937_4_19/89?single",
+   "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system",
+    "First boot takes 10-15 minutes"
+   ],
+   "bugs": [
+    "Fingerprint",
+    "Bluetooth audio"
+   ],
+   "changelog": [
+    "Includes Bahasa Indonesia and Russian",
+    "Extra settings toggles and general fluency work"
+   ],
+   "notes": null,
+   "noteStyle": "callout",
+   "_source": "data/releases/Mi8937/hyperos-1-0-15-0.json"
+  },
+  {
+   "id": "hypermint-2",
+   "device": "santoni",
+   "name": "HyperMint 2",
+   "shortName": null,
+   "android": "14",
+   "channel": "stable",
+   "date": "2025-12-19",
+   "size": "1.8 GB",
+   "maintainer": "alpha",
+   "supports": [],
+   "mirrors": [
+    {
+     "label": "SourceForge",
+     "url": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperMINT_OS2.0.20.0.UMSCNXM_SANTONI-alpha269-14.0-r1.zip/download",
+     "primary": true
+    }
+   ],
+   "extras": [],
+   "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+   },
+   "screenshots": [],
+   "screenshotsAlbum": "https://t.me/santoniport/48710?single",
+   "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system",
+    "First boot takes 10-15 minutes"
+   ],
+   "bugs": [
+    "Fingerprint unlock",
+    "Vibration"
+   ],
+   "changelog": [
+    "Based on CN stable",
+    "Indonesian and Russian language support"
+   ],
+   "notes": null,
+   "noteStyle": "callout",
+   "_source": "data/releases/santoni/hypermint-2.json"
+  },
+  {
+   "id": "hyperos-3-lite",
+   "device": "santoni",
+   "name": "HyperOS 3 Lite",
+   "shortName": null,
+   "android": "14",
+   "channel": "stable",
+   "date": "2025-09-08",
+   "size": "1.9 GB",
+   "maintainer": "alpha",
+   "supports": [],
+   "mirrors": [
+    {
+     "label": "SourceForge",
+     "url": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperOS-3.0.0.18.MOD-alpha269-Santoni-REV2-14.0.zip/download",
+     "primary": true
+    }
+   ],
+   "extras": [],
+   "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+   },
+   "screenshots": [],
+   "screenshotsAlbum": "https://t.me/santoniport/47980?single",
+   "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system",
+    "The ROM may feel laggy on first boot, give it time to settle"
+   ],
+   "bugs": [
+    "Fingerprint"
+   ],
+   "changelog": [
+    "Based on HyperOS 1",
+    "Android 16 easter egg",
+    "Optional 360p display resolution",
+    "Several system elements updated",
+    "Fixed an issue where a password lock could not be set",
+    "Two faces can be registered for face unlock",
+    "Fixed the charging animation"
+   ],
+   "notes": "Also known as FakeOS 3 - it is HyperOS 1 under the hood with the 3.0 look.",
+   "noteStyle": "callout",
+   "_source": "data/releases/santoni/hyperos-3-lite.json"
+  },
+  {
+   "id": "hyperui-2-2-203-0",
+   "device": "santoni",
+   "name": "HyperUI 2.2.203.0",
+   "shortName": "HyperUI",
+   "android": "14",
+   "channel": "stable",
+   "date": "2025-06-15",
+   "size": "1.9 GB",
+   "maintainer": "alpha",
+   "supports": [],
+   "mirrors": [
+    {
+     "label": "SourceForge",
+     "url": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperUI-OS2.2.203.0.CN-santoni-14.zip/download",
+     "primary": true
+    }
+   ],
+   "extras": [],
+   "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+   },
+   "screenshots": [],
+   "screenshotsAlbum": "https://t.me/AlazisSantoni/374?single",
+   "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system",
+    "The ROM needs time to settle, it may feel laggy at first"
+   ],
+   "bugs": [
+    "Fingerprint - untested on the 4 GB RAM model"
+   ],
+   "changelog": [
+    "Based on the leaked HyperUI for sweet",
+    "Indonesian and Russian language included - other languages need a separate module",
+    "FindDevice removed by default",
+    "Switched to vndk34",
+    "Circle to Search support - requires the Google app",
+    "General optimisation"
+   ],
+   "notes": null,
+   "noteStyle": "callout",
+   "_source": "data/releases/santoni/hyperui-2-2-203-0.json"
+  },
+  {
+   "id": "hyperos-2-0-2-0-beta-v2",
+   "device": "santoni",
+   "name": "HyperOS 2.0.2.0 Beta v2",
+   "shortName": "HyperOS 2",
+   "android": "14",
+   "channel": "beta",
+   "date": "2025-04-13",
+   "size": "2.02 GB",
+   "maintainer": "alpha",
+   "supports": [],
+   "mirrors": [
+    {
+     "label": "Google Drive",
+     "url": "https://drive.google.com/file/d/14X_pLGJ7kzTWGe0KWwZQswpbJGNK_CH1/view?usp=drive_link",
+     "primary": true
+    }
+   ],
+   "extras": [],
+   "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+   },
+   "screenshots": [],
+   "screenshotsAlbum": "https://t.me/AlazisSantoni/350?single",
+   "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system"
+   ],
+   "bugs": [
+    "FPC fingerprint - usually on the 2 GB / 3 GB RAM models",
+    "Vibration"
+   ],
+   "changelog": [
+    "Fixed hotspot, bluetooth pairing, face unlock and the empty dynamic island text",
+    "Based on Redmi K50 Gaming (ingres)",
+    "130+ depth wallpapers added",
+    "Play Integrity passes by default"
+   ],
+   "notes": "The ROM needs 4-5 hours to settle and optimise battery and performance after the first boot.",
+   "noteStyle": "callout",
+   "_source": "data/releases/santoni/hyperos-2-0-2-0-beta-v2.json"
+  },
+  {
+   "id": "miui-12-0-3",
+   "device": "santoni",
+   "name": "MIUI 12.0.3 Global ID",
+   "shortName": "MIUI 12",
+   "android": "10",
+   "channel": "stable",
+   "date": "2024-05-07",
+   "size": "1.38 GB",
+   "maintainer": "alpha",
+   "supports": [],
+   "mirrors": [
+    {
+     "label": "Google Drive",
+     "url": "https://drive.google.com/file/d/10m6wPigjtsF77J5V81wkQgvF-wrOOVFL/view?usp=drivesdk",
+     "primary": true
+    }
+   ],
+   "extras": [],
+   "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+   },
+   "screenshots": [],
+   "screenshotsAlbum": "https://t.me/trashdumpalpha/300?single",
+   "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system"
+   ],
+   "bugs": [
+    "Let us know"
+   ],
+   "changelog": [
+    "A few modded apps added",
+    "Offline charging fixed",
+    "Banking apps work, probably",
+    "Dolby Atmos added",
+    "XiaomiParts added",
+    "Advanced reboot added"
+   ],
+   "notes": "A force reboot may be required for the ROM to boot the first time.",
+   "noteStyle": "callout",
+   "_source": "data/releases/santoni/miui-12-0-3.json"
+  }
+ ]
+}

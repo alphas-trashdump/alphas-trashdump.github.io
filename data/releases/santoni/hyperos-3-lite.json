@@ -1,0 +1,46 @@
+{
+  "id": "hyperos-3-lite",
+  "device": "santoni",
+  "name": "HyperOS 3 Lite",
+  "shortName": null,
+  "android": "14",
+  "channel": "stable",
+  "date": "2025-09-08",
+  "size": "1.9 GB",
+  "maintainer": "alpha",
+  "supports": [],
+  "mirrors": [
+    {
+      "label": "SourceForge",
+      "url": "https://sourceforge.net/projects/alpha-s-trashdump/files/PORTS/HyperOS-3.0.0.18.MOD-alpha269-Santoni-REV2-14.0.zip/download",
+      "primary": true
+    }
+  ],
+  "extras": [],
+  "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/jabiyeff_caf/114"
+  },
+  "screenshots": [],
+  "screenshotsAlbum": "https://t.me/santoniport/47980?single",
+  "install": [
+    "Wipe dalvik, cache, system, vendor and data",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system",
+    "The ROM may feel laggy on first boot, give it time to settle"
+  ],
+  "bugs": [
+    "Fingerprint"
+  ],
+  "changelog": [
+    "Based on HyperOS 1",
+    "Android 16 easter egg",
+    "Optional 360p display resolution",
+    "Several system elements updated",
+    "Fixed an issue where a password lock could not be set",
+    "Two faces can be registered for face unlock",
+    "Fixed the charging animation"
+  ],
+  "notes": "Also known as FakeOS 3 - it is HyperOS 1 under the hood with the 3.0 look."
+}

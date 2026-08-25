@@ -1,0 +1,56 @@
+{
+  "id": "hyperos-3-0-313-0",
+  "device": "Mi8937",
+  "name": "HyperOS 3.0.313.0",
+  "shortName": "HyperOS 3.1",
+  "android": "16",
+  "channel": "beta",
+  "date": "2026-06-04",
+  "size": "2.38 GB",
+  "maintainer": "alpha",
+  "supports": [
+    "santoni",
+    "ugg",
+    "land"
+  ],
+  "mirrors": [
+    {
+      "label": "Google Drive",
+      "url": "https://drive.google.com/drive/folders/1Hbg5CR0F3rO3JQElsEoHnalpuGcNDYs_",
+      "primary": true
+    }
+  ],
+  "extras": [
+    {
+      "label": "Repartition (santoni only)",
+      "url": "https://drive.google.com/file/d/1alGfV1uz8IgJ_xdVCsK7Xo_lrEP-tcOp/view"
+    }
+  ],
+  "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/mithorium_archive/548"
+  },
+  "screenshots": [],
+  "screenshotsAlbum": null,
+  "install": [
+    "Flash the repartition zip",
+    "Format data > yes",
+    "Wipe system, vendor, cache, dalvik, internal storage and data",
+    "Optional: change the filesystem of data and cache to F2FS",
+    "Flash the ROM zip",
+    "First boot takes 10-15 minutes"
+  ],
+  "bugs": [
+    "Fingerprint",
+    "Bluetooth",
+    "File transfer (MTP)",
+    "High battery consumption"
+  ],
+  "changelog": [
+    "Initial HyperOS 3.1 / Android 16 port",
+    "Ported from Redmi K70 (vermeer)",
+    "Google Play Services included - enable in Settings > Additional settings > Account & sync",
+    "Supports santoni, ugg and land"
+  ],
+  "notes": null
+}
