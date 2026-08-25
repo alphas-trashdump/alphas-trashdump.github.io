@@ -138,8 +138,8 @@ export function renderRelease(rel) {
 
       <div class="note note--bad">
         ${icon("alert", "ico")}
-        <span>Flashing wipes everything and can brick the phone. Keep a working recovery
-        nearby and read the bugs first.</span>
+        <span>We are not responsible for any data loss or corrupt devices,
+        proceed at your own risk.</span>
       </div>
 
       <div class="block">

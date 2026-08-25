@@ -107,9 +107,12 @@ const quiet = ui.renderRelease({ ...base0, notes: "watch out", noteStyle: "quiet
 if (!/quiet-note/.test(quiet) || /class="note"/.test(quiet)) { failures++; console.log("FAIL quiet note missing"); }
 else console.log("ok   quiet note");
 
-/* the ported-from field is gone for good */
-const withBase = ui.renderRelease({ ...base0, base: "Redmi K70 (vermeer)" });
-if (/Ported from|Redmi K70/.test(withBase)) { failures++; console.log("FAIL base still rendered"); }
+/* the ported-from field is gone for good. Use a sentinel rather than a real
+   ROM name: the changelog of a real release can legitimately mention a base
+   device (one really does say "Ported from Redmi K70"), which made an earlier
+   version of this check pass, then fail, for the wrong reason. */
+const withBase = ui.renderRelease({ ...base0, base: "ZZ-SENTINEL-BASE-ZZ" });
+if (/ZZ-SENTINEL-BASE-ZZ/.test(withBase)) { failures++; console.log("FAIL base still rendered"); }
 else console.log("ok   base not rendered");
 
 /* every view must ship a spinner for the loading state */
@@ -118,6 +121,15 @@ else console.log("ok   loading spinner");
 const shotSpinners = (ui.renderRelease(withShots).match(/spin__dot/g) || []).length;
 if (shotSpinners !== 3) { failures++; console.log(`FAIL ${shotSpinners} thumb spinners, expected 3`); }
 else console.log("ok   thumbnail spinners");
+
+/* disclaimer wording is fixed copy, so pin it */
+const disclaimed = ui.renderRelease(base0);
+if (!/not responsible for any data loss or corrupt devices/.test(disclaimed)) {
+  failures++; console.log("FAIL disclaimer text missing from release page");
+} else console.log("ok   disclaimer wording");
+if (/brick the phone|wipes everything/.test(disclaimed)) {
+  failures++; console.log("FAIL old scare wording still present");
+} else console.log("ok   old scare wording gone");
 
 check("people", ui.renderPeople());
 check("error", ui.renderError("boom"));
