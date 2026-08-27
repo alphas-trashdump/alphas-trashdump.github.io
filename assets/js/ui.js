@@ -119,6 +119,7 @@ export function renderRelease(rel) {
           <span class="pill ${c.cls}">${c.text}</span>
           ${rel.size ? `<span class="pill">${esc(rel.size)}</span>` : ""}
           <span class="pill">${fmtDate(rel.date)}</span>
+          <span class="pill" id="views" data-device="${esc(rel.device)}" data-id="${esc(rel.id)}" style="display:none">👁️ …</span>
         </div>
       </header>
 
