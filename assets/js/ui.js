@@ -122,14 +122,13 @@ export function renderRelease(rel) {
         </div>
       </header>
 
-      ${noteBlock(rel)}
-
       ${downloadBlock(rel)}
       ${shotsBlock(rel)}
       ${listBlock("How to flash", rel.install, "steps")}
       ${listBlock("Known bugs", rel.bugs, "bullets bullets--bad")}
       ${listBlock("What changed", rel.changelog, "bullets")}
       ${infoBlock(rel)}
+      ${noteBlock(rel)}
 
       <div class="block">
         <div class="cap">Maintainer</div>
@@ -152,10 +151,14 @@ export function renderRelease(rel) {
    callout) or quiet (plain line under the title). */
 function noteBlock(rel) {
   if (!rel.notes) return "";
+  const raw = Array.isArray(rel.notes) ? rel.notes.join("\n") : String(rel.notes);
+  const formatted = esc(raw)
+    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="text-decoration:underline;color:inherit;">$1</a>')
+    .replace(/\n/g, "<br>");
   if (rel.noteStyle === "quiet") {
-    return `<p class="quiet-note">${esc(rel.notes)}</p>`;
+    return `<p class="quiet-note">${formatted}</p>`;
   }
-  return `<div class="note">${icon("info", "ico")}<span>${esc(rel.notes)}</span></div>`;
+  return `<div class="note">${icon("info", "ico")}<div>${formatted}</div></div>`;
 }
 
 function dlRow(item, kind) {

@@ -552,7 +552,7 @@ body[data-view="people"] .hero { padding-bottom: 22px; }
 
 /* quiet variant of a release note */
 .quiet-note {
-  margin: -8px 4px 20px;
+  margin: 0 4px 20px;
   font-size: 14px;
   font-weight: 330;
   color: var(--fg-2);

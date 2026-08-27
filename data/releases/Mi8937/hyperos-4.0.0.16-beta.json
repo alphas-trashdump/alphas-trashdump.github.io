@@ -1,0 +1,62 @@
+{
+  "id": "hyperos-4.0.0.16-beta",
+  "device": "Mi8937",
+  "name": "HyperOS 4.0.0.16 Beta",
+  "shortName": "HyperOS 4 Beta",
+  "android": "17",
+  "channel": "experimental",
+  "date": "2026-08-27",
+  "size": "2.50 GB",
+  "maintainer": "alpha",
+  "supports": [
+    "santoni",
+    "ugg",
+    "land"
+  ],
+  "mirrors": [
+    {
+      "label": "Google Drive",
+      "url": "https://drive.google.com/file/d/1w6hPaplUbIi9DlVKEHbwpziS5fSQmfcP/view?usp=drivesdk",
+      "primary": true
+    }
+  ],
+  "extras": [
+    {
+      "label": "KernelSU Next Manager",
+      "url": "https://github.com/KernelSU-Next/KernelSU-Next/releases/download/v3.3.0/KernelSU_Next_v3.3.0_33214-release.apk"
+    }
+  ],
+  "recovery": {
+    "label": "OrangeFox Recovery",
+    "url": "https://t.me/R3SPX_UPDATES/4527"
+  },
+  "screenshots": [],
+  "screenshotsAlbum": null,
+  "install": [
+    "Wipe System, Vendor, Data, Dalvik/ART Cache, Cache, Metadata, Internal storage",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system and wait 10 minutes to boot",
+    "Done"
+  ],
+  "bugs": [],
+  "changelog": [
+    "Initial Port from Xiaomi 17 OS4 Beta",
+    "Update kernel to latest sources and OC Gpu to 598MHz",
+    "Fixed a scenario where WiFi won't connect in Russian and Indonesian languages",
+    "Fixed Fingerprint"
+  ],
+  "notes": [
+    "• Includes GApps",
+    "• Not recommended for 2/16 & Mi8917",
+    "• Do not change wallpaper from home screen",
+    "• Warning: Do not change the kernel, or you will get a bootloop",
+    "• Experimental ROM; Not for daily usage",
+    "",
+    "Credits:",
+    "• @juezhi6668 for the surfaceflinger patch",
+    "• @Venusidk & @wannqn for helping",
+    "• @me_cafebabe for the resources"
+  ],
+  "noteStyle": "callout"
+}
