@@ -151,6 +151,8 @@ body[data-view="people"] .hero { padding-bottom: 22px; }
   letter-spacing: -0.03em;
 }
 .detail__pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+.pill--views { padding: 0 4px; overflow: hidden; }
+.pill--views img { display: block; }
 
 .note {
   display: flex;

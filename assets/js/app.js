@@ -110,26 +110,6 @@ function wireRelease() {
     btn.addEventListener("click", () => openLightbox(Number(btn.dataset.shot)));
   });
   watchShots();
-  fetchViews();
-}
-
-/* ---- view counter -------------------------------------------------- */
-
-function fetchViews() {
-  const el = root.querySelector("#views");
-  if (!el) return;
-  const device = el.dataset.device;
-  const id = el.dataset.id;
-  const key = `${device}/${id}`;
-  fetch(`https://hits.dwyl.com/alphas-trashdump/${device}-${id}.json`)
-    .then((r) => r.ok ? r.json() : Promise.reject())
-    .then((data) => {
-      const n = parseInt(data.message, 10);
-      if (!Number.isFinite(n)) return;
-      el.textContent = `👁️ ${n.toLocaleString()} view${n === 1 ? "" : "s"}`;
-      el.style.display = "";
-    })
-    .catch(() => { el.remove(); });
 }
 
 /* Dead screenshots drop out; if all of them die, fall back to the album. */

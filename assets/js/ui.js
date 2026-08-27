@@ -119,7 +119,7 @@ export function renderRelease(rel) {
           <span class="pill ${c.cls}">${c.text}</span>
           ${rel.size ? `<span class="pill">${esc(rel.size)}</span>` : ""}
           <span class="pill">${fmtDate(rel.date)}</span>
-          <span class="pill" id="views" data-device="${esc(rel.device)}" data-id="${esc(rel.id)}" style="display:none">👁️ …</span>
+          <span class="pill pill--views"><img src="https://hits.sh/alphas-trashdump.github.io/r/${esc(rel.device)}/${esc(rel.id)}.svg?style=flat-square&label=views&color=223138&labelColor=1B262C" alt="views" height="18" style="vertical-align:middle;border-radius:3px;display:inline-block;" loading="lazy"></span>
         </div>
       </header>
 
@@ -238,11 +238,13 @@ function listBlock(title, items, cls) {
 
 function infoBlock(rel) {
   const m = rel.maintainer_;
+  const viewBadge = `https://hits.sh/alphas-trashdump.github.io/r/${esc(rel.device)}/${esc(rel.id)}.svg?style=flat-square&label=views&color=223138&labelColor=1B262C`;
   const rows = [
     ["Device", `${esc(rel.device_.name)} (${esc(rel.device_.codename)})`],
     rel.supports?.length ? ["Also supports", rel.supports.map(esc).join(", ")] : null,
     ["Build date", `${fmtDate(rel.date)} <span class="dim">&middot; ${relDays(rel.date)}</span>`],
     ["Ported by", esc(m.name)],
+    ["Views", `<img src="${viewBadge}" alt="views" height="18" style="vertical-align:middle;border-radius:3px;display:inline-block;" loading="lazy">`],
   ].filter(Boolean);
 
   return `
