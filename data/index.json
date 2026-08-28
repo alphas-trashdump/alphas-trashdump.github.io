@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-27T21:10:43+00:00",
+ "generated": "2026-08-28T06:46:56+00:00",
  "counts": {
   "devices": 2,
   "releases": 9
@@ -109,8 +109,13 @@
    "mirrors": [
     {
      "label": "Google Drive",
-     "url": "https://drive.google.com/file/d/1w6hPaplUbIi9DlVKEHbwpziS5fSQmfcP/view?usp=drivesdk",
+     "url": "https://drive.google.com/file/d/1_Tu-HcN1PIz4PItm5vvCuh5FrjJpfDTX/view?usp=drivesdk",
      "primary": true
+    },
+    {
+     "label": "Telegram",
+     "url": "https://t.me/santonibackup/76",
+     "primary": false
     }
    ],
    "extras": [

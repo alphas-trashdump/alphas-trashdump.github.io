@@ -16,8 +16,13 @@
   "mirrors": [
     {
       "label": "Google Drive",
-      "url": "https://drive.google.com/file/d/1w6hPaplUbIi9DlVKEHbwpziS5fSQmfcP/view?usp=drivesdk",
+      "url": "https://drive.google.com/file/d/1_Tu-HcN1PIz4PItm5vvCuh5FrjJpfDTX/view?usp=drivesdk",
       "primary": true
+    },
+    {
+      "label": "Telegram",
+      "url": "https://t.me/santonibackup/76",
+      "primary": false
     }
   ],
   "extras": [
