@@ -1,9 +1,13 @@
 /* router + wiring ---------------------------------------------------- */
 import { state, loadIndex, getRelease, hostOf } from "./store.js";
-import { renderHome, renderRelease, renderPeople, renderError, renderLoading, spinner, icon }
-  from "./ui.js";
+import { renderHome, renderRelease, renderPeople, renderError, renderLoading, spinner, icon } from "./ui.js";
+
+const BRAND = "alpha's trashdump";
+const APP_HOSTS = new Set(["t.me", "telegram.me", "telegram.dog"]);
 
 const root = document.getElementById("app");
+const topTitle = document.getElementById("top-title");
+const backBtn = document.getElementById("back");
 const lb = document.getElementById("lb");
 const lbTrack = document.getElementById("lb-track");
 const lbCount = document.getElementById("lb-count");
@@ -13,11 +17,9 @@ const sheetHost = document.getElementById("sheet-host");
 const sheetGo = document.getElementById("sheet-go");
 const sheetCancel = document.getElementById("sheet-cancel");
 
-/* hosts that need a native app installed to be useful */
-const APP_HOSTS = new Set(["t.me", "telegram.me", "telegram.dog"]);
-
 let shots = [];
 let toastTimer = 0;
+let depth = 0; /* in-site navigations so far; lets "back" use history when safe */
 
 /* ---- helpers ------------------------------------------------------- */
 
@@ -25,11 +27,11 @@ function toast(msg) {
   toastEl.textContent = msg;
   toastEl.dataset.show = "1";
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { toastEl.dataset.show = "0"; }, 1900);
+  toastTimer = setTimeout(() => { toastEl.dataset.show = "0"; }, 1800);
 }
 
 function setTitle(parts) {
-  document.title = [...parts, "alpha's trashdump"].filter(Boolean).join(" - ");
+  document.title = [...parts, BRAND].filter(Boolean).join(" — ");
 }
 
 function parseHash() {
@@ -41,17 +43,13 @@ function parseHash() {
   return { view: "home" };
 }
 
-/* ---- image loading ------------------------------------------------- */
-
-/** Mark an image loaded so its spinner hides and it fades in. */
 function trackImage(img, onFail) {
   const done = () => {
     img.dataset.loaded = "1";
     img.closest("button, figure")?.setAttribute("data-loaded", "1");
   };
   if (img.complete) {
-    if (img.naturalWidth > 0) done();
-    else onFail?.(img);
+    if (img.naturalWidth > 0) done(); else onFail?.(img);
     return;
   }
   img.addEventListener("load", done, { once: true });
@@ -60,9 +58,15 @@ function trackImage(img, onFail) {
 
 /* ---- views --------------------------------------------------------- */
 
-function paint(html, view) {
+function paint(html, view, { title = BRAND, animate = true } = {}) {
   document.body.dataset.view = view;
+  topTitle.textContent = title;
   root.innerHTML = html;
+  if (animate) {
+    root.classList.remove("is-in");
+    void root.offsetWidth;
+    root.classList.add("is-in");
+  }
   if (view === "home") wireHome();
   if (view === "release") wireRelease();
 }
@@ -74,7 +78,7 @@ function wireHome() {
   const rerender = () => {
     const focused = document.activeElement === input;
     const pos = input.selectionStart;
-    paint(renderHome(), "home");
+    paint(renderHome(), "home", { animate: false });
     if (focused) {
       const next = root.querySelector("#q");
       next.focus();
@@ -86,7 +90,7 @@ function wireHome() {
     state.query = input.value;
     search.dataset.filled = input.value ? "1" : "0";
     clearTimeout(debounce);
-    debounce = setTimeout(rerender, 130);
+    debounce = setTimeout(rerender, 120);
   });
   root.querySelector("#q-clear")?.addEventListener("click", () => {
     state.query = "";
@@ -98,13 +102,8 @@ function wireRelease() {
   root.querySelector("#share")?.addEventListener("click", async () => {
     try {
       if (navigator.share) await navigator.share({ url: location.href, title: document.title });
-      else {
-        await navigator.clipboard.writeText(location.href);
-        toast("Link copied");
-      }
-    } catch {
-      toast("Could not copy");
-    }
+      else { await navigator.clipboard.writeText(location.href); toast("Link copied"); }
+    } catch { toast("Could not copy"); }
   });
   root.querySelectorAll("[data-shot]").forEach((btn) => {
     btn.addEventListener("click", () => openLightbox(Number(btn.dataset.shot)));
@@ -112,7 +111,7 @@ function wireRelease() {
   watchShots();
 }
 
-/* Dead screenshots drop out; if all of them die, fall back to the album. */
+/* dead screenshots drop out; if all die, fall back to the album link */
 function watchShots() {
   const section = root.querySelector("[data-shots-section]");
   if (!section) return;
@@ -132,16 +131,14 @@ function watchShots() {
 
     section.querySelector(".shots")?.remove();
     section.querySelector("[data-shots-hint]")?.remove();
+    section.querySelector(".shots__album")?.remove();
     const tpl = section.querySelector("[data-shots-fallback-tpl]");
-    section.querySelectorAll(".card").forEach((el) => el.remove());
-    if (tpl) {
-      section.append(tpl.content.cloneNode(true));
-      tpl.remove();
-    } else {
-      const note = document.createElement("p");
-      note.className = "shots__hint";
-      note.textContent = "Screenshots unavailable.";
-      section.append(note);
+    if (tpl) { section.append(tpl.content.cloneNode(true)); tpl.remove(); }
+    else {
+      const p = document.createElement("p");
+      p.className = "shots__hint mono";
+      p.textContent = "Screenshots unavailable.";
+      section.append(p);
     }
   };
 
@@ -153,18 +150,14 @@ async function route() {
 
   let idx = state.index;
   if (!idx) {
-    paint(renderLoading(), "home");
-    try {
-      idx = await loadIndex();
-    } catch (err) {
-      paint(renderError(err.message || String(err)), "home");
-      return;
-    }
+    paint(renderLoading(), "home", { animate: false });
+    try { idx = await loadIndex(); }
+    catch (err) { paint(renderError(err.message || String(err)), "home"); return; }
   }
 
   if (r.view === "people") {
     setTitle(["Maintainers"]);
-    paint(renderPeople(), "people");
+    paint(renderPeople(), "people", { title: "maintainers" });
     window.scrollTo(0, 0);
     return;
   }
@@ -174,7 +167,7 @@ async function route() {
     if (!rel) { location.replace("#/"); return; }
     shots = rel.screenshots;
     setTitle([rel.name]);
-    paint(renderRelease(rel), "release");
+    paint(renderRelease(rel), "release", { title: rel.name });
     window.scrollTo(0, 0);
     return;
   }
@@ -200,9 +193,7 @@ function openLightbox(start) {
     const fig = bad.closest("figure");
     if (!fig) return;
     fig.dataset.loaded = "1";
-    fig.replaceChildren(Object.assign(document.createElement("p"), {
-      textContent: "This image failed to load",
-    }));
+    fig.replaceChildren(Object.assign(document.createElement("p"), { textContent: "image failed to load" }));
   }));
 
   requestAnimationFrame(() => {
@@ -223,20 +214,15 @@ function updateLbCount() {
   lbCount.textContent = `${Math.min(i + 1, shots.length)} / ${shots.length}`;
 }
 
-/* ---- telegram / app-link warning ----------------------------------- */
+/* ---- telegram confirm ---------------------------------------------- */
 
 let pendingUrl = null;
-
-function needsApp(url) {
-  return APP_HOSTS.has(hostOf(url));
-}
 
 function askBeforeLeaving(url) {
   pendingUrl = url;
   sheetHost.textContent = url.replace(/^https?:\/\//, "");
   sheet.dataset.open = "1";
 }
-
 function closeSheet() {
   sheet.dataset.open = "0";
   pendingUrl = null;
@@ -254,7 +240,7 @@ document.addEventListener("click", (e) => {
   const link = e.target.closest?.("a[href]");
   if (!link) return;
   const href = link.getAttribute("href") || "";
-  if (!/^https?:/i.test(href) || !needsApp(href)) return;
+  if (!/^https?:/i.test(href) || !APP_HOSTS.has(hostOf(href))) return;
   e.preventDefault();
   askBeforeLeaving(link.href);
 });
@@ -265,11 +251,9 @@ document.querySelectorAll("[data-icon]").forEach((el) => {
   el.innerHTML = icon(el.dataset.icon, "ico");
 });
 
-const onScroll = () => {
-  document.body.dataset.scrolled = window.scrollY > 12 ? "1" : "0";
-};
-window.addEventListener("scroll", onScroll, { passive: true });
-onScroll();
+backBtn.addEventListener("click", (e) => {
+  if (depth > 0) { e.preventDefault(); history.back(); }
+});
 
 window.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
@@ -283,7 +267,15 @@ lb.addEventListener("click", (e) => {
 });
 lbTrack.addEventListener("scroll", () => requestAnimationFrame(updateLbCount), { passive: true });
 
+/* orientation flips re-measure the lightbox pages */
+window.addEventListener("resize", () => {
+  if (lb.dataset.open !== "1") return;
+  const i = Math.round(lbTrack.scrollLeft / (lbTrack.clientWidth || 1));
+  requestAnimationFrame(() => { lbTrack.scrollLeft = i * lbTrack.clientWidth; updateLbCount(); });
+});
+
 window.addEventListener("hashchange", () => {
+  depth += 1;
   if (lb.dataset.open === "1") closeLightbox();
   if (sheet.dataset.open === "1") closeSheet();
   route();

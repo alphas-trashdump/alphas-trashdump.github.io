@@ -6,22 +6,17 @@ export function esc(value) {
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
   }[c]));
 }
+const enc = (s) => encodeURIComponent(String(s));
 
 const PATHS = {
   chevron: "M9.5 5.5 16 12l-6.5 6.5",
   back: "M14.5 5.5 8 12l6.5 6.5",
-  download: "M12 4v11m0 0 4-4m-4 4-4-4M5 19h14",
-  external: "M14 5h5v5M19 5l-8 8M18 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4",
+  down: "M12 4v12m0 0 5-5m-5 5-5-5M5 20h14",
+  external: "M7 17 17 7M9 7h8v8",
   search: "M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4.2-4.2",
   x: "M6 6l12 12M18 6 6 18",
-  info: "M12 8h.01M11 12h1v5h1M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z",
-  alert: "M12 9v5m0 3h.01M10.3 4.3 2.6 17.5A1.6 1.6 0 0 0 4 20h16a1.6 1.6 0 0 0 1.4-2.5L13.7 4.3a1.6 1.6 0 0 0-2.8 0z",
   people: "M16 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 17.5V19M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M20 19v-1.5a3.5 3.5 0 0 0-2.6-3.4M15.5 4.2a3.5 3.5 0 0 1 0 6.6",
-  home: "M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z",
   link: "M9.5 13.5 14 9m-3.2-1.8 1.4-1.4a3.3 3.3 0 0 1 4.7 4.7l-1.4 1.4m-4.6 4.6-1.4 1.4a3.3 3.3 0 0 1-4.7-4.7l1.4-1.4",
-  image: "M4 5h16v14H4zM4 16l4.5-4.5 3 3L15 11l5 5",
-  send: "M21 4 3 11l7 2.5L12.5 21z",
-  code: "M9 8l-4 4 4 4m6-8 4 4-4 4",
 };
 
 export function icon(name, cls = "ico") {
@@ -29,7 +24,6 @@ export function icon(name, cls = "ico") {
   return d ? `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>` : "";
 }
 
-/* HyperOS-style spinner: faint ring, one dot orbiting inside it */
 export function spinner(cls = "spin", label = "") {
   return `<span class="${cls}" role="${label ? "status" : "presentation"}"${label ? ` aria-label="${esc(label)}"` : ' aria-hidden="true"'}>
     <svg viewBox="0 0 14 14">
@@ -40,240 +34,258 @@ export function spinner(cls = "spin", label = "") {
 }
 
 const CHANNEL = {
-  stable: { cls: "pill--ok", text: "stable" },
-  beta: { cls: "pill--accent", text: "beta" },
-  experimental: { cls: "pill--warn", text: "experimental" },
+  stable: { cls: "tag--ok", text: "stable" },
+  beta: { cls: "tag--accent", text: "beta" },
+  experimental: { cls: "tag--warn", text: "experimental" },
 };
+const tag = (ch) => {
+  const c = CHANNEL[ch] || CHANNEL.stable;
+  return `<span class="tag ${c.cls}"><i></i>${c.text}</span>`;
+};
+const meta = (parts) => parts.filter(Boolean).map((p) => `<span>${p}</span>`).join("");
 
 /* ---- home ---------------------------------------------------------- */
 
 export function renderHome() {
+  const idx = state.index;
   const rows = filtered();
   const groups = groupByDevice(rows);
+  const latest = idx.releases.reduce((a, r) => (r.date > a ? r.date : a), "");
 
-  const body = rows.length
+  const chips = [
+    { key: "all", href: "#/", label: "All", n: idx.releases.length },
+    ...idx.devices.map((d) => ({
+      key: d.codename,
+      href: `#/d/${enc(d.codename)}`,
+      label: d.codename,
+      n: idx.releases.filter((r) => r.device === d.codename).length,
+    })),
+  ];
+
+  const list = rows.length
     ? groups.map(groupBlock).join("")
     : `<div class="empty">
-         <h3>nothing here</h3>
-         <p>No build matches that. Try the codename instead.</p>
+         <p class="empty__t">Nothing matches.</p>
+         <p>Try the codename or the Android version.</p>
        </div>`;
 
   return `
-    <section class="hero">
-      <h1>alpha's <em>trashdump</em></h1>
-    </section>
-
-    <div class="search" data-filled="${state.query ? 1 : 0}">
-      ${icon("search", "ico")}
-      <input id="q" type="search" inputmode="search" autocomplete="off" spellcheck="false"
-             placeholder="Search builds" value="${esc(state.query)}">
-      <button type="button" id="q-clear" aria-label="clear search">${icon("x", "ico")}</button>
-    </div>
-
-    ${body}
-  `;
+    <div class="home">
+      <div class="home__top">
+        <section class="hero">
+          <h1 class="display">ROM ports for <em>msm8937</em> Redmis.</h1>
+          <p class="hero__meta meta mono">${meta([
+            `${idx.releases.length} builds`,
+            `${idx.devices.length} devices`,
+            latest ? `last drop ${fmtDate(latest)}` : null,
+          ])}</p>
+        </section>
+        <div class="tools">
+          <label class="search" data-filled="${state.query ? 1 : 0}">
+            ${icon("search", "ico ico--sm")}
+            <input id="q" type="search" inputmode="search" autocomplete="off" spellcheck="false"
+                   placeholder="Search builds" value="${esc(state.query)}" aria-label="Search builds">
+            <button type="button" id="q-clear" aria-label="Clear search">${icon("x", "ico ico--sm")}</button>
+          </label>
+          <nav class="filter" aria-label="Filter by device">
+            ${chips.map((c) => `
+              <a class="chip" href="${c.href}"${state.device === c.key ? ' aria-current="page"' : ""}>
+                ${esc(c.label)}<span>${c.n}</span>
+              </a>`).join("")}
+          </nav>
+        </div>
+      </div>
+      <div class="home__list">${list}</div>
+    </div>`;
 }
 
 function groupBlock({ device, list }) {
   return `
     <section class="group">
-      <div class="cap group__cap">
-        <b>${esc(device.codename)}</b>
-        <span>${list.length} build${list.length === 1 ? "" : "s"}</span>
-      </div>
-      <div class="card">${list.map(row).join("")}</div>
+      <header class="group__head">
+        <h2>${esc(device.codename)}</h2>
+        <span>${esc(device.fullName || device.name || "")}</span>
+      </header>
+      <ul class="list">${list.map(row).join("")}</ul>
     </section>`;
 }
 
 function row(rel) {
-  const meta = [
-    `Android ${esc(rel.android)}`,
-    rel.channel !== "stable" ? esc(rel.channel) : null,
-    esc(rel.size || ""),
-    fmtDate(rel.date),
-  ].filter(Boolean).join(" &middot; ");
-
   return `
-    <a class="row" href="#/r/${esc(rel.device)}/${esc(rel.id)}">
-      <div class="row__body">
-        <div class="row__title">
-          ${isFresh(rel.date) ? '<i class="dot" title="recent"></i>' : ""}
-          <span>${esc(rel.name)}</span>
+    <li>
+      <a class="row" href="#/r/${enc(rel.device)}/${enc(rel.id)}">
+        <div class="row__main">
+          <div class="row__title">${esc(rel.name)}${isFresh(rel.date) ? '<span class="new">new</span>' : ""}</div>
+          <div class="row__meta meta mono">${meta([
+            tag(rel.channel),
+            `Android ${esc(rel.android)}`,
+            esc(rel.size),
+            fmtDate(rel.date),
+          ])}</div>
         </div>
-        <div class="row__meta">${meta}</div>
-      </div>
-      ${icon("chevron", "ico row__chev")}
-    </a>`;
+        ${icon("chevron", "ico ico--sm row__chev")}
+      </a>
+    </li>`;
 }
 
 /* ---- release ------------------------------------------------------- */
 
 export function renderRelease(rel) {
-  const c = CHANNEL[rel.channel] || CHANNEL.stable;
+  const [primary, ...mirrors] = rel.mirrors;
   return `
-    <article class="detail">
-      <header class="detail__head">
-        <h1>${esc(rel.name)}</h1>
-        <div class="detail__pills">
-          <span class="pill pill--accent">Android ${esc(rel.android)}</span>
-          <span class="pill ${c.cls}">${c.text}</span>
-          ${rel.size ? `<span class="pill">${esc(rel.size)}</span>` : ""}
-          <span class="pill">${fmtDate(rel.date)}</span>
-          <span class="pill pill--views"><img src="https://hits.sh/alphas-trashdump.github.io/r/${esc(rel.device)}/${esc(rel.id)}.svg?style=flat-square&label=views&color=223138&labelColor=1B262C" alt="views" height="18" style="vertical-align:middle;border-radius:3px;display:inline-block;" loading="lazy"></span>
-        </div>
+    <article class="release">
+      <header class="release__head">
+        <p class="crumb mono">
+          <a href="#/d/${enc(rel.device)}">${esc(rel.device)}</a><span>/</span>${esc(rel.id)}
+        </p>
+        <h1 class="display">${esc(rel.name)}</h1>
+        <p class="release__meta meta mono">${meta([
+          tag(rel.channel),
+          `Android ${esc(rel.android)}`,
+          esc(rel.size),
+          fmtDate(rel.date),
+          relDays(rel.date),
+        ])}</p>
+        ${noteBlock(rel)}
       </header>
 
-      ${downloadBlock(rel)}
-      ${shotsBlock(rel)}
-      ${listBlock("How to flash", rel.install, "steps")}
-      ${listBlock("Known bugs", rel.bugs, "bullets bullets--bad")}
-      ${listBlock("What changed", rel.changelog, "bullets")}
-      ${infoBlock(rel)}
-      ${noteBlock(rel)}
-
-      <div class="block">
-        <div class="cap">Maintainer</div>
-        <div class="card">${person(rel.maintainer_)}</div>
+      <div class="release__side">
+        <section class="sec sec--dl">
+          ${primary ? cta(primary, rel) : ""}
+          ${mirrors.length ? `<h2 class="sec__h">Mirrors</h2><ul class="list">${mirrors.map(linkRow).join("")}</ul>` : ""}
+          ${rel.extras.length ? `<h2 class="sec__h">Also flash</h2><ul class="list">${rel.extras.map(linkRow).join("")}</ul>` : ""}
+          ${rel.recovery ? `<h2 class="sec__h">Recovery</h2><ul class="list">${linkRow(rel.recovery)}</ul>` : ""}
+        </section>
+        ${infoBlock(rel)}
+        <section class="sec sec--who">
+          <h2 class="sec__h">Ported by</h2>
+          ${person(rel.maintainer_)}
+        </section>
       </div>
 
-      <div class="note note--bad">
-        ${icon("alert", "ico")}
-        <span>We are not responsible for any data loss or corrupt devices,
-        proceed at your own risk.</span>
-      </div>
-
-      <div class="block">
-        <button class="btn btn--block" id="share">${icon("link", "ico ico--sm")} Copy link</button>
+      <div class="release__main">
+        ${shotsBlock(rel)}
+        ${listBlock("How to flash", rel.install, "steps", "sec--install")}
+        ${listBlock("Known bugs", rel.bugs, "bullets bullets--bad", "sec--bugs", "Nothing reported yet.")}
+        ${listBlock("Changelog", rel.changelog, "bullets", "sec--log")}
+        <section class="sec sec--legal">
+          <button class="btn btn--block" id="share">${icon("link", "ico ico--sm")}Copy link</button>
+          <p class="legal mono">You flash this at your own risk. Nobody here is responsible for lost data or a bricked device.</p>
+        </section>
       </div>
     </article>`;
 }
 
-/* A release note is optional, and when present it can be loud (highlighted
-   callout) or quiet (plain line under the title). */
-function noteBlock(rel) {
-  if (!rel.notes) return "";
-  const raw = Array.isArray(rel.notes) ? rel.notes.join("\n") : String(rel.notes);
-  const formatted = esc(raw)
-    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="text-decoration:underline;color:inherit;">$1</a>')
-    .replace(/\n/g, "<br>");
-  if (rel.noteStyle === "quiet") {
-    return `<p class="quiet-note">${formatted}</p>`;
-  }
-  return `<div class="note">${icon("info", "ico")}<div>${formatted}</div></div>`;
-}
-
-function dlRow(item, kind) {
+function cta(m, rel) {
   return `
-    <a class="dlrow ${kind === "primary" ? "" : "dlrow--extra"}" href="${esc(item.url)}"
-       target="_blank" rel="noopener noreferrer">
-      <span class="dlrow__ico">${icon(kind === "primary" ? "download" : "external", "ico")}</span>
-      <span class="dlrow__txt">
-        <b>${esc(item.label)}</b>
-        <small>${esc(mirrorHint(item.url))}</small>
-      </span>
-      ${icon("chevron", "ico ico--sm")}
+    <a class="cta" href="${esc(m.url)}" target="_blank" rel="noopener noreferrer">
+      <b>Download</b>
+      <small class="mono">${esc(mirrorHint(m.url))}${rel.size ? ` · ${esc(rel.size)}` : ""}</small>
+      ${icon("down")}
     </a>`;
 }
 
-function downloadBlock(rel) {
-  const mirrors = rel.mirrors.map((m, i) => dlRow(m, i === 0 ? "primary" : "mirror")).join("");
-  const extras = rel.extras.length ? `
-      <div class="cap" style="margin-top:18px">Also flash these</div>
-      <div class="card">${rel.extras.map((e) => dlRow(e, "extra")).join("")}</div>` : "";
-  const recovery = rel.recovery ? `
-      <div class="cap" style="margin-top:18px">Recovery</div>
-      <div class="card">${dlRow(rel.recovery, "extra")}</div>` : "";
-
+function linkRow(item) {
   return `
-    <div class="block">
-      <div class="cap">Download${rel.mirrors.length > 1 ? ` &middot; ${rel.mirrors.length} mirrors` : ""}</div>
-      <div class="card">${mirrors}</div>
-      ${extras}
-      ${recovery}
-    </div>`;
+    <li>
+      <a class="row row--link" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer">
+        <div class="row__main">
+          <div class="row__title">${esc(item.label)}</div>
+          <div class="row__meta mono" style="color:var(--fg-3)">${esc(mirrorHint(item.url))}</div>
+        </div>
+        ${icon("external", "ico ico--sm row__chev")}
+      </a>
+    </li>`;
+}
+
+function noteBlock(rel) {
+  if (!rel.notes) return "";
+  const raw = Array.isArray(rel.notes) ? rel.notes.join("\n") : String(rel.notes);
+  const html = esc(raw)
+    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(/\n/g, "<br>");
+  return `<div class="callout${rel.noteStyle === "quiet" ? " callout--quiet" : ""}">${html}</div>`;
 }
 
 function shotsBlock(rel) {
   const album = rel.screenshotsAlbum;
+  const albumRow = album ? `<ul class="list shots__album">${linkRow({ label: "Full album", url: album })}</ul>` : "";
 
   if (!rel.screenshots.length) {
     if (!album) return "";
     return `
-      <div class="block" data-shots-fallback>
-        <div class="cap">Screenshots</div>
-        <div class="card">${dlRow({ label: "Open album", url: album }, "extra")}</div>
-        <p class="shots__hint">Not mirrored here yet.</p>
-      </div>`;
+      <section class="sec sec--shots">
+        <h2 class="sec__h">Screenshots</h2>
+        <ul class="list">${linkRow({ label: "Open album", url: album })}</ul>
+        <p class="shots__hint mono">Not mirrored here yet.</p>
+      </section>`;
   }
 
   const thumbs = rel.screenshots.map((src, i) => `
-    <button type="button" data-shot="${i}" aria-label="open screenshot ${i + 1}">
+    <button type="button" data-shot="${i}" aria-label="Open screenshot ${i + 1}">
       ${spinner("spin spin--sm")}
-      <img src="${esc(src)}" alt="Screenshot ${i + 1} of ${esc(rel.name)}"
-           loading="lazy" decoding="async" data-shot-img>
+      <img src="${esc(src)}" alt="Screenshot ${i + 1} of ${esc(rel.name)}" loading="lazy" decoding="async" data-shot-img>
     </button>`).join("");
 
   return `
-    <div class="block" data-shots-section>
-      <div class="cap">Screenshots &middot; ${rel.screenshots.length}</div>
+    <section class="sec sec--shots" data-shots-section>
+      <h2 class="sec__h">Screenshots · ${rel.screenshots.length}</h2>
       <div class="shots">${thumbs}</div>
-      <p class="shots__hint" data-shots-hint>Swipe, tap to open</p>
-      ${album ? `<div class="card" style="margin-top:12px">${dlRow({ label: "Full album", url: album }, "extra")}</div>` : ""}
+      <p class="shots__hint mono" data-shots-hint>Swipe · tap to open</p>
+      ${albumRow}
       ${album ? `<template data-shots-fallback-tpl>
-        <div class="card">${dlRow({ label: "Open album", url: album }, "extra")}</div>
-        <p class="shots__hint">Screenshots did not load, use the album instead.</p>
+        <ul class="list">${linkRow({ label: "Open album", url: album })}</ul>
+        <p class="shots__hint mono">Screenshots did not load, use the album instead.</p>
       </template>` : ""}
-    </div>`;
+    </section>`;
 }
 
-function listBlock(title, items, cls) {
-  if (!items?.length) return "";
-  const tag = cls.startsWith("steps") ? "ol" : "ul";
-  return `
-    <div class="block">
-      <div class="cap">${esc(title)}</div>
-      <div class="card"><${tag} class="${cls}">${items.map((i) => `<li>${esc(i)}</li>`).join("")}</${tag}></div>
-    </div>`;
+function listBlock(title, items, cls, secCls, empty) {
+  if (!items?.length && !empty) return "";
+  const t = cls.startsWith("steps") ? "ol" : "ul";
+  const body = items?.length
+    ? `<${t} class="${cls}">${items.map((i) => `<li>${esc(i)}</li>`).join("")}</${t}>`
+    : `<p class="sec__empty">${esc(empty)}</p>`;
+  return `<section class="sec ${secCls}"><h2 class="sec__h">${esc(title)}</h2>${body}</section>`;
 }
 
 function infoBlock(rel) {
-  const m = rel.maintainer_;
-  const viewBadge = `https://hits.sh/alphas-trashdump.github.io/r/${esc(rel.device)}/${esc(rel.id)}.svg?style=flat-square&label=views&color=223138&labelColor=1B262C`;
+  const badge = `https://hits.sh/alphas-trashdump.github.io/r/${enc(rel.device)}/${enc(rel.id)}.svg?style=flat-square&label=views&color=1b2128&labelColor=14181d`;
   const rows = [
-    ["Device", `${esc(rel.device_.name)} (${esc(rel.device_.codename)})`],
-    rel.supports?.length ? ["Also supports", rel.supports.map(esc).join(", ")] : null,
-    ["Build date", `${fmtDate(rel.date)} <span class="dim">&middot; ${relDays(rel.date)}</span>`],
-    ["Ported by", esc(m.name)],
-    ["Views", `<img src="${viewBadge}" alt="views" height="18" style="vertical-align:middle;border-radius:3px;display:inline-block;" loading="lazy">`],
+    ["Device", esc(rel.device_.name)],
+    ["Codename", `<span class="mono">${esc(rel.device)}</span>`],
+    rel.supports?.length ? ["Also for", rel.supports.map((s) => `<span class="mono">${esc(s)}</span>`).join(", ")] : null,
+    ["Android", esc(rel.android)],
+    ["Built", fmtDate(rel.date)],
+    ["Size", esc(rel.size || "—")],
+    ["Views", `<img class="kv__badge" src="${badge}" alt="" height="18" loading="lazy">`],
   ].filter(Boolean);
 
   return `
-    <div class="block">
-      <div class="cap">Details</div>
-      <dl class="card">
-        ${rows.map(([k, v]) => `<div class="kv"><dt>${k}</dt><dd>${v}</dd></div>`).join("")}
-      </dl>
-    </div>`;
+    <section class="sec sec--details">
+      <h2 class="sec__h">Details</h2>
+      <dl class="kv">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>
+    </section>`;
 }
 
 /* ---- people -------------------------------------------------------- */
 
-export function person(m) {
+export function person(m, count) {
   const links = (m.links || []).map((l) => `
-    <a class="pill" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">
-      ${esc(l.label)}
+    <a class="chip" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">
+      ${esc(l.label)}${icon("external", "ico")}
     </a>`).join("");
-  const badges = (m.badges || []).map((b) =>
-    `<span class="pill ${b === "owner" ? "pill--accent" : ""}">${esc(b)}</span>`).join("");
+  const badges = (m.badges || []).map((b) => `<span class="chip chip--flat">${esc(b)}</span>`).join("");
 
   return `
     <div class="person">
-      <img class="person__pic" src="${esc(m.avatar || "")}" alt="" loading="lazy" decoding="async">
+      <img class="person__pic" src="${esc(m.avatar || "")}" alt="" width="44" height="44" loading="lazy" decoding="async">
       <div class="person__body">
         <div class="person__name">
           <b>${esc(m.name)}</b>
-          <span>${esc(m.tag || "")}${m.pronouns ? ` &middot; ${esc(m.pronouns)}` : ""}</span>
+          ${count != null ? `<span class="mono">${count} build${count === 1 ? "" : "s"}</span>` : ""}
         </div>
+        <p class="person__tag mono">${esc(m.tag || "")}${m.pronouns ? ` · ${esc(m.pronouns)}` : ""}</p>
         ${m.bio ? `<p class="person__bio">${esc(m.bio)}</p>` : ""}
         <div class="person__links">${badges}${links}</div>
       </div>
@@ -282,35 +294,30 @@ export function person(m) {
 
 export function renderPeople() {
   const idx = state.index;
-  const people = Object.values(idx.maintainers);
   const counts = new Map();
   for (const r of idx.releases) counts.set(r.maintainer, (counts.get(r.maintainer) || 0) + 1);
+  const people = Object.values(idx.maintainers)
+    .sort((a, b) => (counts.get(b.id) || 0) - (counts.get(a.id) || 0));
 
   return `
     <section class="hero">
-      <h1>the <em>culprits</em></h1>
-      <p>They port the ROMs. They also decide which bugs you learn to live with.</p>
+      <h1 class="display">The <em>culprits</em>.</h1>
+      <p class="hero__sub">They port the ROMs. They also decide which bugs you learn to live with.</p>
     </section>
-    <div class="card">${people.map(person).join("")}</div>
-    <div class="cap" style="padding-top:16px">Scoreboard</div>
-    <dl class="card">
-      ${people.map((m) => `
-        <div class="kv">
-          <dt>${esc(m.name)}</dt>
-          <dd>${counts.get(m.id) || 0} build${(counts.get(m.id) || 0) === 1 ? "" : "s"}</dd>
-        </div>`).join("")}
-    </dl>`;
+    <ul class="list list--people">
+      ${people.map((m) => `<li>${person(m, counts.get(m.id) || 0)}</li>`).join("")}
+    </ul>`;
 }
 
 export function renderLoading(text = "Loading builds") {
-  return `<div class="loading">${spinner("spin spin--lg spin--accent", text)}<span>${esc(text)}</span></div>`;
+  return `<div class="loading">${spinner("spin spin--lg", text)}<span class="mono">${esc(text)}</span></div>`;
 }
 
 export function renderError(message) {
   return `
     <div class="empty">
-      <h3>could not load the builds</h3>
-      <p>${esc(message)}</p>
-      <p style="margin-top:18px"><a class="btn" href="">Try again</a></p>
+      <p class="empty__t">Could not load the builds.</p>
+      <p class="mono">${esc(message)}</p>
+      <p style="margin-top:20px"><a class="btn" href="">Try again</a></p>
     </div>`;
 }
