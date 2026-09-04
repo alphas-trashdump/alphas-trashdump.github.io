@@ -1,31 +1,26 @@
 /* router + wiring ---------------------------------------------------- */
+import { fx } from "./fx.js";
+import { Lens } from "./lens.js";
 import { state, loadIndex, getRelease, hostOf } from "./store.js";
 import { renderHome, renderList, renderRelease, renderPeople, renderError, renderLoading, spinner, icon, esc } from "./ui.js";
 
 const BRAND = "alpha's trashdump";
 const APP_HOSTS = new Set(["t.me", "telegram.me", "telegram.dog"]);
 
-const root = document.getElementById("app");
-const top = document.getElementById("top");
-const topTitle = document.getElementById("top-title");
-const backBtn = document.getElementById("back");
-const lb = document.getElementById("lb");
-const lbTrack = document.getElementById("lb-track");
-const lbCount = document.getElementById("lb-count");
-const toastEl = document.getElementById("toast");
-const sheet = document.getElementById("sheet");
-const sheetBox = document.getElementById("sheet-box");
-const sheetHost = document.getElementById("sheet-host");
-const sheetGo = document.getElementById("sheet-go");
-const sheetCancel = document.getElementById("sheet-cancel");
+const $ = (id) => document.getElementById(id);
+const root = $("app"), top = $("top"), topTitle = $("top-title"), backBtn = $("back");
+const lb = $("lb"), lbTrack = $("lb-track"), lbCount = $("lb-count"), toastEl = $("toast");
+const sheet = $("sheet"), sheetBox = $("sheet-box"), sheetHost = $("sheet-host");
 
 const isDialog = () => matchMedia("(orientation: landscape) and (max-height: 500px)").matches;
+const lens = fx.liquid ? new Lens("lens") : null;
 
 let shots = [];
 let toastTimer = 0;
-let depth = 0;      /* in-site navigations, so Back can use history when safe */
-let titleIO = null; /* watches the large title */
-let navDir = "none"; /* push | pop | none — drives the page slide */
+let depth = 0;
+let navDir = "none";
+let titleIO = null;
+let segCtl = null;
 
 /* ---- helpers ------------------------------------------------------- */
 
@@ -35,10 +30,8 @@ function toast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { toastEl.dataset.show = "0"; }, 1800);
 }
-
-function setTitle(parts) {
-  document.title = [...parts, BRAND].filter(Boolean).join(" — ");
-}
+function setTitle(parts) { document.title = [...parts, BRAND].filter(Boolean).join(" — "); }
+function lockScroll(on) { document.documentElement.style.overflow = on ? "hidden" : ""; }
 
 function parseHash() {
   const seg = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
@@ -49,39 +42,87 @@ function parseHash() {
   return { view: "home" };
 }
 
-function lockScroll(on) {
-  document.documentElement.style.overflow = on ? "hidden" : "";
-}
-
 function trackImage(img, onFail) {
-  const done = () => {
-    img.dataset.loaded = "1";
-    img.closest("button, figure")?.setAttribute("data-loaded", "1");
-  };
+  const done = () => { img.dataset.loaded = "1"; img.closest("button, figure")?.setAttribute("data-loaded", "1"); };
   if (img.complete) { img.naturalWidth > 0 ? done() : onFail?.(img); return; }
   img.addEventListener("load", done, { once: true });
   img.addEventListener("error", () => onFail?.(img), { once: true });
 }
 
-/* large title collapses into the header once it scrolls under it */
 function watchTitle() {
   titleIO?.disconnect();
   const h1 = root.querySelector("h1");
   if (!h1) { document.body.dataset.scrolled = "1"; return; }
-  titleIO = new IntersectionObserver(([e]) => {
-    document.body.dataset.scrolled = e.isIntersecting ? "0" : "1";
-  }, { rootMargin: `-${top.offsetHeight}px 0px 0px 0px`, threshold: 0 });
+  titleIO = new IntersectionObserver(([e]) => { document.body.dataset.scrolled = e.isIntersecting ? "0" : "1"; },
+    { rootMargin: `-${top.offsetHeight}px 0px 0px 0px` });
   titleIO.observe(h1);
 }
 
-/* segmented control thumb follows the selected tab */
-function layoutSeg(seg) {
-  const thumb = seg?.querySelector(".seg__thumb");
-  const act = seg?.querySelector('[aria-selected="true"]');
-  if (!thumb || !act) return;
-  thumb.style.width = `${act.offsetWidth}px`;
-  thumb.style.transform = `translateX(${act.offsetLeft}px)`;
-  if (seg.dataset.ready !== "1") requestAnimationFrame(() => { seg.dataset.ready = "1"; });
+/* ---- liquid device bar --------------------------------------------- */
+
+function wireSeg(seg, onChange) {
+  const lensEl = seg.querySelector(".seg__lens");
+  const tabs = [...seg.querySelectorAll(".seg__it")];
+  let cur = tabs.find((t) => t.getAttribute("aria-selected") === "true") || tabs[0];
+  let x = 0, drag = null, live = 0;
+
+  const fit = (tab) => { lensEl.style.width = `${tab.offsetWidth}px`; lens?.setSize(tab.offsetWidth, lensEl.offsetHeight); };
+  const place = (tab) => { x = tab.offsetLeft; fit(tab); lensEl.style.transform = `translateX(${x}px)`; };
+  const mark = (tab) => {
+    if (tab === cur) return;
+    cur = tab;
+    tabs.forEach((t) => { const on = t === tab; t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1; });
+    navigator.vibrate?.(6);
+  };
+  const commit = () => onChange(cur.dataset.key, cur.dataset.href);
+  const nearest = (cx) => tabs.reduce((b, t) =>
+    Math.abs(t.offsetLeft + t.offsetWidth / 2 - cx) < Math.abs(b.offsetLeft + b.offsetWidth / 2 - cx) ? t : b);
+
+  place(cur);
+  requestAnimationFrame(() => { seg.dataset.ready = "1"; });
+  document.fonts?.ready.then(() => place(cur));
+
+  /* tap + keyboard still work (a11y); the lens drag is the main gesture */
+  tabs.forEach((t) => t.addEventListener("click", () => { mark(t); place(t); commit(); }));
+  seg.addEventListener("keydown", (e) => {
+    const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (!d) return;
+    e.preventDefault();
+    const next = tabs[(tabs.indexOf(cur) + d + tabs.length) % tabs.length];
+    mark(next); place(next); commit(); next.focus();
+  });
+
+  /* hold the lens, slide, release to snap */
+  lensEl.addEventListener("pointerdown", (e) => {
+    drag = { px: e.clientX, x0: x };
+    lensEl.setPointerCapture(e.pointerId);
+    seg.classList.add("seg--drag");
+    e.preventDefault();
+  });
+  lensEl.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const max = seg.scrollWidth - lensEl.offsetWidth - 3;
+    x = Math.max(3, Math.min(max, drag.x0 + (e.clientX - drag.px)));
+    lensEl.style.transform = `translateX(${x}px)`;
+    const t = nearest(x + lensEl.offsetWidth / 2);
+    if (t !== cur) {
+      mark(t); fit(t);
+      clearTimeout(live);
+      live = setTimeout(commit, 80);
+    }
+  });
+  const end = () => {
+    if (!drag) return;
+    drag = null;
+    seg.classList.remove("seg--drag");
+    clearTimeout(live);
+    place(cur);
+    commit();
+  };
+  lensEl.addEventListener("pointerup", end);
+  lensEl.addEventListener("pointercancel", end);
+
+  return { relayout: () => place(cur) };
 }
 
 /* ---- views --------------------------------------------------------- */
@@ -92,9 +133,10 @@ function paint(html, view, title = BRAND) {
   document.body.dataset.nav = "none";
   topTitle.textContent = title;
   root.innerHTML = html;
-  void root.offsetWidth;                 /* restart the slide animation */
+  void root.offsetWidth;
   document.body.dataset.nav = navDir;
   navDir = "none";
+  segCtl = null;
   if (view === "home") wireHome();
   if (view === "release") wireRelease();
   watchTitle();
@@ -106,7 +148,6 @@ function wireHome() {
   const seg = root.querySelector("#seg");
   if (!input || !list) return;
   const search = input.closest(".search");
-
   const relist = () => { list.innerHTML = renderList(); };
 
   let debounce = 0;
@@ -117,40 +158,27 @@ function wireHome() {
     debounce = setTimeout(relist, 120);
   });
   root.querySelector("#q-clear")?.addEventListener("click", () => {
-    state.query = "";
-    input.value = "";
-    search.dataset.filled = "0";
-    relist();
-    input.focus();
+    state.query = ""; input.value = ""; search.dataset.filled = "0"; relist(); input.focus();
   });
+
+  if (seg) {
+    segCtl = wireSeg(seg, (key, href) => {
+      if (state.device === key) return;
+      state.device = key;
+      history.replaceState(null, "", href);
+      relist();
+    });
+  }
 
   list.addEventListener("click", (e) => {
     const a = e.target.closest("a.cell");
     if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
     navDir = "push";
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!fx.rich) return;
     e.preventDefault();
     a.classList.add("cell--go");
     setTimeout(() => { location.hash = a.getAttribute("href"); }, 140);
   });
-
-  if (seg) {
-    layoutSeg(seg);
-    document.fonts?.ready.then(() => layoutSeg(seg));
-    seg.addEventListener("click", (e) => {
-      const tab = e.target.closest(".seg__it");
-      if (!tab) return;
-      e.preventDefault();
-      const key = tab.dataset.key;
-      if (state.device === key) return;
-      state.device = key;
-      history.replaceState(null, "", tab.getAttribute("href"));
-      seg.querySelectorAll(".seg__it").forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
-      tab.scrollIntoView?.({ inline: "nearest", block: "nearest" });
-      layoutSeg(seg);
-      relist();
-    });
-  }
 }
 
 function wireRelease() {
@@ -160,71 +188,48 @@ function wireRelease() {
       else { await navigator.clipboard.writeText(location.href); toast("Link copied"); }
     } catch { toast("Could not copy"); }
   });
-  root.querySelectorAll("[data-shot]").forEach((btn) => {
-    btn.addEventListener("click", () => openLightbox(Number(btn.dataset.shot)));
-  });
+  root.querySelectorAll("[data-shot]").forEach((btn) => btn.addEventListener("click", () => openLightbox(Number(btn.dataset.shot))));
   watchShots();
 }
 
-/* dead screenshots drop out; if all die, fall back to the album link */
 function watchShots() {
   const section = root.querySelector("[data-shots-section]");
   if (!section) return;
   const imgs = [...section.querySelectorAll("[data-shot-img]")];
   if (!imgs.length) return;
-
-  const all = shots.slice();
-  const dead = new Set();
-
+  const all = shots.slice(), dead = new Set();
   imgs.forEach((img) => trackImage(img, (bad) => {
-    const btn = bad.closest("button");
-    const i = Number(btn?.dataset.shot);
+    const btn = bad.closest("button"), i = Number(btn?.dataset.shot);
     if (Number.isInteger(i)) dead.add(i);
     btn?.remove();
     shots = all.filter((_, n) => !dead.has(n));
     if (dead.size < imgs.length) return;
-
     section.querySelector(".shots")?.remove();
     section.querySelector("[data-shots-hint]")?.remove();
     section.querySelector(".shots__album")?.remove();
     const tpl = section.querySelector("[data-shots-fallback-tpl]");
     if (tpl) { section.append(tpl.content.cloneNode(true)); tpl.remove(); }
-    else {
-      const p = document.createElement("p");
-      p.className = "shots__hint";
-      p.textContent = "Screenshots unavailable.";
-      section.append(p);
-    }
+    else { const p = document.createElement("p"); p.className = "shots__hint"; p.textContent = "Screenshots unavailable."; section.append(p); }
   }));
 }
 
 async function route() {
   const r = parseHash();
-
   let idx = state.index;
   if (!idx) {
     paint(renderLoading(), "home");
     try { idx = await loadIndex(); }
     catch (err) { paint(renderError(err.message || String(err)), "home"); return; }
   }
-
   if (r.view === "people") {
-    setTitle(["Maintainers"]);
-    paint(renderPeople(), "people", "Maintainers");
-    window.scrollTo(0, 0);
-    return;
+    setTitle(["Maintainers"]); paint(renderPeople(), "people", "Maintainers"); window.scrollTo(0, 0); return;
   }
-
   if (r.view === "release") {
     const rel = getRelease(r.device, r.id);
     if (!rel) { location.replace("#/"); return; }
     shots = rel.screenshots;
-    setTitle([rel.name]);
-    paint(renderRelease(rel), "release", rel.name);
-    window.scrollTo(0, 0);
-    return;
+    setTitle([rel.name]); paint(renderRelease(rel), "release", rel.name); window.scrollTo(0, 0); return;
   }
-
   state.device = r.device && idx.byCodename.has(r.device) ? r.device : "all";
   setTitle([]);
   paint(renderHome(), "home");
@@ -232,37 +237,6 @@ async function route() {
 
 /* ---- lightbox ------------------------------------------------------ */
 
-function openLightbox(start) {
-  if (!shots.length) return;
-  lbTrack.innerHTML = shots.map((src, i) => `
-    <figure>
-      ${spinner("spin spin--lg spin--on-dark")}
-      <img src="${src}" alt="Screenshot ${i + 1}" decoding="async">
-    </figure>`).join("");
-  lb.dataset.open = "1";
-  lbCount.dataset.text = ""; lbCount.textContent = "";
-  lockScroll(true);
-
-  lbTrack.querySelectorAll("img").forEach((img) => trackImage(img, (bad) => {
-    const fig = bad.closest("figure");
-    if (!fig) return;
-    fig.dataset.loaded = "1";
-    fig.replaceChildren(Object.assign(document.createElement("p"), { textContent: "This image failed to load" }));
-  }));
-
-  requestAnimationFrame(() => {
-    lbTrack.scrollLeft = start * lbTrack.clientWidth;
-    updateLbCount();
-  });
-}
-
-function closeLightbox() {
-  lb.dataset.open = "0";
-  lbTrack.innerHTML = "";
-  lockScroll(false);
-}
-
-/* iOS numericText: only changed characters roll, direction follows the value */
 function rollTo(el, text) {
   const prev = el.dataset.text ?? "";
   if (prev === text) return;
@@ -275,16 +249,30 @@ function rollTo(el, text) {
   }).join("");
 }
 
+function openLightbox(start) {
+  if (!shots.length) return;
+  lbTrack.innerHTML = shots.map((src, i) => `<figure>${spinner("spin spin--lg spin--on-dark")}<img src="${src}" alt="Screenshot ${i + 1}" decoding="async"></figure>`).join("");
+  lb.dataset.open = "1";
+  lbCount.dataset.text = ""; lbCount.textContent = "";
+  lockScroll(true);
+  lbTrack.querySelectorAll("img").forEach((img) => trackImage(img, (bad) => {
+    const fig = bad.closest("figure");
+    if (!fig) return;
+    fig.dataset.loaded = "1";
+    fig.replaceChildren(Object.assign(document.createElement("p"), { textContent: "This image failed to load" }));
+  }));
+  requestAnimationFrame(() => { lbTrack.scrollLeft = start * lbTrack.clientWidth; updateLbCount(); });
+}
+function closeLightbox() { lb.dataset.open = "0"; lbTrack.innerHTML = ""; lockScroll(false); }
 function updateLbCount() {
   if (lb.dataset.open !== "1" || !lbTrack.clientWidth) return;
   const i = Math.round(lbTrack.scrollLeft / lbTrack.clientWidth);
   rollTo(lbCount, `${Math.min(i + 1, shots.length)} / ${shots.length}`);
 }
 
-/* ---- telegram confirm sheet ---------------------------------------- */
+/* ---- telegram sheet ------------------------------------------------ */
 
-let pendingUrl = null;
-let closeTimer = 0;
+let pendingUrl = null, closeTimer = 0;
 
 function openSheet(url) {
   clearTimeout(closeTimer);
@@ -295,51 +283,37 @@ function openSheet(url) {
   sheet.dataset.open = "1";
   lockScroll(true);
 }
-
 function closeSheet() {
   if (sheet.dataset.open !== "1" || sheet.dataset.closing === "1") return;
   pendingUrl = null;
   sheet.dataset.closing = "1";
-  closeTimer = setTimeout(() => {
-    sheet.dataset.open = "0";
-    sheet.dataset.closing = "0";
-    sheetBox.style.transform = "";
-    lockScroll(false);
-  }, 260);
+  closeTimer = setTimeout(() => { sheet.dataset.open = "0"; sheet.dataset.closing = "0"; sheetBox.style.transform = ""; lockScroll(false); }, fx.rich ? 280 : 0);
 }
-
-sheetCancel.addEventListener("click", closeSheet);
+$("sheet-cancel").addEventListener("click", closeSheet);
 sheet.querySelector(".sheet__bg").addEventListener("click", closeSheet);
-sheetGo.addEventListener("click", () => {
-  const url = pendingUrl;
-  closeSheet();
-  if (url) window.open(url, "_blank", "noopener,noreferrer");
-});
+$("sheet-go").addEventListener("click", () => { const url = pendingUrl; closeSheet(); if (url) window.open(url, "_blank", "noopener,noreferrer"); });
 
-/* drag the sheet down to dismiss; springs back if released early */
-let drag = null;
+let sdrag = null;
 sheetBox.addEventListener("pointerdown", (e) => {
   if (isDialog() || e.target.closest("button")) return;
-  drag = { y: e.clientY, dy: 0, t: performance.now() };
+  sdrag = { y: e.clientY, dy: 0, t: performance.now() };
   sheetBox.setPointerCapture(e.pointerId);
   sheetBox.style.transition = "none";
 });
 sheetBox.addEventListener("pointermove", (e) => {
-  if (!drag) return;
-  drag.dy = Math.max(0, e.clientY - drag.y);
-  sheetBox.style.transform = `translateY(${drag.dy}px)`;
+  if (!sdrag) return;
+  sdrag.dy = Math.max(0, e.clientY - sdrag.y);
+  sheetBox.style.transform = `translateY(${sdrag.dy}px)`;
 });
-const endDrag = () => {
-  if (!drag) return;
-  const { dy, t } = drag;
-  const velocity = dy / Math.max(1, performance.now() - t); /* px per ms */
-  drag = null;
-  sheetBox.style.transition = "transform var(--dur) var(--spring)";
-  if (dy > 110 || velocity > 0.6) closeSheet();
+const endSheetDrag = () => {
+  if (!sdrag) return;
+  const { dy, t } = sdrag; sdrag = null;
+  sheetBox.style.transition = "transform var(--t-bouncy) var(--spring-bouncy)";
+  if (dy > 110 || dy / Math.max(1, performance.now() - t) > 0.6) closeSheet();
   else sheetBox.style.transform = "";
 };
-sheetBox.addEventListener("pointerup", endDrag);
-sheetBox.addEventListener("pointercancel", endDrag);
+sheetBox.addEventListener("pointerup", endSheetDrag);
+sheetBox.addEventListener("pointercancel", endSheetDrag);
 
 document.addEventListener("click", (e) => {
   const link = e.target.closest?.("a[href]");
@@ -352,39 +326,32 @@ document.addEventListener("click", (e) => {
 
 /* ---- boot ---------------------------------------------------------- */
 
-document.querySelectorAll("[data-icon]").forEach((el) => {
-  el.innerHTML = icon(el.dataset.icon, "ico");
-});
+document.querySelectorAll("[data-icon]").forEach((el) => { el.innerHTML = icon(el.dataset.icon, "ico"); });
 
-backBtn.addEventListener("click", (e) => {
-  navDir = "pop";
-  if (depth > 0) { e.preventDefault(); history.back(); }
-});
-document.querySelector('.top__act[href="#/people"]').addEventListener("click", () => { navDir = "push"; });
+/* footer toggle flips between tiers */
+const fxToggle = document.querySelector("[data-fx-toggle]");
+if (fxToggle) { fxToggle.textContent = fx.rich ? "Lite mode" : "Rich mode"; fxToggle.href = `?fx=${fx.rich ? "lite" : "rich"}${location.hash}`; }
+
+backBtn.addEventListener("click", (e) => { navDir = "pop"; if (depth > 0) { e.preventDefault(); history.back(); } });
+$("people-link").addEventListener("click", () => { navDir = "push"; });
 
 window.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
-  if (sheet.dataset.open === "1") closeSheet();
-  else if (lb.dataset.open === "1") closeLightbox();
+  if (sheet.dataset.open === "1") closeSheet(); else if (lb.dataset.open === "1") closeLightbox();
 });
-
-document.getElementById("lb-close").addEventListener("click", closeLightbox);
-lb.addEventListener("click", (e) => {
-  if (e.target === lb || e.target.tagName === "FIGURE") closeLightbox();
-});
+$("lb-close").addEventListener("click", closeLightbox);
+lb.addEventListener("click", (e) => { if (e.target === lb || e.target.tagName === "FIGURE") closeLightbox(); });
 lbTrack.addEventListener("scroll", () => requestAnimationFrame(updateLbCount), { passive: true });
 
-/* orientation flips: re-measure the seg thumb, lightbox page and title watcher */
 let resizeTimer = 0;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
-    layoutSeg(root.querySelector("#seg"));
+    segCtl?.relayout();
     watchTitle();
     if (lb.dataset.open === "1") {
       const i = Math.round(lbTrack.scrollLeft / (lbTrack.clientWidth || 1));
-      lbTrack.scrollLeft = i * lbTrack.clientWidth;
-      updateLbCount();
+      lbTrack.scrollLeft = i * lbTrack.clientWidth; updateLbCount();
     }
   }, 80);
 });

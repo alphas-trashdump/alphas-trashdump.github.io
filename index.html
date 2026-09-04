@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-fx="lite">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#0f1114">
 <title translate="no">alpha's trashdump</title>
 <meta name="description" content="HyperOS, MIUI and ColorOS ports for Redmi 4X, 4, 4A, 3S, 5A and Note 5A.">
 <link rel="canonical" href="https://alphas-trashdump.github.io/">
@@ -14,25 +14,41 @@
 <meta property="og:url" content="https://alphas-trashdump.github.io/">
 <meta name="twitter:card" content="summary">
 
+<script>
+/* effect tier, decided before any CSS applies: rich = > 6 GB RAM (or ≥ 6 cores where memory is hidden) */
+(function () {
+  var q = new URLSearchParams(location.search).get("fx"), s = null, rich;
+  try { s = localStorage.getItem("fx"); } catch (e) {}
+  var pick = q || s;
+  if (pick === "rich" || pick === "lite") rich = pick === "rich";
+  else {
+    var mem = navigator.deviceMemory, cores = navigator.hardwareConcurrency || 0;
+    var rm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var sd = navigator.connection && navigator.connection.saveData;
+    rich = !rm && !sd && (mem != null ? mem > 6 : cores >= 6);
+  }
+  document.documentElement.dataset.fx = rich ? "rich" : "lite";
+  if (q === "rich" || q === "lite") { try { localStorage.setItem("fx", q); } catch (e) {} }
+})();
+</script>
+
 <link rel="icon" href="res/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="res/favicon.svg">
 <link rel="manifest" href="manifest.webmanifest">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400..700&display=swap">
 <link rel="stylesheet" href="assets/css/base.css">
 <link rel="stylesheet" href="assets/css/app.css">
 </head>
-<body data-view="home" data-scrolled="0">
+<body data-view="home" data-scrolled="0" data-nav="none">
 
 <header class="top" id="top">
   <div class="shell top__in">
-    <a class="top__back press" id="back" href="#/" aria-label="Back">
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg><span>Builds</span>
-    </a>
+    <a class="top__btn top__back press" id="back" href="#/" aria-label="Back" data-icon="back"></a>
     <span class="top__title" id="top-title">alpha's trashdump</span>
-    <a class="top__act press" href="#/people" aria-label="Maintainers" data-icon="people"></a>
+    <a class="top__btn press" id="people-link" href="#/people" aria-label="Maintainers" data-icon="people"></a>
   </div>
 </header>
 
@@ -46,17 +62,13 @@
     </span>
     <span>Loading builds</span>
   </div>
-  <noscript>
-    <div class="empty">
-      <h3>JavaScript is off</h3>
-      <p>The build list needs it to render.</p>
-    </div>
-  </noscript>
+  <noscript><div class="empty"><h3>JavaScript is off</h3><p>The build list needs it to render.</p></div></noscript>
 </main>
 
 <footer class="foot shell">
   <span>Community ports. Not affiliated with Xiaomi or OPPO.</span>
   <a href="#/people">Maintainers</a>
+  <a href="?fx=lite" data-fx-toggle>Lite mode</a>
 </footer>
 
 <div class="lb" id="lb" data-open="0" role="dialog" aria-modal="true" aria-label="Screenshots">
@@ -76,8 +88,8 @@
     <p>This link only works with the Telegram app installed. Without it you get a login page instead of the file.</p>
     <span class="sheet__host" id="sheet-host"></span>
     <div class="sheet__acts">
-      <button class="btn btn--primary btn--block press" id="sheet-go" type="button">Open Telegram</button>
-      <button class="btn btn--block press" id="sheet-cancel" type="button">Cancel</button>
+      <button class="btn press" id="sheet-cancel" type="button">Cancel</button>
+      <button class="btn btn--primary press" id="sheet-go" type="button">Open</button>
     </div>
   </div>
 </div>
