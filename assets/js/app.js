@@ -1,6 +1,6 @@
 /* router + wiring ---------------------------------------------------- */
 import { fx } from "./fx.js";
-import { state, loadIndex, getRelease, hostOf } from "./store.js";
+import { state, loadIndex, getRelease, hostOf, mirrorHint } from "./store.js";
 import { renderHome, renderList, renderRelease, renderPeople, renderError, renderLoading, spinner, icon, esc } from "./ui.js";
 
 const BRAND = "alpha's trashdump";
@@ -9,9 +9,6 @@ const APP_HOSTS = new Set(["t.me", "telegram.me", "telegram.dog"]);
 const $ = (id) => document.getElementById(id);
 const root = $("app"), top = $("top"), topTitle = $("top-title"), backBtn = $("back");
 const lb = $("lb"), lbTrack = $("lb-track"), lbCount = $("lb-count"), toastEl = $("toast");
-const sheet = $("sheet"), sheetBox = $("sheet-box"), sheetHost = $("sheet-host");
-
-const isDialog = () => matchMedia("(orientation: landscape) and (max-height: 500px)").matches;
 
 let shots = [];
 let toastTimer = 0;
@@ -271,58 +268,70 @@ function updateLbCount() {
   rollTo(lbCount, `${Math.min(i + 1, shots.length)} / ${shots.length}`);
 }
 
-/* ---- telegram sheet ------------------------------------------------ */
+/* ---- outbound-link alert ------------------------------------------- */
 
+const alertEl = $("alert"), alertTitle = $("alert-title"), alertMsg = $("alert-msg"),
+      alertHost = $("alert-host"), alertGo = $("alert-go");
+const SITE_HOST = location.hostname.replace(/^www\./, "");
 let pendingUrl = null, closeTimer = 0;
 
-function openSheet(url) {
+function describe(url) {
+  if (APP_HOSTS.has(hostOf(url))) {
+    return {
+      title: "Open in Telegram?",
+      msg: "This link needs the Telegram app. Without it you'll land on a login page instead of the file.",
+      go: "Open",
+    };
+  }
+  return {
+    title: `Redirecting to ${mirrorHint(url)}`,
+    msg: "Thank you for using alpha's trashdump. Read the flashing steps before you install, and enjoy the build.",
+    go: "Continue",
+  };
+}
+
+function openAlert(url) {
   clearTimeout(closeTimer);
+  const d = describe(url);
   pendingUrl = url;
-  sheetHost.textContent = url.replace(/^https?:\/\//, "");
-  sheetBox.style.transform = "";
-  sheet.dataset.closing = "0";
-  sheet.dataset.open = "1";
+  alertTitle.textContent = d.title;
+  alertMsg.textContent = d.msg;
+  alertHost.textContent = url.replace(/^https?:\/\/(www\.)?/, "");
+  alertGo.textContent = d.go;
+  alertEl.dataset.closing = "0";
+  alertEl.dataset.open = "1";
   lockScroll(true);
+  alertGo.focus({ preventScroll: true });
 }
-function closeSheet() {
-  if (sheet.dataset.open !== "1" || sheet.dataset.closing === "1") return;
+
+function closeAlert() {
+  if (alertEl.dataset.open !== "1" || alertEl.dataset.closing === "1") return;
   pendingUrl = null;
-  sheet.dataset.closing = "1";
-  closeTimer = setTimeout(() => { sheet.dataset.open = "0"; sheet.dataset.closing = "0"; sheetBox.style.transform = ""; lockScroll(false); }, fx.rich ? 280 : 0);
+  alertEl.dataset.closing = "1";
+  closeTimer = setTimeout(() => {
+    alertEl.dataset.open = "0";
+    alertEl.dataset.closing = "0";
+    lockScroll(false);
+  }, fx.rich ? 200 : 0);
 }
-$("sheet-cancel").addEventListener("click", closeSheet);
-sheet.querySelector(".sheet__bg").addEventListener("click", closeSheet);
-$("sheet-go").addEventListener("click", () => { const url = pendingUrl; closeSheet(); if (url) window.open(url, "_blank", "noopener,noreferrer"); });
 
-let sdrag = null;
-sheetBox.addEventListener("pointerdown", (e) => {
-  if (isDialog() || e.target.closest("button")) return;
-  sdrag = { y: e.clientY, dy: 0, t: performance.now() };
-  sheetBox.setPointerCapture(e.pointerId);
-  sheetBox.style.transition = "none";
+$("alert-cancel").addEventListener("click", closeAlert);
+alertEl.querySelector(".alert__bg").addEventListener("click", closeAlert);
+alertGo.addEventListener("click", () => {
+  const url = pendingUrl;
+  closeAlert();
+  if (url) window.open(url, "_blank", "noopener,noreferrer");
 });
-sheetBox.addEventListener("pointermove", (e) => {
-  if (!sdrag) return;
-  sdrag.dy = Math.max(0, e.clientY - sdrag.y);
-  sheetBox.style.transform = `translateY(${sdrag.dy}px)`;
-});
-const endSheetDrag = () => {
-  if (!sdrag) return;
-  const { dy, t } = sdrag; sdrag = null;
-  sheetBox.style.transition = "transform var(--t-bouncy) var(--spring-bouncy)";
-  if (dy > 110 || dy / Math.max(1, performance.now() - t) > 0.6) closeSheet();
-  else sheetBox.style.transform = "";
-};
-sheetBox.addEventListener("pointerup", endSheetDrag);
-sheetBox.addEventListener("pointercancel", endSheetDrag);
 
+/* every link that leaves the site goes through the alert */
 document.addEventListener("click", (e) => {
   const link = e.target.closest?.("a[href]");
-  if (!link) return;
+  if (!link || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
   const href = link.getAttribute("href") || "";
-  if (!/^https?:/i.test(href) || !APP_HOSTS.has(hostOf(href))) return;
+  if (!/^https?:/i.test(href)) return;
+  if (hostOf(href) === SITE_HOST) return;
   e.preventDefault();
-  openSheet(link.href);
+  openAlert(link.href);
 });
 
 /* ---- boot ---------------------------------------------------------- */
@@ -333,8 +342,11 @@ backBtn.addEventListener("click", (e) => { navDir = "pop"; if (depth > 0) { e.pr
 $("people-link").addEventListener("click", () => { navDir = "push"; });
 
 window.addEventListener("keydown", (e) => {
-  if (e.key !== "Escape") return;
-  if (sheet.dataset.open === "1") closeSheet(); else if (lb.dataset.open === "1") closeLightbox();
+  if (e.key === "Escape") {
+    if (alertEl.dataset.open === "1") closeAlert();
+    else if (lb.dataset.open === "1") closeLightbox();
+  }
+  if (e.key === "Enter" && alertEl.dataset.open === "1" && document.activeElement !== $("alert-cancel")) alertGo.click();
 });
 $("lb-close").addEventListener("click", closeLightbox);
 lb.addEventListener("click", (e) => { if (e.target === lb || e.target.tagName === "FIGURE") closeLightbox(); });
@@ -356,7 +368,7 @@ window.addEventListener("resize", () => {
 window.addEventListener("hashchange", () => {
   depth += 1;
   if (lb.dataset.open === "1") closeLightbox();
-  if (sheet.dataset.open === "1") closeSheet();
+  if (alertEl.dataset.open === "1") closeAlert();
   route();
 });
 

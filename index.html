@@ -78,17 +78,18 @@
   <div class="lb__count" id="lb-count"></div>
 </div>
 
-<div class="sheet" id="sheet" data-open="0" data-closing="0" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
-  <div class="sheet__bg"></div>
-  <div class="sheet__box" id="sheet-box">
-    <span class="sheet__grip" aria-hidden="true"></span>
-    <span class="sheet__ico" data-icon="send"></span>
-    <h3 id="sheet-title">Opens in Telegram</h3>
-    <p>This link only works with the Telegram app installed. Without it you get a login page instead of the file.</p>
-    <span class="sheet__host" id="sheet-host"></span>
-    <div class="sheet__acts">
-      <button class="btn btn--primary btn--block press" id="sheet-go" type="button">Open Telegram</button>
-      <button class="btn btn--block press" id="sheet-cancel" type="button">Cancel</button>
+<div class="alert" id="alert" data-open="0" data-closing="0" role="alertdialog" aria-modal="true"
+     aria-labelledby="alert-title" aria-describedby="alert-msg">
+  <div class="alert__bg"></div>
+  <div class="alert__box">
+    <div class="alert__body">
+      <h3 id="alert-title"></h3>
+      <p id="alert-msg"></p>
+      <span class="alert__host" id="alert-host"></span>
+    </div>
+    <div class="alert__acts">
+      <button type="button" id="alert-cancel">Cancel</button>
+      <button type="button" id="alert-go" class="alert__pri">Continue</button>
     </div>
   </div>
 </div>
