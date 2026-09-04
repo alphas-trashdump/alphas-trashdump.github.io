@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0c0f12">
+<meta name="theme-color" content="#000000">
 <title translate="no">alpha's trashdump</title>
 <meta name="description" content="HyperOS, MIUI and ColorOS ports for Redmi 4X, 4, 4A, 3S, 5A and Note 5A.">
 <link rel="canonical" href="https://alphas-trashdump.github.io/">
@@ -18,20 +18,21 @@
 <link rel="apple-touch-icon" href="res/favicon.svg">
 <link rel="manifest" href="manifest.webmanifest">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Latin/MiSansLatin-Regular.min.css">
+<link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Latin/MiSansLatin-Medium.min.css">
+<link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Latin/MiSansLatin-Semibold.min.css">
+<link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Latin/MiSansLatin-Bold.min.css">
 <link rel="stylesheet" href="assets/css/base.css">
 <link rel="stylesheet" href="assets/css/app.css">
 </head>
-<body data-view="home">
+<body data-view="home" data-scrolled="0">
 
-<header class="top">
+<header class="top" id="top">
   <div class="shell top__in">
-    <a class="top__act top__back" id="back" href="#/" aria-label="Back" data-icon="back"></a>
-    <a class="top__title mono" id="top-title" href="#/">alpha's trashdump</a>
-    <a class="top__act" href="#/people" aria-label="Maintainers" data-icon="people"></a>
+    <a class="top__act top__back press" id="back" href="#/" aria-label="Back" data-icon="back"></a>
+    <span class="top__title" id="top-title">alpha's trashdump</span>
+    <a class="top__act press" href="#/people" aria-label="Maintainers" data-icon="people"></a>
   </div>
 </header>
 
@@ -43,45 +44,45 @@
         <circle class="spin__dot" cx="4.2" cy="7" r="1.4" fill="currentColor"/>
       </svg>
     </span>
-    <span class="mono">Loading builds</span>
+    <span>Loading builds</span>
   </div>
   <noscript>
     <div class="empty">
-      <p class="empty__t">JavaScript is off.</p>
+      <h3>JavaScript is off</h3>
       <p>The build list needs it to render.</p>
     </div>
   </noscript>
 </main>
 
-<footer class="foot shell mono">
-  <span>alpha's trashdump</span>
-  <span>community ports, not Xiaomi software</span>
-  <a href="#/people">maintainers</a>
+<footer class="foot shell">
+  <span>Community ports. Not affiliated with Xiaomi or OPPO.</span>
+  <a href="#/people">Maintainers</a>
 </footer>
 
 <div class="lb" id="lb" data-open="0" role="dialog" aria-modal="true" aria-label="Screenshots">
   <div class="lb__track" id="lb-track"></div>
-  <button class="lb__close" id="lb-close" type="button" aria-label="Close">
+  <button class="lb__close press" id="lb-close" type="button" aria-label="Close">
     <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
   </button>
-  <div class="lb__count mono" id="lb-count"></div>
+  <div class="lb__count" id="lb-count"></div>
 </div>
 
-<div class="sheet" id="sheet" data-open="0" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+<div class="sheet" id="sheet" data-open="0" data-closing="0" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
   <div class="sheet__bg"></div>
-  <div class="sheet__box">
-    <p class="sheet__kicker mono">Opens in Telegram</p>
-    <h3 id="sheet-title" class="display">Needs the app.</h3>
-    <p>Without Telegram installed you land on a login page instead of the file.</p>
-    <span class="sheet__host mono" id="sheet-host"></span>
+  <div class="sheet__box" id="sheet-box">
+    <span class="sheet__grip" aria-hidden="true"></span>
+    <span class="sheet__ico" data-icon="send"></span>
+    <h3 id="sheet-title">Opens in Telegram</h3>
+    <p>This link only works with the Telegram app installed. Without it you get a login page instead of the file.</p>
+    <span class="sheet__host" id="sheet-host"></span>
     <div class="sheet__acts">
-      <button class="btn btn--primary btn--block" id="sheet-go" type="button">Open Telegram</button>
-      <button class="btn btn--block" id="sheet-cancel" type="button">Cancel</button>
+      <button class="btn press" id="sheet-cancel" type="button">Cancel</button>
+      <button class="btn btn--primary press" id="sheet-go" type="button">Open</button>
     </div>
   </div>
 </div>
 
-<div class="toast mono" id="toast" data-show="0" role="status" aria-live="polite"></div>
+<div class="toast" id="toast" data-show="0" role="status" aria-live="polite"></div>
 
 <script type="module" src="assets/js/app.js"></script>
 </body>

@@ -1,11 +1,12 @@
 /* router + wiring ---------------------------------------------------- */
 import { state, loadIndex, getRelease, hostOf } from "./store.js";
-import { renderHome, renderRelease, renderPeople, renderError, renderLoading, spinner, icon } from "./ui.js";
+import { renderHome, renderList, renderRelease, renderPeople, renderError, renderLoading, spinner, icon } from "./ui.js";
 
 const BRAND = "alpha's trashdump";
 const APP_HOSTS = new Set(["t.me", "telegram.me", "telegram.dog"]);
 
 const root = document.getElementById("app");
+const top = document.getElementById("top");
 const topTitle = document.getElementById("top-title");
 const backBtn = document.getElementById("back");
 const lb = document.getElementById("lb");
@@ -13,13 +14,17 @@ const lbTrack = document.getElementById("lb-track");
 const lbCount = document.getElementById("lb-count");
 const toastEl = document.getElementById("toast");
 const sheet = document.getElementById("sheet");
+const sheetBox = document.getElementById("sheet-box");
 const sheetHost = document.getElementById("sheet-host");
 const sheetGo = document.getElementById("sheet-go");
 const sheetCancel = document.getElementById("sheet-cancel");
 
+const isDialog = () => matchMedia("(orientation: landscape) and (max-height: 500px)").matches;
+
 let shots = [];
 let toastTimer = 0;
-let depth = 0; /* in-site navigations so far; lets "back" use history when safe */
+let depth = 0;      /* in-site navigations, so Back can use history when safe */
+let titleIO = null; /* watches the large title */
 
 /* ---- helpers ------------------------------------------------------- */
 
@@ -43,59 +48,94 @@ function parseHash() {
   return { view: "home" };
 }
 
+function lockScroll(on) {
+  document.documentElement.style.overflow = on ? "hidden" : "";
+}
+
 function trackImage(img, onFail) {
   const done = () => {
     img.dataset.loaded = "1";
     img.closest("button, figure")?.setAttribute("data-loaded", "1");
   };
-  if (img.complete) {
-    if (img.naturalWidth > 0) done(); else onFail?.(img);
-    return;
-  }
+  if (img.complete) { img.naturalWidth > 0 ? done() : onFail?.(img); return; }
   img.addEventListener("load", done, { once: true });
   img.addEventListener("error", () => onFail?.(img), { once: true });
 }
 
+/* large title collapses into the header once it scrolls under it */
+function watchTitle() {
+  titleIO?.disconnect();
+  const h1 = root.querySelector("h1");
+  if (!h1) { document.body.dataset.scrolled = "1"; return; }
+  titleIO = new IntersectionObserver(([e]) => {
+    document.body.dataset.scrolled = e.isIntersecting ? "0" : "1";
+  }, { rootMargin: `-${top.offsetHeight}px 0px 0px 0px`, threshold: 0 });
+  titleIO.observe(h1);
+}
+
+/* segmented control thumb follows the selected tab */
+function layoutSeg(seg) {
+  const thumb = seg?.querySelector(".seg__thumb");
+  const act = seg?.querySelector('[aria-selected="true"]');
+  if (!thumb || !act) return;
+  thumb.style.width = `${act.offsetWidth}px`;
+  thumb.style.transform = `translateX(${act.offsetLeft}px)`;
+  if (seg.dataset.ready !== "1") requestAnimationFrame(() => { seg.dataset.ready = "1"; });
+}
+
 /* ---- views --------------------------------------------------------- */
 
-function paint(html, view, { title = BRAND, animate = true } = {}) {
+function paint(html, view, title = BRAND) {
   document.body.dataset.view = view;
+  document.body.dataset.scrolled = "0";
   topTitle.textContent = title;
   root.innerHTML = html;
-  if (animate) {
-    root.classList.remove("is-in");
-    void root.offsetWidth;
-    root.classList.add("is-in");
-  }
   if (view === "home") wireHome();
   if (view === "release") wireRelease();
+  watchTitle();
 }
 
 function wireHome() {
   const input = root.querySelector("#q");
-  if (!input) return;
+  const list = root.querySelector("#list");
+  const seg = root.querySelector("#seg");
+  if (!input || !list) return;
   const search = input.closest(".search");
-  const rerender = () => {
-    const focused = document.activeElement === input;
-    const pos = input.selectionStart;
-    paint(renderHome(), "home", { animate: false });
-    if (focused) {
-      const next = root.querySelector("#q");
-      next.focus();
-      next.setSelectionRange(pos, pos);
-    }
-  };
+
+  const relist = () => { list.innerHTML = renderList(); };
+
   let debounce = 0;
   input.addEventListener("input", () => {
     state.query = input.value;
     search.dataset.filled = input.value ? "1" : "0";
     clearTimeout(debounce);
-    debounce = setTimeout(rerender, 120);
+    debounce = setTimeout(relist, 120);
   });
   root.querySelector("#q-clear")?.addEventListener("click", () => {
     state.query = "";
-    rerender();
+    input.value = "";
+    search.dataset.filled = "0";
+    relist();
+    input.focus();
   });
+
+  if (seg) {
+    layoutSeg(seg);
+    document.fonts?.ready.then(() => layoutSeg(seg));
+    seg.addEventListener("click", (e) => {
+      const tab = e.target.closest(".seg__it");
+      if (!tab) return;
+      e.preventDefault();
+      const key = tab.dataset.key;
+      if (state.device === key) return;
+      state.device = key;
+      history.replaceState(null, "", tab.getAttribute("href"));
+      seg.querySelectorAll(".seg__it").forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
+      tab.scrollIntoView?.({ inline: "nearest", block: "nearest" });
+      layoutSeg(seg);
+      relist();
+    });
+  }
 }
 
 function wireRelease() {
@@ -121,8 +161,8 @@ function watchShots() {
   const all = shots.slice();
   const dead = new Set();
 
-  const onFail = (img) => {
-    const btn = img.closest("button");
+  imgs.forEach((img) => trackImage(img, (bad) => {
+    const btn = bad.closest("button");
     const i = Number(btn?.dataset.shot);
     if (Number.isInteger(i)) dead.add(i);
     btn?.remove();
@@ -136,13 +176,11 @@ function watchShots() {
     if (tpl) { section.append(tpl.content.cloneNode(true)); tpl.remove(); }
     else {
       const p = document.createElement("p");
-      p.className = "shots__hint mono";
+      p.className = "shots__hint";
       p.textContent = "Screenshots unavailable.";
       section.append(p);
     }
-  };
-
-  imgs.forEach((img) => trackImage(img, onFail));
+  }));
 }
 
 async function route() {
@@ -150,14 +188,14 @@ async function route() {
 
   let idx = state.index;
   if (!idx) {
-    paint(renderLoading(), "home", { animate: false });
+    paint(renderLoading(), "home");
     try { idx = await loadIndex(); }
     catch (err) { paint(renderError(err.message || String(err)), "home"); return; }
   }
 
   if (r.view === "people") {
     setTitle(["Maintainers"]);
-    paint(renderPeople(), "people", { title: "maintainers" });
+    paint(renderPeople(), "people", "Maintainers");
     window.scrollTo(0, 0);
     return;
   }
@@ -167,7 +205,7 @@ async function route() {
     if (!rel) { location.replace("#/"); return; }
     shots = rel.screenshots;
     setTitle([rel.name]);
-    paint(renderRelease(rel), "release", { title: rel.name });
+    paint(renderRelease(rel), "release", rel.name);
     window.scrollTo(0, 0);
     return;
   }
@@ -187,13 +225,13 @@ function openLightbox(start) {
       <img src="${src}" alt="Screenshot ${i + 1}" decoding="async">
     </figure>`).join("");
   lb.dataset.open = "1";
-  document.documentElement.style.overflow = "hidden";
+  lockScroll(true);
 
   lbTrack.querySelectorAll("img").forEach((img) => trackImage(img, (bad) => {
     const fig = bad.closest("figure");
     if (!fig) return;
     fig.dataset.loaded = "1";
-    fig.replaceChildren(Object.assign(document.createElement("p"), { textContent: "image failed to load" }));
+    fig.replaceChildren(Object.assign(document.createElement("p"), { textContent: "This image failed to load" }));
   }));
 
   requestAnimationFrame(() => {
@@ -205,7 +243,7 @@ function openLightbox(start) {
 function closeLightbox() {
   lb.dataset.open = "0";
   lbTrack.innerHTML = "";
-  document.documentElement.style.overflow = "";
+  lockScroll(false);
 }
 
 function updateLbCount() {
@@ -214,18 +252,31 @@ function updateLbCount() {
   lbCount.textContent = `${Math.min(i + 1, shots.length)} / ${shots.length}`;
 }
 
-/* ---- telegram confirm ---------------------------------------------- */
+/* ---- telegram confirm sheet ---------------------------------------- */
 
 let pendingUrl = null;
+let closeTimer = 0;
 
-function askBeforeLeaving(url) {
+function openSheet(url) {
+  clearTimeout(closeTimer);
   pendingUrl = url;
   sheetHost.textContent = url.replace(/^https?:\/\//, "");
+  sheetBox.style.transform = "";
+  sheet.dataset.closing = "0";
   sheet.dataset.open = "1";
+  lockScroll(true);
 }
+
 function closeSheet() {
-  sheet.dataset.open = "0";
+  if (sheet.dataset.open !== "1" || sheet.dataset.closing === "1") return;
   pendingUrl = null;
+  sheet.dataset.closing = "1";
+  closeTimer = setTimeout(() => {
+    sheet.dataset.open = "0";
+    sheet.dataset.closing = "0";
+    sheetBox.style.transform = "";
+    lockScroll(false);
+  }, 260);
 }
 
 sheetCancel.addEventListener("click", closeSheet);
@@ -236,13 +287,38 @@ sheetGo.addEventListener("click", () => {
   if (url) window.open(url, "_blank", "noopener,noreferrer");
 });
 
+/* drag the sheet down to dismiss; springs back if released early */
+let drag = null;
+sheetBox.addEventListener("pointerdown", (e) => {
+  if (isDialog() || e.target.closest("button")) return;
+  drag = { y: e.clientY, dy: 0, t: performance.now() };
+  sheetBox.setPointerCapture(e.pointerId);
+  sheetBox.style.transition = "none";
+});
+sheetBox.addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  drag.dy = Math.max(0, e.clientY - drag.y);
+  sheetBox.style.transform = `translateY(${drag.dy}px)`;
+});
+const endDrag = () => {
+  if (!drag) return;
+  const { dy, t } = drag;
+  const velocity = dy / Math.max(1, performance.now() - t); /* px per ms */
+  drag = null;
+  sheetBox.style.transition = "transform var(--dur) var(--spring)";
+  if (dy > 110 || velocity > 0.6) closeSheet();
+  else sheetBox.style.transform = "";
+};
+sheetBox.addEventListener("pointerup", endDrag);
+sheetBox.addEventListener("pointercancel", endDrag);
+
 document.addEventListener("click", (e) => {
   const link = e.target.closest?.("a[href]");
   if (!link) return;
   const href = link.getAttribute("href") || "";
   if (!/^https?:/i.test(href) || !APP_HOSTS.has(hostOf(href))) return;
   e.preventDefault();
-  askBeforeLeaving(link.href);
+  openSheet(link.href);
 });
 
 /* ---- boot ---------------------------------------------------------- */
@@ -267,11 +343,19 @@ lb.addEventListener("click", (e) => {
 });
 lbTrack.addEventListener("scroll", () => requestAnimationFrame(updateLbCount), { passive: true });
 
-/* orientation flips re-measure the lightbox pages */
+/* orientation flips: re-measure the seg thumb, lightbox page and title watcher */
+let resizeTimer = 0;
 window.addEventListener("resize", () => {
-  if (lb.dataset.open !== "1") return;
-  const i = Math.round(lbTrack.scrollLeft / (lbTrack.clientWidth || 1));
-  requestAnimationFrame(() => { lbTrack.scrollLeft = i * lbTrack.clientWidth; updateLbCount(); });
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    layoutSeg(root.querySelector("#seg"));
+    watchTitle();
+    if (lb.dataset.open === "1") {
+      const i = Math.round(lbTrack.scrollLeft / (lbTrack.clientWidth || 1));
+      lbTrack.scrollLeft = i * lbTrack.clientWidth;
+      updateLbCount();
+    }
+  }, 80);
 });
 
 window.addEventListener("hashchange", () => {
