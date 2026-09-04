@@ -1,6 +1,5 @@
 /* router + wiring ---------------------------------------------------- */
 import { fx } from "./fx.js";
-import { Lens } from "./lens.js";
 import { state, loadIndex, getRelease, hostOf } from "./store.js";
 import { renderHome, renderList, renderRelease, renderPeople, renderError, renderLoading, spinner, icon, esc } from "./ui.js";
 
@@ -13,7 +12,6 @@ const lb = $("lb"), lbTrack = $("lb-track"), lbCount = $("lb-count"), toastEl = 
 const sheet = $("sheet"), sheetBox = $("sheet-box"), sheetHost = $("sheet-host");
 
 const isDialog = () => matchMedia("(orientation: landscape) and (max-height: 500px)").matches;
-const lens = fx.liquid ? new Lens("lens") : null;
 
 let shots = [];
 let toastTimer = 0;
@@ -58,23 +56,24 @@ function watchTitle() {
   titleIO.observe(h1);
 }
 
-/* ---- liquid device bar --------------------------------------------- */
+/* ---- segmented control: tap a segment, or drag the thumb ----------- */
 
 function wireSeg(seg, onChange) {
-  const lensEl = seg.querySelector(".seg__lens");
+  const thumb = seg.querySelector(".seg__thumb");
   const tabs = [...seg.querySelectorAll(".seg__it")];
   let cur = tabs.find((t) => t.getAttribute("aria-selected") === "true") || tabs[0];
   let x = 0, drag = null, live = 0;
 
-  const fit = (tab) => { lensEl.style.width = `${tab.offsetWidth}px`; lens?.setSize(tab.offsetWidth, lensEl.offsetHeight); };
-  const place = (tab) => { x = tab.offsetLeft; fit(tab); lensEl.style.transform = `translateX(${x}px)`; };
-  const mark = (tab) => {
-    if (tab === cur) return;
-    cur = tab;
-    tabs.forEach((t) => { const on = t === tab; t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1; });
-    navigator.vibrate?.(6);
+  const fit = (t) => { thumb.style.width = `${t.offsetWidth}px`; };
+  const place = (t) => { x = t.offsetLeft; fit(t); thumb.style.transform = `translateX(${x}px)`; };
+  const mark = (t) => {
+    if (t === cur) return;
+    cur = t;
+    tabs.forEach((b) => { const on = b === t; b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; });
+    navigator.vibrate?.(5);
   };
   const commit = () => onChange(cur.dataset.key, cur.dataset.href);
+  const select = (t) => { mark(t); place(t); commit(); };
   const nearest = (cx) => tabs.reduce((b, t) =>
     Math.abs(t.offsetLeft + t.offsetWidth / 2 - cx) < Math.abs(b.offsetLeft + b.offsetWidth / 2 - cx) ? t : b);
 
@@ -82,45 +81,46 @@ function wireSeg(seg, onChange) {
   requestAnimationFrame(() => { seg.dataset.ready = "1"; });
   document.fonts?.ready.then(() => place(cur));
 
-  /* tap + keyboard still work (a11y); the lens drag is the main gesture */
-  tabs.forEach((t) => t.addEventListener("click", () => { mark(t); place(t); commit(); }));
+  seg.addEventListener("pointerdown", (e) => {
+    if (e.button) return;
+    drag = { id: e.pointerId, px: e.clientX, x0: x, tab: e.target.closest(".seg__it"), moved: false };
+  });
+  seg.addEventListener("pointermove", (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.px;
+    if (!drag.moved) {
+      if (Math.abs(dx) < 5) return;
+      drag.moved = true;
+      seg.setPointerCapture(e.pointerId);
+      seg.classList.add("seg--drag");
+    }
+    const max = seg.scrollWidth - thumb.offsetWidth - 2;
+    x = Math.max(2, Math.min(max, drag.x0 + dx));
+    thumb.style.transform = `translateX(${x}px)`;
+    const t = nearest(x + thumb.offsetWidth / 2);
+    if (t !== cur) { mark(t); fit(t); clearTimeout(live); live = setTimeout(commit, 80); }
+  });
+  const end = (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const { moved, tab } = drag;
+    drag = null;
+    seg.classList.remove("seg--drag");
+    clearTimeout(live);
+    if (moved) { place(cur); commit(); }
+    else if (tab && e.type === "pointerup") select(tab);
+  };
+  seg.addEventListener("pointerup", end);
+  seg.addEventListener("pointercancel", end);
+
+  /* keyboard: Enter/Space (detail 0) and arrows */
+  seg.addEventListener("click", (e) => { const t = e.target.closest(".seg__it"); if (t && e.detail === 0) select(t); });
   seg.addEventListener("keydown", (e) => {
     const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
     if (!d) return;
     e.preventDefault();
     const next = tabs[(tabs.indexOf(cur) + d + tabs.length) % tabs.length];
-    mark(next); place(next); commit(); next.focus();
+    select(next); next.focus();
   });
-
-  /* hold the lens, slide, release to snap */
-  lensEl.addEventListener("pointerdown", (e) => {
-    drag = { px: e.clientX, x0: x };
-    lensEl.setPointerCapture(e.pointerId);
-    seg.classList.add("seg--drag");
-    e.preventDefault();
-  });
-  lensEl.addEventListener("pointermove", (e) => {
-    if (!drag) return;
-    const max = seg.scrollWidth - lensEl.offsetWidth - 3;
-    x = Math.max(3, Math.min(max, drag.x0 + (e.clientX - drag.px)));
-    lensEl.style.transform = `translateX(${x}px)`;
-    const t = nearest(x + lensEl.offsetWidth / 2);
-    if (t !== cur) {
-      mark(t); fit(t);
-      clearTimeout(live);
-      live = setTimeout(commit, 80);
-    }
-  });
-  const end = () => {
-    if (!drag) return;
-    drag = null;
-    seg.classList.remove("seg--drag");
-    clearTimeout(live);
-    place(cur);
-    commit();
-  };
-  lensEl.addEventListener("pointerup", end);
-  lensEl.addEventListener("pointercancel", end);
 
   return { relayout: () => place(cur) };
 }
@@ -170,6 +170,7 @@ function wireHome() {
     });
   }
 
+  /* ROM card: quick press bump, then the page lifts in from the bottom */
   list.addEventListener("click", (e) => {
     const a = e.target.closest("a.cell");
     if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
@@ -177,7 +178,7 @@ function wireHome() {
     if (!fx.rich) return;
     e.preventDefault();
     a.classList.add("cell--go");
-    setTimeout(() => { location.hash = a.getAttribute("href"); }, 140);
+    setTimeout(() => { location.hash = a.getAttribute("href"); }, 120);
   });
 }
 
@@ -327,10 +328,6 @@ document.addEventListener("click", (e) => {
 /* ---- boot ---------------------------------------------------------- */
 
 document.querySelectorAll("[data-icon]").forEach((el) => { el.innerHTML = icon(el.dataset.icon, "ico"); });
-
-/* footer toggle flips between tiers */
-const fxToggle = document.querySelector("[data-fx-toggle]");
-if (fxToggle) { fxToggle.textContent = fx.rich ? "Lite mode" : "Rich mode"; fxToggle.href = `?fx=${fx.rich ? "lite" : "rich"}${location.hash}`; }
 
 backBtn.addEventListener("click", (e) => { navDir = "pop"; if (depth > 0) { e.preventDefault(); history.back(); } });
 $("people-link").addEventListener("click", () => { navDir = "push"; });
