@@ -1,5 +1,4 @@
 /* router + wiring ---------------------------------------------------- */
-import { fx } from "./fx.js";
 import { state, loadIndex, getRelease, hostOf, mirrorHint } from "./store.js";
 import { renderHome, renderList, renderRelease, renderPeople, renderError, renderLoading, spinner, icon, esc } from "./ui.js";
 
@@ -172,7 +171,6 @@ function wireHome() {
     const a = e.target.closest("a.cell");
     if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
     navDir = "push";
-    if (!fx.rich) return;
     e.preventDefault();
     a.classList.add("cell--go");
     setTimeout(() => { location.hash = a.getAttribute("href"); }, 120);
@@ -312,7 +310,7 @@ function closeAlert() {
     alertEl.dataset.open = "0";
     alertEl.dataset.closing = "0";
     lockScroll(false);
-  }, fx.rich ? 200 : 0);
+  }, 200);
 }
 
 $("alert-cancel").addEventListener("click", closeAlert);

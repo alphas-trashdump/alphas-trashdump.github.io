@@ -1,8 +1,13 @@
 /* ------------------------------------------------------------------
    nav bar
    ------------------------------------------------------------------ */
-.top { position: sticky; top: 0; z-index: 40; padding-top: var(--sa-t); background: var(--bg); }
-html[data-fx="rich"] .top { background: rgba(0, 0, 0, 0.75); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
+.top {
+  position: sticky; top: 0; z-index: 40;
+  padding-top: var(--sa-t);
+  background: rgba(0, 0, 0, 0.75);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
 .top::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line); transform: scaleY(0.5); opacity: 0; transition: opacity 0.25s; }
 body[data-scrolled="1"] .top::after { opacity: 1; }
 .top__in { display: flex; align-items: center; gap: 6px; height: var(--header-h); }
@@ -10,7 +15,7 @@ body[data-scrolled="1"] .top::after { opacity: 1; }
   flex: 1; min-width: 0; text-align: center; padding: 0 6px;
   font-size: 17px; font-weight: 600; letter-spacing: -0.02em;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  opacity: 0; transform: translateY(8px) scale(0.96); filter: blur(6px);
+  opacity: 0; transform: translateY(8px) scale(0.96); filter: blur(2px);
   transition: opacity 0.25s var(--ease-out), filter 0.25s var(--ease-out), transform var(--t-snappy) var(--spring-snappy);
 }
 body[data-scrolled="1"] .top__title { opacity: 1; transform: none; filter: blur(0); }
@@ -206,17 +211,23 @@ body[data-view="release"] .top__back, body[data-view="people"] .top__back { disp
    ------------------------------------------------------------------ */
 .alert { position: fixed; inset: 0; z-index: 95; display: none; place-items: center; padding: 20px; }
 .alert[data-open="1"] { display: grid; }
-.alert__bg { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.42); animation: fade 0.25s var(--ease-out); }
-html[data-fx="rich"] .alert__bg { -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.alert__bg {
+  position: absolute; inset: 0;
+  background: rgba(0, 0, 0, 0.42);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: fade 0.25s var(--ease-out);
+}
 .alert__box {
   position: relative;
   width: 270px; max-width: 100%;
   border-radius: 14px; overflow: hidden;
-  background: #262628;
+  background: rgba(44, 44, 46, 0.85);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   text-align: center;
   animation: alert-in 0.42s var(--spring-snappy), fade 0.18s var(--ease-out);
 }
-html[data-fx="rich"] .alert__box { background: rgba(44, 44, 46, 0.72); -webkit-backdrop-filter: blur(30px) saturate(180%); backdrop-filter: blur(30px) saturate(180%); }
 .alert[data-closing="1"] .alert__bg,
 .alert[data-closing="1"] .alert__box { animation: fade 0.2s var(--ease-out) reverse forwards; }
 .alert__body { padding: 19px 16px 16px; }
@@ -255,40 +266,6 @@ body[data-nav="pop"]  #app { animation: pop-in var(--t-smooth) var(--spring-smoo
 @keyframes lift-in { from { transform: translateY(64px) scale(0.98); } }
 @keyframes pop-in  { from { transform: translateY(-14px); } }
 @keyframes fade-in { from { opacity: 0; } }
-
-/* ------------------------------------------------------------------
-   LITE tier: no blur, no heavy spring physics; smooth lightweight fade
-   ------------------------------------------------------------------ */
-html[data-fx="lite"] *, html[data-fx="lite"] *::before, html[data-fx="lite"] *::after {
-  animation: none !important; transition: none !important;
-  -webkit-backdrop-filter: none !important; backdrop-filter: none !important; filter: none !important;
-}
-html[data-fx="lite"] .spin__dot { animation: spin-dot 0.9s linear infinite !important; }
-html[data-fx="lite"] .seg__thumb {
-  opacity: 1 !important;
-  transition: transform 0.18s ease-out, width 0.18s ease-out !important;
-}
-html[data-fx="lite"] #app {
-  animation: lite-fade 0.2s ease-out both !important;
-}
-html[data-fx="lite"] .group {
-  animation: lite-fade 0.16s ease-out both !important;
-}
-html[data-fx="lite"] .alert[data-open="1"] .alert__bg,
-html[data-fx="lite"] .alert[data-open="1"] .alert__box,
-html[data-fx="lite"] .lb[data-open="1"] {
-  animation: lite-fade 0.18s ease-out both !important;
-}
-html[data-fx="lite"] .press:active,
-html[data-fx="lite"] a.cell:active,
-html[data-fx="lite"] .btn:active {
-  opacity: 0.68 !important;
-  transition: opacity 0.08s ease !important;
-}
-@keyframes lite-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
 
 /* ------------------------------------------------------------------
    ORIENTATION: phone sideways (short viewport)

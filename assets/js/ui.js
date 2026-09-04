@@ -1,5 +1,4 @@
 /* rendering ---------------------------------------------------------- */
-import { fx } from "./fx.js";
 import { state, filtered, groupByDevice, fmtDate, relDays, isFresh, mirrorHint } from "./store.js";
 
 export function esc(v) {
@@ -7,9 +6,8 @@ export function esc(v) {
 }
 const enc = (s) => encodeURIComponent(String(s));
 
-/* text motion — plain text in lite mode */
+/* text motion */
 export function letters(text) {
-  if (!fx.rich) return esc(text);
   let n = 0;
   return String(text).split(/(\s+)/).map((chunk) => {
     if (!chunk) return "";
@@ -18,12 +16,10 @@ export function letters(text) {
   }).join("");
 }
 export function words(text, step = 40, start = 0) {
-  if (!fx.rich) return esc(text);
   return String(text).split(/\s+/).filter(Boolean).map((w, n) =>
     `<span class="wd" style="--n:${n};--d:${start + n * step}ms">${esc(w)}</span>`).join(" ");
 }
 export function digits(v, start = 0) {
-  if (!fx.rich) return esc(v);
   return `<span class="num">${[...String(v)].map((d, n) => `<span class="dg" style="--d:${start + n * 50}ms">${esc(d)}</span>`).join("")}</span>`;
 }
 

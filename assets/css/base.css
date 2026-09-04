@@ -173,7 +173,7 @@ a.cell:active, button.cell:active { background: var(--card-2); transition-durati
 .wd { animation: rise-w var(--t-snappy) var(--spring-snappy) both, blur-in 0.4s var(--ease-out) both; animation-delay: var(--d, 0ms), var(--d, 0ms); }
 @keyframes rise-t { from { transform: translateY(0.45em) scale(0.9); } }
 @keyframes rise-w { from { transform: translateY(0.35em); } }
-@keyframes blur-in { from { opacity: 0; filter: blur(6px); } to { opacity: 1; filter: blur(0); } }
+@keyframes blur-in { from { opacity: 0; filter: blur(2px); } to { opacity: 1; filter: blur(0); } }
 
 .num { display: inline-flex; overflow: hidden; vertical-align: bottom; line-height: 1.2; }
 .dg { animation: dg-in var(--t-snappy) var(--spring-snappy) both; animation-delay: var(--d, 0ms); }
@@ -184,3 +184,12 @@ a.cell:active, button.cell:active { background: var(--card-2); transition-durati
 
 .in { animation: in var(--t-snappy) var(--spring-snappy) both; animation-delay: calc(min(var(--i, 0), 6) * 45ms); }
 @keyframes in { from { opacity: 0; transform: translateY(14px) scale(0.99); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

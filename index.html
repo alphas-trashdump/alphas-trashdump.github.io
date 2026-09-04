@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-fx="lite">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -13,23 +13,6 @@
 <meta property="og:description" content="HyperOS, MIUI and ColorOS ports for Xiaomi msm8937 devices.">
 <meta property="og:url" content="https://alphas-trashdump.github.io/">
 <meta name="twitter:card" content="summary">
-
-<script>
-(function () {
-  var q = new URLSearchParams(location.search).get("fx"), s = null, rich;
-  try { s = localStorage.getItem("fx"); } catch (e) {}
-  var pick = q || s;
-  if (pick === "rich" || pick === "lite") rich = pick === "rich";
-  else {
-    var mem = navigator.deviceMemory, cores = navigator.hardwareConcurrency || 0;
-    var rm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var sd = navigator.connection && navigator.connection.saveData;
-    rich = !rm && !sd && (mem != null ? mem > 6 : cores >= 6);
-  }
-  document.documentElement.dataset.fx = rich ? "rich" : "lite";
-  if (q === "rich" || q === "lite") { try { localStorage.setItem("fx", q); } catch (e) {} }
-})();
-</script>
 
 <link rel="icon" href="res/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="res/favicon.svg">
