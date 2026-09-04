@@ -256,14 +256,38 @@ body[data-nav="pop"]  #app { animation: pop-in var(--t-smooth) var(--spring-smoo
 @keyframes fade-in { from { opacity: 0; } }
 
 /* ------------------------------------------------------------------
-   LITE tier: no blur, no entrances, no text motion; spinner still spins
+   LITE tier: no blur, no heavy spring physics; smooth lightweight fade
    ------------------------------------------------------------------ */
 html[data-fx="lite"] *, html[data-fx="lite"] *::before, html[data-fx="lite"] *::after {
   animation: none !important; transition: none !important;
   -webkit-backdrop-filter: none !important; backdrop-filter: none !important; filter: none !important;
 }
 html[data-fx="lite"] .spin__dot { animation: spin-dot 0.9s linear infinite !important; }
-html[data-fx="lite"] .seg__thumb { opacity: 1; }
+html[data-fx="lite"] .seg__thumb {
+  opacity: 1 !important;
+  transition: transform 0.18s ease-out, width 0.18s ease-out !important;
+}
+html[data-fx="lite"] #app {
+  animation: lite-fade 0.2s ease-out both !important;
+}
+html[data-fx="lite"] .group {
+  animation: lite-fade 0.16s ease-out both !important;
+}
+html[data-fx="lite"] .sheet[data-open="1"] .sheet__bg,
+html[data-fx="lite"] .sheet[data-open="1"] .sheet__box,
+html[data-fx="lite"] .lb[data-open="1"] {
+  animation: lite-fade 0.18s ease-out both !important;
+}
+html[data-fx="lite"] .press:active,
+html[data-fx="lite"] a.cell:active,
+html[data-fx="lite"] .btn:active {
+  opacity: 0.68 !important;
+  transition: opacity 0.08s ease !important;
+}
+@keyframes lite-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 /* ------------------------------------------------------------------
    ORIENTATION: phone sideways (short viewport)
