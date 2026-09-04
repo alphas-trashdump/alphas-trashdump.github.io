@@ -1,6 +1,6 @@
 /* router + wiring ---------------------------------------------------- */
 import { state, loadIndex, getRelease, hostOf } from "./store.js";
-import { renderHome, renderList, renderRelease, renderPeople, renderError, renderLoading, spinner, icon } from "./ui.js";
+import { renderHome, renderList, renderRelease, renderPeople, renderError, renderLoading, spinner, icon, esc } from "./ui.js";
 
 const BRAND = "alpha's trashdump";
 const APP_HOSTS = new Set(["t.me", "telegram.me", "telegram.dog"]);
@@ -25,6 +25,7 @@ let shots = [];
 let toastTimer = 0;
 let depth = 0;      /* in-site navigations, so Back can use history when safe */
 let titleIO = null; /* watches the large title */
+let navDir = "none"; /* push | pop | none — drives the page slide */
 
 /* ---- helpers ------------------------------------------------------- */
 
@@ -88,8 +89,12 @@ function layoutSeg(seg) {
 function paint(html, view, title = BRAND) {
   document.body.dataset.view = view;
   document.body.dataset.scrolled = "0";
+  document.body.dataset.nav = "none";
   topTitle.textContent = title;
   root.innerHTML = html;
+  void root.offsetWidth;                 /* restart the slide animation */
+  document.body.dataset.nav = navDir;
+  navDir = "none";
   if (view === "home") wireHome();
   if (view === "release") wireRelease();
   watchTitle();
@@ -117,6 +122,16 @@ function wireHome() {
     search.dataset.filled = "0";
     relist();
     input.focus();
+  });
+
+  list.addEventListener("click", (e) => {
+    const a = e.target.closest("a.cell");
+    if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    navDir = "push";
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    e.preventDefault();
+    a.classList.add("cell--go");
+    setTimeout(() => { location.hash = a.getAttribute("href"); }, 140);
   });
 
   if (seg) {
@@ -225,6 +240,7 @@ function openLightbox(start) {
       <img src="${src}" alt="Screenshot ${i + 1}" decoding="async">
     </figure>`).join("");
   lb.dataset.open = "1";
+  lbCount.dataset.text = ""; lbCount.textContent = "";
   lockScroll(true);
 
   lbTrack.querySelectorAll("img").forEach((img) => trackImage(img, (bad) => {
@@ -246,10 +262,23 @@ function closeLightbox() {
   lockScroll(false);
 }
 
+/* iOS numericText: only changed characters roll, direction follows the value */
+function rollTo(el, text) {
+  const prev = el.dataset.text ?? "";
+  if (prev === text) return;
+  el.dataset.text = text;
+  const old = [...prev];
+  el.innerHTML = [...text].map((c, i) => {
+    if (old[i] === c) return `<span class="rl">${esc(c)}</span>`;
+    const dir = old[i] == null || old[i] < c ? 1 : -1;
+    return `<span class="rl rl--in" style="--dir:${dir}">${esc(c)}</span>`;
+  }).join("");
+}
+
 function updateLbCount() {
   if (lb.dataset.open !== "1" || !lbTrack.clientWidth) return;
   const i = Math.round(lbTrack.scrollLeft / lbTrack.clientWidth);
-  lbCount.textContent = `${Math.min(i + 1, shots.length)} / ${shots.length}`;
+  rollTo(lbCount, `${Math.min(i + 1, shots.length)} / ${shots.length}`);
 }
 
 /* ---- telegram confirm sheet ---------------------------------------- */
@@ -328,8 +357,10 @@ document.querySelectorAll("[data-icon]").forEach((el) => {
 });
 
 backBtn.addEventListener("click", (e) => {
+  navDir = "pop";
   if (depth > 0) { e.preventDefault(); history.back(); }
 });
+document.querySelector('.top__act[href="#/people"]').addEventListener("click", () => { navDir = "push"; });
 
 window.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;

@@ -1,39 +1,41 @@
 /* ------------------------------------------------------------------
-   tokens
+   tokens — iOS dark, grouped
    ------------------------------------------------------------------ */
 :root {
   color-scheme: dark;
 
   --bg: #000;
-  --bg-2: #121214;          /* sheet / dialog */
-  --card: #1a1a1d;
-  --card-2: #252529;        /* pressed cell */
-  --card-3: #313136;        /* secondary button, seg thumb */
-  --line: rgba(255, 255, 255, 0.07);
+  --bg-2: #1c1c1e;                          /* sheets, dialogs */
+  --card: #1c1c1e;
+  --card-2: #2c2c2e;                        /* pressed cell / elevated */
+  --card-3: #3a3a3c;
+  --fill: rgba(120, 120, 128, 0.24);        /* tertiary system fill */
+  --fill-2: rgba(120, 120, 128, 0.36);
+  --line: rgba(84, 84, 88, 0.6);
 
-  --fg: #f4f4f6;
-  --fg-2: rgba(244, 244, 246, 0.62);
-  --fg-3: rgba(244, 244, 246, 0.38);
+  --fg: #fff;
+  --fg-2: rgba(235, 235, 245, 0.6);
+  --fg-3: rgba(235, 235, 245, 0.3);
 
-  --accent: #3d8bff;
-  --accent-fg: #fff;
-  --accent-soft: rgba(61, 139, 255, 0.16);
-  --ok: #35c97c;   --ok-soft: rgba(53, 201, 124, 0.14);
-  --warn: #f2a33c; --warn-soft: rgba(242, 163, 60, 0.14);
-  --bad: #ff5f57;  --bad-soft: rgba(255, 95, 87, 0.14);
+  --blue: #0a84ff;   --green: #30d158;  --orange: #ff9f0a;
+  --red: #ff453a;    --teal: #64d2ff;   --indigo: #5e5ce6;
 
-  --r-card: 22px;
-  --r-md: 16px;
-  --r-sm: 12px;
+  --accent: var(--blue);
+  --accent-soft: rgba(10, 132, 255, 0.16);
+  --ok: var(--green);   --ok-soft: rgba(48, 209, 88, 0.16);
+  --warn: var(--orange); --warn-soft: rgba(255, 159, 10, 0.14);
+  --bad: var(--red);    --bad-soft: rgba(255, 69, 58, 0.14);
+
+  --r-card: 14px;
+  --r-md: 12px;
+  --r-sm: 10px;
   --r-pill: 999px;
 
-  /* the misans npm package registers "MiSans Latin"; keep both names */
-  --sans: "MiSans Latin", MiSansLatin, "MiSans", "OPPO Sans", "HarmonyOS Sans",
-          system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
 
   --page: 640px;
   --gutter: 16px;
-  --header-h: 56px;
+  --header-h: 50px;
 
   --sa-t: env(safe-area-inset-top, 0px);
   --sa-b: env(safe-area-inset-bottom, 0px);
@@ -42,25 +44,35 @@
   --gx-l: max(var(--gutter), var(--sa-l));
   --gx-r: max(var(--gutter), var(--sa-r));
 
-  /* motion */
-  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --spring: cubic-bezier(0.34, 1.35, 0.64, 1);   /* fallback: overshoot */
-  --spring-soft: cubic-bezier(0.22, 1, 0.36, 1); /* fallback: settle    */
-  --dur: 0.6s;
-  --dur-soft: 0.45s;
+  /* motion — fallbacks */
+  --ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --spring-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring-snappy: cubic-bezier(0.3, 1.1, 0.4, 1);
+  --spring-bouncy: cubic-bezier(0.3, 1.3, 0.5, 1);
+  --t-smooth: 0.8s;
+  --t-snappy: 0.6s;
+  --t-bouncy: 0.72s;
 }
 
-/* real damped-spring samples where linear() is supported */
+/* SwiftUI spring(response: 0.5) sampled at three damping fractions */
 @supports (animation-timing-function: linear(0, 1)) {
   :root {
-    --spring: linear(
-      0, 0.007, 0.028 2.2%, 0.111 4.7%, 0.24 7.3%, 0.601 13.5%, 0.733 16.4%,
-      0.85 19.6%, 0.939 22.9%, 1.006 26.5%, 1.052 30.5%, 1.078 35.1%, 1.083 40.4%,
-      1.058 50.1%, 1.017 62.8%, 0.996 78.2%, 1
+    /* dampingFraction 1.0 — critically damped */
+    --spring-smooth: linear(
+      0, 0.091 5%, 0.266 10%, 0.445 15%, 0.597 20%, 0.715 25%, 0.803 30%,
+      0.866 35%, 0.91 40%, 0.94 45%, 0.96 50%, 0.983 60%, 0.993 70%, 0.997 80%, 0.999 90%, 1
     );
-    --spring-soft: linear(
-      0, 0.013 1.4%, 0.051 2.9%, 0.19 6%, 0.532 12.3%, 0.75 17.2%, 0.893 22.5%,
-      0.968 28.2%, 1.006 34.5%, 1.019 41.6%, 1.015 50.7%, 1.003 66.4%, 1
+    /* dampingFraction 0.85 — "snappy" */
+    --spring-snappy: linear(
+      0, 0.095 6.7%, 0.285 13.3%, 0.486 20%, 0.657 26.7%, 0.786 33.3%, 0.877 40%,
+      0.936 46.7%, 0.972 53.3%, 0.992 60%, 1.002 66.7%, 1.006 73.3%, 1.006 80%,
+      1.006 86.7%, 1.004 93.3%, 1
+    );
+    /* dampingFraction 0.7 — "bouncy" */
+    --spring-bouncy: linear(
+      0, 0.1 5.6%, 0.308 11.1%, 0.535 16.7%, 0.729 22.2%, 0.874 27.8%, 0.968 33.3%,
+      1.02 38.9%, 1.042 44.4%, 1.046 50%, 1.039 55.6%, 1.029 61.1%, 1.019 66.7%,
+      1.011 72.2%, 1.005 77.8%, 1.001 83.3%, 0.999 88.9%, 1
     );
   }
 }
@@ -74,12 +86,11 @@ body {
   min-height: 100dvh;
   background: var(--bg);
   color: var(--fg);
-  font: 400 15px/1.5 var(--sans);
-  letter-spacing: -0.006em;
+  font: 400 16px/1.4 var(--sans);
+  letter-spacing: -0.012em;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   overscroll-behavior-y: none;
-  font-variant-numeric: tabular-nums;
 }
 a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
@@ -99,49 +110,51 @@ svg { display: block; }
    ------------------------------------------------------------------ */
 .shell { width: 100%; max-width: var(--page); margin: 0 auto; padding-left: var(--gx-l); padding-right: var(--gx-r); }
 
-/* press feedback: fast in, spring out */
-.press { transition: transform var(--dur) var(--spring), background 0.25s var(--ease-out), color 0.2s; }
-.press:active { transform: scale(0.96); transition: transform 0.08s var(--ease-out), background 0.05s; }
+/* press: quick in, springs out */
+.press { transition: transform var(--t-snappy) var(--spring-snappy), opacity 0.2s, background 0.25s var(--ease-out); }
+.press:active { transform: scale(0.96); transition: transform 0.09s var(--ease-out), background 0.05s; }
 
-/* section caption */
+/* section caption: iOS grouped header (small caps, inset) */
 .cap {
   display: flex; align-items: baseline; gap: 8px;
-  padding: 0 18px 8px;
-  font-size: 13px; font-weight: 500; color: var(--fg-3);
+  padding: 0 16px 7px;
+  font-size: 13px; color: var(--fg-2);
+  text-transform: uppercase; letter-spacing: 0.01em;
 }
-.cap span { min-width: 0; font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cap b { font-weight: 400; }
+.cap span { min-width: 0; text-transform: none; color: var(--fg-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* grouped card */
 .card { background: var(--card); border-radius: var(--r-card); overflow: hidden; }
-.card + .cap { margin-top: 22px; }
+.card + .cap { margin-top: 26px; }
 
-/* cell inside a card */
+/* cell */
 .cell {
   position: relative;
   display: flex; align-items: center; gap: 12px;
-  min-height: 60px;
-  padding: 12px 16px 12px 18px;
-  transition: background 0.25s var(--ease-out), transform var(--dur) var(--spring);
+  min-height: 52px;
+  padding: 11px 14px 11px 16px;
+  transition: background 0.25s var(--ease-out), transform var(--t-snappy) var(--spring-snappy);
 }
-.cell + .cell::before { content: ""; position: absolute; top: 0; left: 18px; right: 0; height: 1px; background: var(--line); }
-a.cell:active, button.cell:active { background: var(--card-2); transform: scale(0.985); transition-duration: 0.05s, 0.08s; }
-.cell__ico { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 13px; background: var(--accent-soft); color: var(--accent); }
-.cell__ico--dim { background: var(--card-3); color: var(--fg-2); }
+.cell + .cell::before { content: ""; position: absolute; top: 0; left: 16px; right: 0; height: 1px; background: var(--line); transform: scaleY(0.5); transform-origin: top; }
+a.cell:active, button.cell:active { background: var(--card-2); transition-duration: 0.05s; }
+.cell__ico { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 8px; background: var(--accent); color: #fff; }
+.cell__ico--dim { background: var(--card-3); color: var(--fg); }
 .cell__body { flex: 1; min-width: 0; }
-.cell__t { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 500; line-height: 1.3; }
+.cell__t { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 400; line-height: 1.3; letter-spacing: -0.02em; }
 .cell__t > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cell__s { margin-top: 3px; font-size: 13px; color: var(--fg-3); }
-.cell__v { flex: none; font-size: 14px; color: var(--fg-3); white-space: nowrap; }
-.cell__v--ok { color: var(--ok); }  .cell__v--accent { color: var(--accent); }  .cell__v--warn { color: var(--warn); }
-.cell__chev { flex: none; color: var(--fg-3); }
+.cell__s { margin-top: 2px; font-size: 13px; color: var(--fg-2); }
+.cell__v { flex: none; font-size: 15px; color: var(--fg-2); white-space: nowrap; }
+.cell__v--ok { color: var(--ok); } .cell__v--accent { color: var(--accent); } .cell__v--warn { color: var(--warn); }
+.cell__chev { flex: none; color: var(--fg-3); width: 14px; height: 14px; stroke-width: 2.4; }
 
 /* pills */
 .pill {
   display: inline-flex; align-items: center; gap: 5px;
   height: 26px; padding: 0 10px;
   border-radius: var(--r-pill);
-  background: var(--card);
-  font-size: 12.5px; font-weight: 500; color: var(--fg-2);
+  background: var(--fill);
+  font-size: 13px; font-weight: 500; color: var(--fg-2);
   white-space: nowrap;
 }
 .pill--accent { background: var(--accent-soft); color: var(--accent); }
@@ -150,31 +163,27 @@ a.cell:active, button.cell:active { background: var(--card-2); transform: scale(
 .pill--bad { background: var(--bad-soft); color: var(--bad); }
 
 .badge {
-  flex: none;
-  padding: 1px 6px;
-  border-radius: 6px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 10.5px; font-weight: 600; line-height: 1.5;
-  text-transform: uppercase; letter-spacing: 0.04em;
+  flex: none; padding: 1px 6px; border-radius: 6px;
+  background: var(--accent); color: #fff;
+  font-size: 11px; font-weight: 700; line-height: 1.5; letter-spacing: 0.02em;
 }
 
-/* buttons */
+/* buttons: iOS 15+ filled */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 48px; padding: 0 20px;
-  border-radius: var(--r-pill);
-  background: var(--card-3);
-  font-size: 15px; font-weight: 500; color: var(--fg);
+  min-height: 50px; padding: 0 20px;
+  border-radius: 14px;
+  background: var(--fill-2);
+  font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: var(--fg);
 }
-.btn--primary { background: var(--accent); color: var(--accent-fg); }
+.btn--primary { background: var(--accent); color: #fff; }
 .btn--block { width: 100%; }
 
-.ico { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.ico { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .ico--sm { width: 16px; height: 16px; }
-.ico--lg { width: 24px; height: 24px; }
+.ico--lg { width: 22px; height: 22px; }
 
-/* spinner: faint ring + orbiting dot */
+/* spinner */
 .spin { display: inline-block; width: 22px; height: 22px; flex: none; color: var(--fg-2); }
 .spin svg { width: 100%; height: 100%; }
 .spin__ring { opacity: 0.25; }
@@ -184,12 +193,36 @@ a.cell:active, button.cell:active { background: var(--card-2); transform: scale(
 .spin--on-dark { color: #fff; }
 @keyframes spin-dot { to { transform: rotate(360deg); } }
 
-.loading { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 80px 20px; color: var(--fg-3); font-size: 14px; }
+.loading { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 80px 20px; color: var(--fg-3); font-size: 15px; }
 .empty { padding: 56px 16px; text-align: center; }
-.empty h3 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
-.empty p { font-size: 14px; color: var(--fg-3); }
+.empty h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
+.empty p { font-size: 15px; color: var(--fg-2); }
+
+/* ------------------------------------------------------------------
+   text reveal primitives
+   ------------------------------------------------------------------ */
+/* glyphs: transform on a spring, blur/opacity on ease-out */
+.ch, .wd, .dg { display: inline-block; will-change: transform, opacity, filter; }
+.ch { animation: rise-t var(--t-bouncy) var(--spring-bouncy) both, blur-in 0.45s var(--ease-out) both; animation-delay: var(--d, 0ms), var(--d, 0ms); }
+.wd { animation: rise-w var(--t-snappy) var(--spring-snappy) both, blur-in 0.4s var(--ease-out) both; animation-delay: var(--d, 0ms), var(--d, 0ms); }
+.w { display: inline-block; white-space: nowrap; }
+@keyframes rise-t { from { transform: translateY(0.45em) scale(0.9); } }
+@keyframes rise-w { from { transform: translateY(0.35em); } }
+@keyframes blur-in { from { opacity: 0; filter: blur(7px); } to { opacity: 1; filter: blur(0); } }
+
+/* rolling digits */
+.num { display: inline-flex; overflow: hidden; vertical-align: bottom; line-height: 1.2; }
+.dg { animation: dg-in var(--t-snappy) var(--spring-snappy) both; animation-delay: var(--d, 0ms); }
+@keyframes dg-in { from { transform: translateY(110%); opacity: 0; } }
+.rl { display: inline-block; }
+.rl--in { animation: rl-in 0.5s var(--spring-snappy) both, blur-in 0.3s var(--ease-out) both; }
+@keyframes rl-in { from { transform: translateY(calc(var(--dir, 1) * 90%)); } }
+
+/* staggered block entrance */
+.in { animation: in var(--t-snappy) var(--spring-snappy) both; animation-delay: calc(min(var(--i, 0), 6) * 45ms); }
+@keyframes in { from { opacity: 0; transform: translateY(14px) scale(0.99); } }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; animation-delay: 0ms !important; }
   .spin__dot { animation: spin-dot 2.4s steps(8, end) infinite !important; animation-duration: 2.4s !important; }
 }

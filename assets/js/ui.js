@@ -8,6 +8,28 @@ export function esc(value) {
 }
 const enc = (s) => encodeURIComponent(String(s));
 
+/* glyph-by-glyph; words stay unbreakable so wrapping is sane */
+export function letters(text) {
+  let n = 0;
+  return String(text).split(/(\s+)/).map((chunk) => {
+    if (!chunk) return "";
+    if (!chunk.trim()) return " ";
+    return `<span class="w">${[...chunk].map((ch) => `<span class="ch" style="--n:${n++}">${esc(ch)}</span>`).join("")}</span>`;
+  }).join("");
+}
+
+/* word-by-word */
+export function words(text, step = 40, start = 0) {
+  return String(text).split(/\s+/).filter(Boolean).map((w, n) =>
+    `<span class="wd" style="--n:${n};--d:${start + n * step}ms">${esc(w)}</span>`).join(" ");
+}
+
+/* number that rolls in digit by digit */
+export function digits(value, start = 0) {
+  return `<span class="num">${[...String(value)].map((d, n) =>
+    `<span class="dg" style="--d:${start + n * 50}ms">${esc(d)}</span>`).join("")}</span>`;
+}
+
 const PATHS = {
   chevron: "M9.5 5.5 16 12l-6.5 6.5",
   back: "M14.5 5.5 8 12l6.5 6.5",
@@ -60,15 +82,15 @@ export function renderHome() {
   return `
     <div class="home">
       <div class="home__top">
-        <section class="hero in" style="--i:0">
-          <h1>alpha's trashdump</h1>
+        <section class="hero">
+          <h1 aria-label="alpha's trashdump"><span aria-hidden="true">${letters("alpha's trashdump")}</span></h1>
           <p class="meta">
-            <span>${idx.releases.length} builds</span>
-            <span>${idx.devices.length} device families</span>
-            ${latest ? `<span>updated ${fmtDate(latest)}</span>` : ""}
+            <span>${digits(idx.releases.length, 350)} builds</span>
+            <span>${digits(idx.devices.length, 450)} device families</span>
+            ${latest ? `<span>${words(`updated ${fmtDate(latest)}`, 40, 500)}</span>` : ""}
           </p>
         </section>
-        <div class="tools in" style="--i:1">
+        <div class="tools in" style="--i:2">
           <label class="search" data-filled="${state.query ? 1 : 0}">
             ${icon("search", "ico ico--sm")}
             <input id="q" type="search" inputmode="search" autocomplete="off" spellcheck="false"
@@ -128,14 +150,14 @@ export function renderRelease(rel) {
 
   return `
     <article class="release">
-      <header class="release__head in" style="--i:0">
-        <h1>${esc(rel.name)}</h1>
-        <p class="release__sub">${esc(rel.device_.fullName || rel.device_.name)} · ${esc(rel.maintainer_.name)}</p>
+      <header class="release__head">
+        <h1 class="title" aria-label="${esc(rel.name)}"><span aria-hidden="true">${letters(rel.name)}</span></h1>
+        <p class="release__sub">${words(`${rel.device_.fullName || rel.device_.name} · ${rel.maintainer_.name}`)}</p>
         <div class="release__pills">
-          <span class="pill pill--${c.tone}">${c.text}</span>
-          <span class="pill">Android ${esc(rel.android)}</span>
-          ${rel.size ? `<span class="pill">${esc(rel.size)}</span>` : ""}
-          <span class="pill">${fmtDate(rel.date)}</span>
+          <span class="pill pill--${c.tone} in" style="--i:0">${c.text}</span>
+          <span class="pill in" style="--i:1">Android ${esc(rel.android)}</span>
+          ${rel.size ? `<span class="pill in" style="--i:2">${esc(rel.size)}</span>` : ""}
+          <span class="pill in" style="--i:3">${fmtDate(rel.date)}</span>
         </div>
         ${noteBlock(rel)}
       </header>
@@ -292,11 +314,11 @@ export function renderPeople() {
   const people = Object.values(idx.maintainers).sort((a, b) => (counts.get(b.id) || 0) - (counts.get(a.id) || 0));
 
   return `
-    <section class="hero in" style="--i:0">
-      <h1>Maintainers</h1>
-      <p>They port the ROMs. They also decide which bugs you learn to live with.</p>
+    <section class="hero">
+      <h1 aria-label="Maintainers"><span aria-hidden="true">${letters("Maintainers")}</span></h1>
+      <p>${words("They port the ROMs. They also decide which bugs you learn to live with.", 30, 250)}</p>
     </section>
-    <div class="card in" style="--i:1">${people.map((m) => person(m, counts.get(m.id) || 0)).join("")}</div>`;
+    <div class="card in" style="--i:3">${people.map((m) => person(m, counts.get(m.id) || 0)).join("")}</div>`;
 }
 
 export function renderLoading(text = "Loading builds") {

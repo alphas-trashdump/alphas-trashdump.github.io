@@ -18,11 +18,9 @@
 <link rel="apple-touch-icon" href="res/favicon.svg">
 <link rel="manifest" href="manifest.webmanifest">
 
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Latin/MiSansLatin-Regular.min.css">
-<link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Latin/MiSansLatin-Medium.min.css">
-<link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Latin/MiSansLatin-Semibold.min.css">
-<link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Latin/MiSansLatin-Bold.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap">
 <link rel="stylesheet" href="assets/css/base.css">
 <link rel="stylesheet" href="assets/css/app.css">
 </head>
@@ -30,7 +28,9 @@
 
 <header class="top" id="top">
   <div class="shell top__in">
-    <a class="top__act top__back press" id="back" href="#/" aria-label="Back" data-icon="back"></a>
+    <a class="top__back press" id="back" href="#/" aria-label="Back">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg><span>Builds</span>
+    </a>
     <span class="top__title" id="top-title">alpha's trashdump</span>
     <a class="top__act press" href="#/people" aria-label="Maintainers" data-icon="people"></a>
   </div>
@@ -76,8 +76,8 @@
     <p>This link only works with the Telegram app installed. Without it you get a login page instead of the file.</p>
     <span class="sheet__host" id="sheet-host"></span>
     <div class="sheet__acts">
-      <button class="btn press" id="sheet-cancel" type="button">Cancel</button>
-      <button class="btn btn--primary press" id="sheet-go" type="button">Open</button>
+      <button class="btn btn--primary btn--block press" id="sheet-go" type="button">Open Telegram</button>
+      <button class="btn btn--block press" id="sheet-cancel" type="button">Cancel</button>
     </div>
   </div>
 </div>
