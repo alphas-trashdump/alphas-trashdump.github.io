@@ -6,19 +6,9 @@ export function esc(v) {
 }
 const enc = (s) => encodeURIComponent(String(s));
 
-/* text motion */
-export function letters(text) {
-  let n = 0;
-  return String(text).split(/(\s+)/).map((chunk) => {
-    if (!chunk) return "";
-    if (!chunk.trim()) return " ";
-    return `<span class="w">${[...chunk].map((ch) => `<span class="ch" style="--n:${n++}">${esc(ch)}</span>`).join("")}</span>`;
-  }).join("");
-}
-export function words(text, step = 40, start = 0) {
-  return String(text).split(/\s+/).filter(Boolean).map((w, n) =>
-    `<span class="wd" style="--n:${n};--d:${start + n * step}ms">${esc(w)}</span>`).join(" ");
-}
+/* text helpers */
+export function letters(text) { return esc(text); }
+export function words(text) { return esc(text); }
 export function digits(v, start = 0) {
   return `<span class="num">${[...String(v)].map((d, n) => `<span class="dg" style="--d:${start + n * 50}ms">${esc(d)}</span>`).join("")}</span>`;
 }
@@ -64,8 +54,8 @@ export function renderHome() {
     <div class="home">
       <div class="home__top">
         <section class="hero">
-          <h1 aria-label="alpha's trashdump"><span aria-hidden="true">${letters("alpha's trashdump")}</span></h1>
-          <p>${digits(idx.releases.length, 300)} builds · ${digits(idx.devices.length, 380)} devices${latest ? ` · ${words(`updated ${fmtDate(latest)}`, 40, 440)}` : ""}</p>
+          <h1 translate="no" class="notranslate">${esc("alpha's trashdump")}</h1>
+          <p>${digits(idx.releases.length, 300)} builds · ${digits(idx.devices.length, 380)} devices${latest ? ` · updated ${fmtDate(latest)}` : ""}</p>
         </section>
         <div class="tools in" style="--i:2">
           <label class="search" data-filled="${state.query ? 1 : 0}">
@@ -117,8 +107,8 @@ export function renderRelease(rel) {
   return `
     <article class="release">
       <header class="release__head">
-        <h1 class="title" aria-label="${esc(rel.name)}"><span aria-hidden="true">${letters(rel.name)}</span></h1>
-        <p class="release__sub">${words(`${rel.device_.fullName || rel.device_.name} · ${rel.maintainer_.name}`)}</p>
+        <h1 class="title notranslate" translate="no">${esc(rel.name)}</h1>
+        <p class="release__sub">${esc(rel.device_.fullName || rel.device_.name)} · ${esc(rel.maintainer_.name)}</p>
         <div class="release__pills">
           <span class="pill in" style="--i:0">${channel(rel.channel)}</span>
           <span class="pill in" style="--i:1">Android ${esc(rel.android)}</span>
@@ -267,8 +257,8 @@ export function renderPeople() {
   const people = Object.values(idx.maintainers).sort((a, b) => (counts.get(b.id) || 0) - (counts.get(a.id) || 0));
   return `
     <section class="hero">
-      <h1 aria-label="Maintainers"><span aria-hidden="true">${letters("Maintainers")}</span></h1>
-      <p>${words("They port the ROMs. They also decide which bugs you learn to live with.", 30, 250)}</p>
+      <h1>Maintainers</h1>
+      <p>They port the ROMs. They also decide which bugs you learn to live with.</p>
     </section>
     <div class="card in" style="--i:3">${people.map((m) => person(m, counts.get(m.id) || 0)).join("")}</div>`;
 }

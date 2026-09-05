@@ -128,6 +128,13 @@ function paint(html, view, title = BRAND) {
   document.body.dataset.scrolled = "0";
   document.body.dataset.nav = "none";
   topTitle.textContent = title;
+  if (view === "home" || view === "release") {
+    topTitle.setAttribute("translate", "no");
+    topTitle.classList.add("notranslate");
+  } else {
+    topTitle.removeAttribute("translate");
+    topTitle.classList.remove("notranslate");
+  }
   root.innerHTML = html;
   void root.offsetWidth;
   document.body.dataset.nav = navDir;
