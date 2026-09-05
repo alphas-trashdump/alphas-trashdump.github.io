@@ -6,8 +6,15 @@ export function esc(v) {
 }
 const enc = (s) => encodeURIComponent(String(s));
 
-/* text helpers */
-export function letters(text) { return esc(text); }
+/* text motion */
+export function letters(text, start = 0, step = 20) {
+  let n = 0;
+  return String(text).split(/(\s+)/).map((chunk) => {
+    if (!chunk) return "";
+    if (!chunk.trim()) return " ";
+    return `<span class="w notranslate" translate="no">${[...chunk].map((ch) => `<span class="ch notranslate" translate="no" style="--n:${n};--d:${start + (n++) * step}ms">${esc(ch)}</span>`).join("")}</span>`;
+  }).join("");
+}
 export function words(text) { return esc(text); }
 export function digits(v, start = 0) {
   return `<span class="num">${[...String(v)].map((d, n) => `<span class="dg" style="--d:${start + n * 50}ms">${esc(d)}</span>`).join("")}</span>`;
@@ -54,7 +61,7 @@ export function renderHome() {
     <div class="home">
       <div class="home__top">
         <section class="hero">
-          <h1 translate="no" class="notranslate">${esc("alpha's trashdump")}</h1>
+          <h1 translate="no" class="notranslate" aria-label="alpha's trashdump"><span aria-hidden="true" translate="no" class="notranslate">${letters("alpha's trashdump")}</span></h1>
           <p>${digits(idx.releases.length, 300)} builds · ${digits(idx.devices.length, 380)} devices${latest ? ` · updated ${fmtDate(latest)}` : ""}</p>
         </section>
         <div class="tools in" style="--i:2">
@@ -107,7 +114,7 @@ export function renderRelease(rel) {
   return `
     <article class="release">
       <header class="release__head">
-        <h1 class="title notranslate" translate="no">${esc(rel.name)}</h1>
+        <h1 class="title notranslate" translate="no" aria-label="${esc(rel.name)}"><span aria-hidden="true" translate="no" class="notranslate">${letters(rel.name)}</span></h1>
         <p class="release__sub">${esc(rel.device_.fullName || rel.device_.name)} · ${esc(rel.maintainer_.name)}</p>
         <div class="release__pills">
           <span class="pill in" style="--i:0">${channel(rel.channel)}</span>
@@ -257,7 +264,7 @@ export function renderPeople() {
   const people = Object.values(idx.maintainers).sort((a, b) => (counts.get(b.id) || 0) - (counts.get(a.id) || 0));
   return `
     <section class="hero">
-      <h1>Maintainers</h1>
+      <h1 translate="no" class="notranslate" aria-label="Maintainers"><span aria-hidden="true" translate="no" class="notranslate">${letters("Maintainers")}</span></h1>
       <p>They port the ROMs. They also decide which bugs you learn to live with.</p>
     </section>
     <div class="card in" style="--i:3">${people.map((m) => person(m, counts.get(m.id) || 0)).join("")}</div>`;
