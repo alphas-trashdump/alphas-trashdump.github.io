@@ -252,8 +252,12 @@ function rollTo(el, text) {
   }).join("");
 }
 
+let lbCloseTimer = 0;
+
 function openLightbox(start) {
   if (!shots.length) return;
+  clearTimeout(lbCloseTimer);
+  lb.dataset.closing = "0";
   lbTrack.innerHTML = shots.map((src, i) => `<figure>${spinner("spin spin--lg spin--on-dark")}<img src="${src}" alt="Screenshot ${i + 1}" decoding="async"></figure>`).join("");
   lb.dataset.open = "1";
   lbCount.dataset.text = ""; lbCount.textContent = "";
@@ -266,7 +270,16 @@ function openLightbox(start) {
   }));
   requestAnimationFrame(() => { lbTrack.scrollLeft = start * lbTrack.clientWidth; updateLbCount(); });
 }
-function closeLightbox() { lb.dataset.open = "0"; lbTrack.innerHTML = ""; lockScroll(false); }
+function closeLightbox() {
+  if (lb.dataset.open !== "1" || lb.dataset.closing === "1") return;
+  lb.dataset.closing = "1";
+  lbCloseTimer = setTimeout(() => {
+    lb.dataset.open = "0";
+    lb.dataset.closing = "0";
+    lbTrack.innerHTML = "";
+    lockScroll(false);
+  }, 220);
+}
 function updateLbCount() {
   if (lb.dataset.open !== "1" || !lbTrack.clientWidth) return;
   const i = Math.round(lbTrack.scrollLeft / lbTrack.clientWidth);
