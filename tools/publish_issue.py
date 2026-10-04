@@ -101,16 +101,20 @@ def host_label(url: str) -> str:
     from urllib.parse import urlparse
 
     host = urlparse(url).hostname or "download"
+    host = host.replace("www.", "")
+    if host.endswith("google.com") or host.endswith("googleusercontent.com"):
+        return "Google Drive"
     return {
         "drive.google.com": "Google Drive",
+        "drive.usercontent.google.com": "Google Drive",
         "sourceforge.net": "SourceForge",
         "t.me": "Telegram",
         "mega.nz": "MEGA",
-        "www.mediafire.com": "MediaFire",
         "mediafire.com": "MediaFire",
         "pixeldrain.com": "pixeldrain",
         "github.com": "GitHub",
-    }.get(host.replace("www.", ""), host.replace("www.", ""))
+        "buzzheavier.com": "buzzheavier",
+    }.get(host, host)
 
 
 def slug(text: str) -> str:

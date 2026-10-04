@@ -73,7 +73,7 @@ export function renderRelease(rel) {
 function dlRow(m, rel, isPrimary) {
   const label = m.label || mirrorHint(m.url);
   return `
-    <md-list-item type="link" href="${esc(m.url)}" target="_blank"${isPrimary ? ' class="row--primary"' : ""}>
+    <md-list-item type="link" href="${esc(m.url)}" target="_blank" data-label="${esc(label)}"${isPrimary ? ' class="row--primary"' : ""}>
       <md-icon slot="start">${icon("download", "ico ico--md")}</md-icon>
       <span slot="headline">${esc(label)}</span>
       <span slot="supporting-text">${isPrimary ? "Main mirror" : "Mirror"}${rel.size ? ` · ${esc(rel.size)}` : ""}</span>
@@ -83,7 +83,7 @@ function dlRow(m, rel, isPrimary) {
 
 function linkRow(item, glyph) {
   return `
-    <md-list-item type="link" href="${esc(item.url)}" target="_blank">
+    <md-list-item type="link" href="${esc(item.url)}" target="_blank" data-label="${esc(item.label)}">
       <md-icon slot="start">${icon(glyph, "ico ico--md")}</md-icon>
       <span slot="headline">${esc(item.label)}</span>
       <span slot="supporting-text">${esc(mirrorHint(item.url))}</span>

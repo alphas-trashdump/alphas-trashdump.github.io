@@ -145,6 +145,7 @@ export function mirrorHint(url) {
   const host = hostOf(url);
   const map = {
     "drive.google.com": "Google Drive",
+    "drive.usercontent.google.com": "Google Drive",
     "sourceforge.net": "SourceForge",
     "t.me": "Telegram",
     "mega.nz": "MEGA",
@@ -153,5 +154,7 @@ export function mirrorHint(url) {
     "pixeldrain.com": "pixeldrain",
     "buzzheavier.com": "buzzheavier",
   };
-  return map[host] || host || "external link";
+  if (map[host]) return map[host];
+  if (host.endsWith("google.com") || host.endsWith("googleusercontent.com")) return "Google Drive";
+  return host || "external link";
 }

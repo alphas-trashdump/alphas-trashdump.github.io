@@ -45,8 +45,11 @@ def slug(text: str) -> str:
 def host_label(url: str) -> str:
     host = urlparse(url).hostname or "download"
     host = host.replace("www.", "")
+    if host.endswith("google.com") or host.endswith("googleusercontent.com"):
+        return "Google Drive"
     known = {
         "drive.google.com": "Google Drive",
+        "drive.usercontent.google.com": "Google Drive",
         "sourceforge.net": "SourceForge",
         "t.me": "Telegram",
         "mega.nz": "MEGA",

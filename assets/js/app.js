@@ -70,7 +70,13 @@ function linkFrom(e) {
     if (node?.nodeType !== 1) continue;
     const href = node.getAttribute?.("href");
     if (!href) continue;
-    try { return { raw: href, url: new URL(href, location.href) }; } catch { return null; }
+    try {
+      const label = node.dataset?.label ||
+                    node.querySelector?.('[slot="headline"]')?.textContent?.trim() ||
+                    node.getAttribute?.("aria-label")?.trim() ||
+                    "";
+      return { raw: href, url: new URL(href, location.href), label };
+    } catch { return null; }
   }
   return null;
 }
@@ -333,7 +339,7 @@ let pendingUrl = null, alertOpen = false, alertReady = false, alertTimer = 0;
 /* how long the dialog shows its M3 loading indicator before the link opens */
 const ALERT_HOLD = 400;
 
-function describe(url) {
+function describe(url, label) {
   if (APP_HOSTS.has(hostOf(url))) {
     if (url.includes("trashdumpchat")) {
       return {
@@ -343,20 +349,21 @@ function describe(url) {
       };
     }
     return {
-      title: "Open in Telegram?",
+      title: label ? `Open ${label} in Telegram?` : "Open in Telegram?",
       msg: "This link needs the Telegram app. Without it you'll land on a login page instead of the file.",
       go: "Open",
     };
   }
+  const name = label || mirrorHint(url);
   return {
-    title: `Redirecting to ${mirrorHint(url)}`,
+    title: `Redirecting to ${name}`,
     msg: "Thank you for using alpha's trashdump. Read the flashing steps before you install, and enjoy the build.",
     go: "Continue",
   };
 }
 
-function openAlert(url) {
-  const d = describe(url);
+function openAlert(url, label) {
+  const d = describe(url, label);
   pendingUrl = url;
   alertTitle.textContent = d.title;
   alertMsg.textContent = d.msg;
@@ -397,7 +404,7 @@ document.addEventListener("click", (e) => {
   if (!link || !/^https?:$/.test(link.url.protocol)) return;
   if (link.url.hostname.replace(/^www\./, "") === SITE_HOST) return;
   e.preventDefault();
-  openAlert(link.url.href);
+  openAlert(link.url.href, link.label);
 });
 
 /* ---- boot ---------------------------------------------------------- */

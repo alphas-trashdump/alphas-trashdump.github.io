@@ -168,6 +168,7 @@ md-filter-chip {
    nothing in the document tree may set a margin on it. */
 md-dialog { margin: auto; }
 md-dialog.alert { --md-dialog-container-color: var(--md-sys-color-surface-container-high); }
+#alert-title { overflow-wrap: anywhere; word-break: break-word; }
 .alert__host {
   margin-top: var(--md-sys-space-200);
   color: var(--md-sys-color-on-surface-variant);
