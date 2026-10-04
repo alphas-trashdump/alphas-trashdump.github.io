@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   publish:
-    if: contains(github.event.issue.labels.*.name, 'release')
+    if: contains(github.event.issue.labels.*.name, 'release') || startsWith(github.event.issue.title, '[release]') || startsWith(github.event.issue.title, '[remove]')
     runs-on: ubuntu-latest
     steps:
       - name: Reject submissions from outsiders
@@ -51,7 +51,7 @@ jobs:
         continue-on-error: true
         run: |
           MODE=add
-          if ${{ contains(github.event.issue.labels.*.name, 'remove') }}; then MODE=remove; fi
+          if ${{ contains(github.event.issue.labels.*.name, 'remove') || startsWith(github.event.issue.title, '[remove]') }}; then MODE=remove; fi
           python3 tools/publish_issue.py --body-file /tmp/issue-body.md --mode "$MODE"
 
       - name: Rebuild the site index
