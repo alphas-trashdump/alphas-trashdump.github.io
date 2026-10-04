@@ -3,18 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
 <title>not found - alpha's trashdump</title>
+<link rel="icon" href="/res/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/accents.css">
 <link rel="stylesheet" href="/assets/css/base.css">
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/layout.css">
 <meta http-equiv="refresh" content="3;url=/">
+
+<script>
+/* same default the site boots with: dark unless the visitor chose light */
+try{var s=JSON.parse(localStorage.getItem("trashdump:settings")||"{}"),r=document.documentElement;
+r.dataset.theme=s.theme==="light"?"light":"dark";
+r.dataset.accent=["orange","red","pink","purple","blue","cyan","green"].indexOf(s.accent)>-1?s.accent:"orange";}catch(e){}
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "lit": "https://cdn.jsdelivr.net/npm/lit@3.3.3/index.js",
+    "lit/": "https://cdn.jsdelivr.net/npm/lit@3.3.3/",
+    "lit-element/lit-element.js": "https://cdn.jsdelivr.net/npm/lit-element@4.2.1/lit-element.js",
+    "lit-html": "https://cdn.jsdelivr.net/npm/lit-html@3.3.3/lit-html.js",
+    "lit-html/": "https://cdn.jsdelivr.net/npm/lit-html@3.3.3/",
+    "@lit/reactive-element": "https://cdn.jsdelivr.net/npm/@lit/reactive-element@2.1.2/reactive-element.js",
+    "@lit/reactive-element/": "https://cdn.jsdelivr.net/npm/@lit/reactive-element@2.1.2/",
+    "@lit/context": "https://cdn.jsdelivr.net/npm/@lit/context@1.1.6/index.js",
+    "@lit/context/": "https://cdn.jsdelivr.net/npm/@lit/context@1.1.6/",
+    "tslib": "https://cdn.jsdelivr.net/npm/tslib@2.8.1/tslib.es6.js"
+  }
+}
+</script>
 </head>
-<body>
+<body data-view="empty">
 <main class="shell">
-  <div class="empty" style="margin-top:80px">
-    <h3>404 &mdash; wrong turn</h3>
-    <p>That page does not exist. Taking you back to the release list&hellip;</p>
-    <p style="margin-top:16px"><a class="btn btn--primary" href="/">go home</a></p>
+  <div class="empty" style="padding-top:calc(var(--top-bar-h) + 96px)">
+    <h3 class="t-title-medium">404 &mdash; wrong turn</h3>
+    <p class="t-body-medium muted">That page does not exist. Taking you back to the release list&hellip;</p>
+    <md-filled-button href="/">Go Home</md-filled-button>
   </div>
 </main>
+
+<!-- one component, so the way out is the same button everywhere else.
+     Keep the version in step with assets/js/lib/material.js and index.html. -->
+<script type="module">
+import "https://cdn.jsdelivr.net/npm/@material/web@2.5.0/button/filled-button.js";
+</script>
 </body>
 </html>

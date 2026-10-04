@@ -1,0 +1,276 @@
+/* ------------------------------------------------------------------
+   Material Design 3 system tokens
+   Split out of the old theme.css: this file is *only* tokens. The reset,
+   the type-scale helpers and the Material Web component overrides live in
+   base.css; page layout lives in layout.css; accents.css is generated.
+   Colour roles here are the default (orange) accent. Generated from the seed
+   #e65100: OKLCH hue 40.3, peak chroma 0.197, neutral ramp anchored to the M3
+   reference greys. Regenerate with tools/gen_accents.mjs.
+   Material Web reads these directly — do not rename, only retune.
+   ------------------------------------------------------------------ */
+:root {
+  color-scheme: dark;
+
+  /* --- md.sys.color : dark (default, matches the site's look) --- */
+  --md-sys-color-primary: #f2b49e;
+  --md-sys-color-on-primary: #52220f;
+  --md-sys-color-primary-container: #7e2e0d;
+  --md-sys-color-on-primary-container: #fbdbcf;
+  --md-sys-color-primary-fixed: #fbdbcf;
+  --md-sys-color-primary-fixed-dim: #f2b49e;
+  --md-sys-color-on-primary-fixed: #2d170f;
+  --md-sys-color-on-primary-fixed-variant: #7e2e0d;
+  --md-sys-color-secondary: #d3c0b9;
+  --md-sys-color-on-secondary: #3d2e29;
+  --md-sys-color-secondary-container: #5c453d;
+  --md-sys-color-on-secondary-container: #eae0dd;
+  --md-sys-color-secondary-fixed: #eae0dd;
+  --md-sys-color-secondary-fixed-dim: #d3c0b9;
+  --md-sys-color-on-secondary-fixed: #221c19;
+  --md-sys-color-on-secondary-fixed-variant: #5c453d;
+  --md-sys-color-tertiary: #c9c5af;
+  --md-sys-color-on-tertiary: #363321;
+  --md-sys-color-tertiary-container: #514c2f;
+  --md-sys-color-on-tertiary-container: #e5e3d8;
+  --md-sys-color-tertiary-fixed: #e5e3d8;
+  --md-sys-color-tertiary-fixed-dim: #c9c5af;
+  --md-sys-color-on-tertiary-fixed: #1f1e16;
+  --md-sys-color-on-tertiary-fixed-variant: #514c2f;
+  --md-sys-color-error: #e2b9b4;
+  --md-sys-color-on-error: #482825;
+  --md-sys-color-error-container: #6d3b36;
+  --md-sys-color-on-error-container: #f2ddda;
+  --md-sys-color-background: #151414;
+  --md-sys-color-on-background: #e4e2e2;
+  --md-sys-color-surface: #151414;
+  --md-sys-color-on-surface: #e4e2e2;
+  --md-sys-color-surface-variant: #554e4c;
+  --md-sys-color-on-surface-variant: #cdc9c8;
+  --md-sys-color-outline: #918885;
+  --md-sys-color-outline-variant: #4b4644;
+  --md-sys-color-inverse-surface: #e4e2e2;
+  --md-sys-color-inverse-on-surface: #343231;
+  --md-sys-color-inverse-primary: #a63600;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-surface-dim: #151414;
+  --md-sys-color-surface-bright: #403d3d;
+  --md-sys-color-surface-container-lowest: #0e0e0e;
+  --md-sys-color-surface-container-low: #1e1d1d;
+  --md-sys-color-surface-container: #222120;
+  --md-sys-color-surface-container-high: #2d2b2a;
+  --md-sys-color-surface-container-highest: #423d3b;
+  /* --- md.sys.shape --- */
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-large-increased: 22px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-extra-large-increased: 36px;
+  --md-sys-shape-corner-full: 9999px;
+  /* aliases so any corner scale reads the same */
+  --md-sys-shape-corner-xs: var(--md-sys-shape-corner-extra-small);
+  --md-sys-shape-corner-sm: var(--md-sys-shape-corner-small);
+  --md-sys-shape-corner-md: var(--md-sys-shape-corner-medium);
+  --md-sys-shape-corner-lg: var(--md-sys-shape-corner-large);
+  --md-sys-shape-corner-xl: var(--md-sys-shape-corner-extra-large);
+  --md-sys-shape-corner-xxl: var(--md-sys-shape-corner-extra-large-increased);
+
+  /* --- md.sys.elevation --- */
+  --md-sys-elevation-shadow-0: none;
+  --md-sys-elevation-shadow-1: 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 1px 3px 1px rgb(0 0 0 / 0.15);
+  --md-sys-elevation-shadow-2: 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 2px 6px 2px rgb(0 0 0 / 0.15);
+  --md-sys-elevation-shadow-3: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 4px 8px 3px rgb(0 0 0 / 0.15);
+  --md-sys-elevation-shadow-4: 0 2px 3px 0 rgb(0 0 0 / 0.3), 0 6px 10px 4px rgb(0 0 0 / 0.15);
+  --md-sys-elevation-shadow-5: 0 4px 4px 0 rgb(0 0 0 / 0.3), 0 8px 12px 6px rgb(0 0 0 / 0.15);
+  --md-elevation-shadow-color: var(--md-sys-color-shadow);
+
+  /* --- md.sys.motion --- */
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+  --md-sys-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --md-sys-motion-duration-short1: 50ms;
+  --md-sys-motion-duration-short2: 100ms;
+  --md-sys-motion-duration-short3: 150ms;
+  --md-sys-motion-duration-short4: 200ms;
+  --md-sys-motion-duration-medium1: 250ms;
+  --md-sys-motion-duration-medium2: 300ms;
+  --md-sys-motion-duration-medium3: 350ms;
+  --md-sys-motion-duration-medium4: 400ms;
+  --md-sys-motion-duration-long1: 450ms;
+  --md-sys-motion-duration-long2: 500ms;
+  --md-sys-motion-duration-long3: 550ms;
+  --md-sys-motion-duration-long4: 600ms;
+  --md-sys-motion-duration-extra-long1: 700ms;
+  --md-sys-motion-duration-extra-long2: 800ms;
+  --md-sys-motion-duration-extra-long3: 900ms;
+  --md-sys-motion-duration-extra-long4: 1000ms;
+
+  /* --- md.sys.space --- */
+  --md-sys-space-unit: 4px;
+  --md-sys-space-0: 0px;
+  --md-sys-space-25: 1px;
+  --md-sys-space-50: 2px;
+  --md-sys-space-75: 3px;
+  --md-sys-space-100: 4px;
+  --md-sys-space-125: 5px;
+  --md-sys-space-150: 6px;
+  --md-sys-space-175: 7px;
+  --md-sys-space-200: 8px;
+  --md-sys-space-250: 10px;
+  --md-sys-space-300: 12px;
+  --md-sys-space-400: 16px;
+  --md-sys-space-450: 18px;
+  --md-sys-space-500: 20px;
+  --md-sys-space-600: 24px;
+  --md-sys-space-700: 28px;
+  --md-sys-space-800: 32px;
+  --md-sys-space-900: 36px;
+
+  /* --- md.ref --- */
+  --md-ref-typeface-brand: "Inter";
+  --md-ref-typeface-plain: "Inter";
+  --md-ref-typeface-weight-regular: 400;
+  --md-ref-typeface-weight-medium: 500;
+  --md-ref-typeface-weight-semibold: 600;
+  --md-ref-typeface-weight-bold: 700;
+
+  /* --- md.sys.typescale (M3 values, Inter) --- */
+  --md-sys-typescale-display-large-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-display-large-weight: var(--md-ref-typeface-weight-bold);
+  --md-sys-typescale-display-large-size: 57px;
+  --md-sys-typescale-display-large-line-height: 64px;
+  --md-sys-typescale-display-large-tracking: -0.25px;
+  --md-sys-typescale-display-medium-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-display-medium-weight: var(--md-ref-typeface-weight-bold);
+  --md-sys-typescale-display-medium-size: 45px;
+  --md-sys-typescale-display-medium-line-height: 52px;
+  --md-sys-typescale-display-medium-tracking: 0px;
+  --md-sys-typescale-display-small-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-display-small-weight: var(--md-ref-typeface-weight-bold);
+  --md-sys-typescale-display-small-size: 36px;
+  --md-sys-typescale-display-small-line-height: 44px;
+  --md-sys-typescale-display-small-tracking: 0px;
+  --md-sys-typescale-headline-large-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-headline-large-weight: var(--md-ref-typeface-weight-bold);
+  --md-sys-typescale-headline-large-size: 32px;
+  --md-sys-typescale-headline-large-line-height: 40px;
+  --md-sys-typescale-headline-large-tracking: 0px;
+  --md-sys-typescale-headline-medium-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-headline-medium-weight: var(--md-ref-typeface-weight-bold);
+  --md-sys-typescale-headline-medium-size: 28px;
+  --md-sys-typescale-headline-medium-line-height: 36px;
+  --md-sys-typescale-headline-medium-tracking: 0px;
+  --md-sys-typescale-headline-small-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-headline-small-weight: var(--md-ref-typeface-weight-bold);
+  --md-sys-typescale-headline-small-size: 24px;
+  --md-sys-typescale-headline-small-line-height: 32px;
+  --md-sys-typescale-headline-small-tracking: 0px;
+  --md-sys-typescale-title-large-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-title-large-weight: var(--md-ref-typeface-weight-semibold);
+  --md-sys-typescale-title-large-size: 22px;
+  --md-sys-typescale-title-large-line-height: 28px;
+  --md-sys-typescale-title-large-tracking: 0px;
+  --md-sys-typescale-title-medium-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-title-medium-weight: var(--md-ref-typeface-weight-semibold);
+  --md-sys-typescale-title-medium-size: 16px;
+  --md-sys-typescale-title-medium-line-height: 24px;
+  --md-sys-typescale-title-medium-tracking: 0.15px;
+  --md-sys-typescale-title-small-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-title-small-weight: var(--md-ref-typeface-weight-semibold);
+  --md-sys-typescale-title-small-size: 14px;
+  --md-sys-typescale-title-small-line-height: 20px;
+  --md-sys-typescale-title-small-tracking: 0.1px;
+  --md-sys-typescale-body-large-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-body-large-weight: var(--md-ref-typeface-weight-regular);
+  --md-sys-typescale-body-large-size: 16px;
+  --md-sys-typescale-body-large-line-height: 24px;
+  --md-sys-typescale-body-large-tracking: 0.5px;
+  --md-sys-typescale-body-medium-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-body-medium-weight: var(--md-ref-typeface-weight-regular);
+  --md-sys-typescale-body-medium-size: 14px;
+  --md-sys-typescale-body-medium-line-height: 20px;
+  --md-sys-typescale-body-medium-tracking: 0.25px;
+  --md-sys-typescale-body-small-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-body-small-weight: var(--md-ref-typeface-weight-regular);
+  --md-sys-typescale-body-small-size: 12px;
+  --md-sys-typescale-body-small-line-height: 16px;
+  --md-sys-typescale-body-small-tracking: 0.4px;
+  --md-sys-typescale-label-large-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-label-large-weight: var(--md-ref-typeface-weight-semibold);
+  --md-sys-typescale-label-large-size: 14px;
+  --md-sys-typescale-label-large-line-height: 20px;
+  --md-sys-typescale-label-large-tracking: 0.1px;
+  --md-sys-typescale-label-medium-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-label-medium-weight: var(--md-ref-typeface-weight-medium);
+  --md-sys-typescale-label-medium-size: 12px;
+  --md-sys-typescale-label-medium-line-height: 16px;
+  --md-sys-typescale-label-medium-tracking: 0.5px;
+  --md-sys-typescale-label-small-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-label-small-weight: var(--md-ref-typeface-weight-medium);
+  --md-sys-typescale-label-small-size: 11px;
+  --md-sys-typescale-label-small-line-height: 16px;
+  --md-sys-typescale-label-small-tracking: 0.5px;
+}
+
+/* ------------------------------------------------------------------
+   md.sys.color : light
+   Applied by [data-theme] on <html>: set before first paint by the inline
+   script in index.html, then by the settings page. Dark above is the
+   default, so a visitor with no saved choice still gets the dark site.
+   ------------------------------------------------------------------ */
+:root[data-theme="light"] {
+  --md-sys-color-primary: #a63600;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #fbdbcf;
+  --md-sys-color-on-primary-container: #2d170f;
+  --md-sys-color-primary-fixed: #fbdbcf;
+  --md-sys-color-primary-fixed-dim: #f2b49e;
+  --md-sys-color-on-primary-fixed: #2d170f;
+  --md-sys-color-on-primary-fixed-variant: #7e2e0d;
+  --md-sys-color-secondary: #79584d;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #eae0dd;
+  --md-sys-color-on-secondary-container: #221c19;
+  --md-sys-color-secondary-fixed: #eae0dd;
+  --md-sys-color-secondary-fixed-dim: #d3c0b9;
+  --md-sys-color-on-secondary-fixed: #221c19;
+  --md-sys-color-on-secondary-fixed-variant: #5c453d;
+  --md-sys-color-tertiary: #6a6138;
+  --md-sys-color-on-tertiary: #ffffff;
+  --md-sys-color-tertiary-container: #e5e3d8;
+  --md-sys-color-on-tertiary-container: #1f1e16;
+  --md-sys-color-tertiary-fixed: #e5e3d8;
+  --md-sys-color-tertiary-fixed-dim: #c9c5af;
+  --md-sys-color-on-tertiary-fixed: #1f1e16;
+  --md-sys-color-on-tertiary-fixed-variant: #514c2f;
+  --md-sys-color-error: #904944;
+  --md-sys-color-on-error: #ffffff;
+  --md-sys-color-error-container: #f2ddda;
+  --md-sys-color-on-error-container: #281917;
+  --md-sys-color-background: #fcfcfc;
+  --md-sys-color-on-background: #1e1d1d;
+  --md-sys-color-surface: #fcfcfc;
+  --md-sys-color-on-surface: #1e1d1d;
+  --md-sys-color-surface-variant: #e4e2e1;
+  --md-sys-color-on-surface-variant: #554e4c;
+  --md-sys-color-outline: #827773;
+  --md-sys-color-outline-variant: #cdc9c8;
+  --md-sys-color-inverse-surface: #383535;
+  --md-sys-color-inverse-on-surface: #f5f4f4;
+  --md-sys-color-inverse-primary: #f2b49e;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-surface-dim: #dcdad9;
+  --md-sys-color-surface-bright: #fcfcfc;
+  --md-sys-color-surface-container-lowest: #ffffff;
+  --md-sys-color-surface-container-low: #f8f7f7;
+  --md-sys-color-surface-container: #f2f1f1;
+  --md-sys-color-surface-container-high: #ecebeb;
+  --md-sys-color-surface-container-highest: #e4e2e1;
+}

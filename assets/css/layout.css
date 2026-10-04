@@ -1,0 +1,358 @@
+/* ------------------------------------------------------------------
+   top app bar (M3: surface container, 64dp, titleLarge)
+   ------------------------------------------------------------------ */
+.top-bar {
+  position: sticky; top: 0;
+  /* Material Web's dialog scrim is `position: fixed; z-index: 1` inside a
+     display:contents host, so it only covers page content up to z-index 1.
+     Staying at 1 keeps the header above the page but under the scrim. */
+  z-index: 1;
+  padding-top: var(--sa-t);
+  background: var(--md-sys-color-surface);
+}
+.top-bar::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--md-sys-color-outline-variant);
+  opacity: 0;
+  transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+body[data-scrolled="1"] .top-bar::after { opacity: 1; }
+.top-bar__row { display: flex; align-items: center; gap: var(--md-sys-space-100); height: var(--top-bar-h); }
+.top-bar__title {
+  flex: 1; min-width: 0; text-align: center; padding: 0 var(--md-sys-space-100);
+  color: var(--md-sys-color-on-surface);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+              transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+body[data-scrolled="1"] .top-bar__title { opacity: 1; transform: none; }
+body[data-view="home"] .top-bar__title { text-align: left; padding-left: 0; }
+.top-bar .top-bar__acts { display: flex; align-items: center; flex: none; }
+.top-bar md-icon-button { margin-right: calc(-1 * var(--md-sys-space-200)); }
+.top-bar md-icon-button:last-child { margin-right: 0; }
+.top-bar__back { display: none; margin-left: calc(-1 * var(--md-sys-space-300)); }
+body[data-view="release"] .top-bar__back,
+body[data-view="people"] .top-bar__back,
+body[data-view="settings"] .top-bar__back { display: inline-flex; }
+
+/* ------------------------------------------------------------------
+   large title
+   ------------------------------------------------------------------ */
+.hero { padding: var(--md-sys-space-200) 0 var(--md-sys-space-400); }
+.hero h1 { color: var(--md-sys-color-on-surface); }
+.hero h1 .ch { animation-delay: calc(min(var(--n), 26) * 20ms); }
+.hero p { margin-top: var(--md-sys-space-100); color: var(--md-sys-color-on-surface-variant); }
+
+/* ------------------------------------------------------------------
+   home: search + device filter + ROM list      (8px scale: 8/16/24/32)
+   ------------------------------------------------------------------ */
+.tools { display: flex; flex-direction: column; gap: var(--md-sys-space-400); }
+/* horizontally scrollable filter chips */
+.filters { overflow-x: auto; scrollbar-width: none; }
+.filters::-webkit-scrollbar { display: none; }
+.filters md-filter-chip { flex: none; }
+
+.home__list { padding-top: var(--md-sys-space-600); }
+.group + .group { margin-top: var(--md-sys-space-600); }
+.group, .block { content-visibility: auto; contain-intrinsic-size: auto 240px; }
+
+/* Row rhythm. M3's two-line item is 72px with 16px of padding top and bottom;
+   at 12px the same content is 60px, which is what a phone list wants. */
+md-list-item {
+  --md-list-item-two-line-container-height: 60px;
+  --md-list-item-label-text-size: 15px;
+  --md-list-item-label-text-line-height: 22px;
+  --md-list-item-top-space: var(--md-sys-space-300);
+  --md-list-item-bottom-space: var(--md-sys-space-300);
+}
+
+.cell__title { display: flex; align-items: center; gap: var(--md-sys-space-200); }
+.cell__name { flex: 0 1 auto; }
+/* the row lifts a touch before the page slides in */
+md-list-item.cell--go { background: var(--md-sys-color-surface-container-high); }
+
+/* ------------------------------------------------------------------
+   release page
+   ------------------------------------------------------------------ */
+.release { display: block; }
+/* one ordered column at every width: downloads, screenshots, details, what
+   changed, bugs, how to flash, ported by */
+.release__flow { display: block; }
+.release__head { padding: var(--md-sys-space-400) 0 var(--md-sys-space-100); }
+.release__head p { margin-top: var(--md-sys-space-100); color: var(--md-sys-color-on-surface-variant); }
+.release__head h1 { color: var(--md-sys-color-on-surface); }
+.title .ch, .release__head h1 .ch { animation-delay: calc(min(var(--n), 26) * 22ms + 120ms); }
+.release__chips { margin-top: var(--md-sys-space-300); }
+.release__chips md-assist-chip { flex: none; }
+
+.block { margin-top: var(--md-sys-space-500); }
+.block h2 + md-outlined-card, .block h3 + md-outlined-card { margin-top: 0; }
+.block h3 { margin-top: var(--md-sys-space-400); }
+.block__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--md-sys-space-300);
+}
+.block__cta { width: 100%; }
+@media (min-width: 600px) {
+  .block__actions { flex-direction: row; }
+  .block__actions .block__cta { flex: 1; width: auto; }
+}
+
+/* the primary download row */
+md-list-item.row--primary [slot="headline"] { font-weight: var(--md-ref-typeface-weight-semibold); }
+md-list-item.row--primary md-icon[slot="start"] { color: var(--md-sys-color-primary); }
+
+/* build note */
+md-outlined-card.note { margin-top: var(--md-sys-space-400); }
+.note__body { display: flex; gap: var(--md-sys-space-300); align-items: flex-start; padding: var(--md-sys-space-300); }
+.note__body md-icon { flex: none; color: var(--md-sys-color-primary); }
+.note__body p { color: var(--md-sys-color-on-surface); }
+.note__body a { color: var(--md-sys-color-primary); }
+.note--quiet .note__body p { color: var(--md-sys-color-on-surface-variant); }
+.note--quiet .note__body md-icon { color: var(--md-sys-color-outline); }
+
+/* numbered steps + bullet lists */
+.step {
+  flex: none; display: grid; place-items: center;
+  width: 24px; height: 24px; border-radius: var(--md-sys-shape-corner-full);
+  background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary);
+  font-size: var(--md-sys-typescale-label-small-size);
+  font-weight: var(--md-ref-typeface-weight-bold);
+  line-height: 1;
+}
+
+/* Details key/value. Both halves get body-large: the value is
+   `trailing-supporting-text`, its own token, so bumping only the label left the
+   right-hand side at 14px - smaller than the label next to it, which is what
+   "the details text is too small" was. */
+.block--details md-list-item {
+  --md-list-item-label-text-size: 16px;
+  --md-list-item-label-text-line-height: 24px;
+  --md-list-item-trailing-supporting-text-size: 16px;
+  --md-list-item-trailing-supporting-text-line-height: 24px;
+  --md-list-item-trailing-supporting-text-weight: var(--md-ref-typeface-weight-medium);
+  --md-list-item-trailing-supporting-text-color: var(--md-sys-color-on-surface);
+}
+.kv__v { color: var(--md-sys-color-on-surface); }
+.kv__views { display: inline-flex; }
+.kv__badge { height: 18px; border-radius: var(--md-sys-shape-corner-extra-small); }
+.kv__badge--on-light { display: none; }
+:root[data-theme="light"] .kv__badge--on-dark { display: none; }
+:root[data-theme="light"] .kv__badge--on-light { display: block; }
+
+/* screenshots */
+.shots {
+  display: flex; gap: var(--md-sys-space-300); overflow-x: auto;
+  scroll-snap-type: x mandatory; scrollbar-width: none;
+  margin: 0 calc(-1 * var(--gx-r)) 0 calc(-1 * var(--gx-l));
+  padding: var(--md-sys-space-50) var(--gx-r) var(--md-sys-space-150) var(--gx-l);
+}
+.shots::-webkit-scrollbar { display: none; }
+.thumb {
+  position: relative; flex: none; width: 40vw; max-width: 168px; aspect-ratio: 9 / 19.5;
+  scroll-snap-align: start; overflow: hidden; padding: 0;
+  border-radius: var(--md-sys-shape-corner-medium);
+  background: var(--md-sys-color-surface-container-high);
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.04);
+  transition: opacity var(--md-sys-motion-duration-medium1) var(--md-sys-motion-easing-standard),
+              transform var(--md-sys-motion-duration-extra-long2) var(--md-sys-motion-easing-emphasized); }
+.thumb img[data-loaded="1"] { opacity: 1; transform: none; }
+.shots__hint { padding: var(--md-sys-space-200) var(--md-sys-space-400) 0; color: var(--md-sys-color-outline); }
+.legal { margin-top: var(--md-sys-space-300); padding: 0 var(--md-sys-space-400); color: var(--md-sys-color-outline); text-align: center; }
+
+/* ------------------------------------------------------------------
+   maintainers
+   ------------------------------------------------------------------ */
+.avatar { flex: none; align-self: flex-start; width: 40px; height: 40px; border-radius: var(--md-sys-shape-corner-full); object-fit: cover; background: var(--md-sys-color-surface-container-high); }
+.avatar--initial {
+  display: grid; place-items: center;
+  font-size: var(--md-sys-typescale-title-large-size); font-weight: var(--md-ref-typeface-weight-medium);
+  color: var(--md-sys-color-on-surface-variant); text-transform: uppercase;
+}
+/* md-item centres slotted content vertically. On a list row that is right for
+   icons, but a leading marker that belongs to the first line of a wrapped
+   paragraph reads as a mistake, so bullets and step numbers hang from the top. */
+md-list-item [slot="start"].dot, md-list-item [slot="start"].step { align-self: flex-start; margin-top: var(--md-sys-space-150); }
+.person__chips { display: flex; flex-wrap: wrap; gap: var(--md-sys-space-200); margin-top: var(--md-sys-space-200); }
+md-list-item.person { --md-list-item-top-space: var(--md-sys-space-400); --md-list-item-bottom-space: var(--md-sys-space-400); }
+/* md-item centres slotted content vertically; the build count belongs on the
+   first line, with the name. */
+md-list-item.person [slot="trailing-supporting-text"] { align-self: flex-start; white-space: nowrap; padding-top: 2px; }
+/* maintainer chips are the same 24dp status chips used everywhere else */
+md-list-item.person md-assist-chip.role,
+md-list-item.person md-assist-chip.link {
+  --md-assist-chip-container-height: 24px;
+  --md-assist-chip-label-text-size: var(--md-sys-typescale-label-small-size);
+  --md-assist-chip-label-text-line-height: var(--md-sys-typescale-label-small-line-height);
+  --md-assist-chip-leading-space: var(--md-sys-space-150);
+  --md-assist-chip-trailing-space: var(--md-sys-space-150);
+}
+md-list-item.person md-assist-chip .ico { width: 14px; height: 14px; }
+.person__chips md-assist-chip { flex: none; }
+md-assist-chip.role {
+  --md-assist-chip-label-text-color: var(--md-sys-color-on-surface-variant);
+  --md-assist-chip-outline-color: var(--md-sys-color-outline);
+}
+md-assist-chip.role--owner {
+  --md-assist-chip-label-text-color: var(--md-sys-color-primary);
+  --md-assist-chip-outline-color: var(--md-sys-color-primary);
+}
+/* ------------------------------------------------------------------
+   screenshot viewer (M3 has no image viewer: scrim surface + M3 tokens)
+   ------------------------------------------------------------------ */
+.lightbox { position: fixed; inset: 0; z-index: 90; display: none; background: var(--md-sys-color-scrim); }
+.lightbox[data-open="1"] { display: block; animation: lb-in var(--md-sys-motion-duration-medium3) var(--md-sys-motion-easing-emphasized-decelerate); }
+.lightbox[data-closing="1"] { animation: lb-out var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard) forwards; }
+@keyframes lb-in  { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes lb-out { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.96); } }
+.lightbox__track { display: flex; height: 100dvh; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.lightbox__track::-webkit-scrollbar { display: none; }
+.lightbox__track figure { position: relative; flex: 0 0 100%; display: grid; place-items: center; scroll-snap-align: center; padding: calc(var(--sa-t) + 64px) 16px calc(var(--sa-b) + 64px); }
+.lightbox__track img { max-height: 100%; width: auto; object-fit: contain; border-radius: var(--md-sys-shape-corner-medium); opacity: 0; transition: opacity var(--md-sys-motion-duration-short4); }
+.lightbox__track img[data-loaded="1"] { opacity: 1; }
+.lightbox__ph {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 48px; height: 48px; color: var(--md-sys-color-inverse-on-surface); opacity: 0.4;
+}
+.lightbox__ph .ico { width: 100%; height: 100%; }
+.lightbox__track figure[data-loaded="1"] .lightbox__ph { display: none; }
+.lightbox__track p { color: var(--md-sys-color-inverse-on-surface); opacity: 0.6; font-size: 14px; }
+.lightbox__close {
+  position: absolute; top: calc(var(--sa-t) + var(--md-sys-space-200)); right: calc(var(--sa-r) + var(--md-sys-space-200));
+  --md-icon-button-icon-color: var(--md-sys-color-inverse-on-surface);
+  --md-icon-button-hover-state-layer-color: var(--md-sys-color-inverse-surface);
+  --md-icon-button-pressed-state-layer-color: var(--md-sys-color-inverse-surface);
+}
+.lightbox__count {
+  position: absolute; left: 50%; bottom: calc(var(--sa-b) + var(--md-sys-space-500));
+  transform: translateX(-50%);
+  display: inline-flex; overflow: hidden; margin: 0;
+  padding: var(--md-sys-space-150) var(--md-sys-space-300);
+  border-radius: var(--md-sys-shape-corner-full);
+  background: var(--md-sys-color-inverse-surface); color: var(--md-sys-color-inverse-on-surface);
+  line-height: 1.2;
+}
+
+/* ------------------------------------------------------------------
+   snackbar + footer
+   ------------------------------------------------------------------ */
+.snackbar {
+  position: fixed; left: 50%; top: calc(var(--sa-t) + var(--md-sys-space-300)); z-index: 96;
+  max-width: min(560px, calc(100% - 32px));
+  padding: var(--md-sys-space-300) var(--md-sys-space-400);
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  background: var(--md-sys-color-inverse-surface); color: var(--md-sys-color-inverse-on-surface);
+  box-shadow: var(--md-sys-elevation-shadow-3);
+  opacity: 0; transform: translate(-50%, -24px) scale(0.9); pointer-events: none;
+  transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+              transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+.snackbar[data-show="1"] { opacity: 1; transform: translate(-50%, 0) scale(1); }
+.foot { display: flex; gap: var(--md-sys-space-400); padding-top: var(--md-sys-space-800); padding-bottom: calc(var(--sa-b) + var(--md-sys-space-900)); }
+/* The maintainers link (footer text + header icon) belongs to the home and
+   release pages. On the maintainers page it points at itself, and on settings
+   it is one more thing to look at, so both drop it. body[data-view] is set by
+   paint() on every navigation. */
+body:not([data-view="home"]):not([data-view="release"]) .foot { display: none; }
+body:not([data-view="home"]):not([data-view="release"]) #people-link { display: none; }
+
+/* ------------------------------------------------------------------
+   boot splash
+   Covers the page until app.js paints, so a slow CDN cannot leave a bare
+   layout with half-upgraded icon buttons on screen. Centred, no text motion,
+   and it only knows M3 tokens - nothing here needs JavaScript. The indicator is
+   the M3 linear-progress pattern drawn in CSS because the real component needs
+   the very module graph that has not arrived yet.
+   ------------------------------------------------------------------ */
+.boot {
+  position: fixed; inset: 0; z-index: 200;
+  display: grid; place-items: center;
+  padding: var(--md-sys-space-500);
+  background: var(--md-sys-color-surface);
+  /* the page must not scroll or take taps while this is up */
+  touch-action: none;
+}
+.boot__mark { display: grid; justify-items: center; gap: var(--md-sys-space-400); width: min(240px, 100%); }
+.boot__name {
+  font: var(--md-sys-typescale-title-medium-weight) var(--md-sys-typescale-title-medium-size) /
+        var(--md-sys-typescale-title-medium-line-height) var(--md-ref-typeface-brand);
+  letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+  color: var(--md-sys-color-on-surface);
+}
+.boot__hint { color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-small-weight) var(--md-sys-typescale-body-small-size) / var(--md-sys-typescale-body-small-line-height) var(--md-ref-typeface-plain); }
+.boot__bar { position: relative; width: 100%; height: 4px; border-radius: var(--md-sys-shape-corner-full); background: var(--md-sys-color-surface-container-highest); overflow: hidden; }
+/* the component that replaces the stand-in above, matched to it exactly */
+.boot md-linear-progress {
+  width: 100%; height: 4px; border-radius: var(--md-sys-shape-corner-full);
+  --md-linear-progress-track-height: 4px;
+  --md-linear-progress-track-shape: 4px;
+  --md-linear-progress-track-color: var(--md-sys-color-surface-container-highest);
+  --md-linear-progress-active-indicator-height: 4px;
+  --md-linear-progress-active-indicator-color: var(--md-sys-color-primary);
+}
+.boot__bar > i {
+  position: absolute; top: 0; bottom: 0; width: 40%; border-radius: inherit;
+  background: var(--md-sys-color-primary);
+  animation: boot-sweep 1250ms var(--md-sys-motion-easing-standard) infinite;
+}
+@keyframes boot-sweep { from { left: -40%; } to { left: 100%; } }
+/* dismissed: fade out, then stop catching taps */
+.boot[data-out="1"] { opacity: 0; pointer-events: none; transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard); }
+.boot[hidden] { display: none; }
+
+/* ------------------------------------------------------------------
+   loading / empty states
+   ------------------------------------------------------------------ */
+/* M3 loading pattern: the indicator spans the top of the region being loaded */
+.loading { display: flex; flex-direction: column; gap: var(--md-sys-space-400); padding-top: var(--md-sys-space-600); color: var(--md-sys-color-on-surface-variant); text-align: center; }
+.loading md-linear-progress { width: 100%; }
+
+/* ------------------------------------------------------------------
+   page transitions: ROM card → page rises from the bottom and settles;
+   back → settles in from above
+   ------------------------------------------------------------------ */
+body[data-nav="push"] #app { animation: lift-in var(--md-sys-motion-duration-long4) var(--md-sys-motion-easing-emphasized-decelerate) both, fade-in var(--md-sys-motion-duration-medium1) var(--md-sys-motion-easing-standard) both; }
+body[data-nav="pop"]  #app { animation: pop-in var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-emphasized-decelerate) both, fade-in var(--md-sys-motion-duration-medium1) var(--md-sys-motion-easing-standard) both; }
+@keyframes lift-in { from { transform: translateY(64px) scale(0.98); } }
+@keyframes pop-in  { from { transform: translateY(-14px); } }
+@keyframes fade-in { from { opacity: 0; } }
+
+/* ------------------------------------------------------------------
+   ORIENTATION: phone sideways (short viewport)
+   ------------------------------------------------------------------ */
+@media (orientation: landscape) and (max-height: 500px) {
+  :root { --top-bar-h: 56px; }
+  .hero { padding: var(--md-sys-space-300) 0 var(--md-sys-space-250); }
+  .hero h1, .title { font-size: 26px; }
+  .tools { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--md-sys-space-400); align-items: center; }
+  .home__list { padding-top: var(--md-sys-space-400); }
+  .release__head { padding-top: 10px; }
+  .block { margin-top: 18px; }
+  .shots button { width: 22vw; max-width: 120px; }
+  .lightbox__track figure { padding: 10px calc(var(--sa-r) + 64px) 10px calc(var(--sa-l) + 64px); }
+  .lightbox__close { top: var(--md-sys-space-250); } .lightbox__count { bottom: var(--md-sys-space-250); }
+}
+
+/* ------------------------------------------------------------------
+   ORIENTATION: wide landscape (phone ≥700px, tablets, laptops)
+   ------------------------------------------------------------------ */
+@media (orientation: landscape) and (min-width: 700px) {
+  :root { --page: 980px; }
+  .home { display: grid; grid-template-columns: 270px minmax(0, 1fr); column-gap: 40px; align-items: start; }
+  .home__top { position: sticky; top: calc(var(--top-bar-h) + var(--sa-t) + 18px); }
+  .hero { padding: var(--md-sys-space-200) 0 var(--md-sys-space-400); }
+  .hero h1 { font-size: 28px; }
+  .tools { display: flex; }
+  .filters { flex-wrap: wrap; overflow: visible; }
+  .home__list { padding-top: var(--md-sys-space-200); }
+  /* The release page stays one column at every width - the order is a reading
+     list, and a sidebar would put "Ported by" above "What changed" on a desktop
+     while the phone showed something else. Cap the measure so the text stays
+     readable inside the wider shell. */
+  .release__flow { max-width: 640px; margin-inline: auto; }
+  .shots { margin: 0; padding: 2px 0 6px; }
+  .shots button { width: 150px; }
+}

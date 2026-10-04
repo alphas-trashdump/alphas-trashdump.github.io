@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#141415" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#fcfcfc" media="(prefers-color-scheme: light)">
 <title translate="no">alpha's trashdump</title>
 <meta name="description" content="HyperOS, MIUI and ColorOS ports for Redmi 4X, 4, 4A, 3S, 5A and Note 5A.">
 <link rel="canonical" href="https://alphas-trashdump.github.io/">
@@ -21,64 +22,115 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/accents.css">
 <link rel="stylesheet" href="assets/css/base.css">
-<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/layout.css">
+
+<!-- theme + accent must be on <html> before the first paint, or the site
+     flashes its defaults. Keep in sync with assets/js/lib/settings.js. -->
+<script>
+try{var s=JSON.parse(localStorage.getItem("trashdump:settings")||"{}"),r=document.documentElement;r.dataset.theme=s.theme==="light"?"light":"dark";r.dataset.accent=["orange","red","pink","purple","blue","cyan","green"].indexOf(s.accent)>-1?s.accent:"orange";}catch(e){}
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "lit": "https://cdn.jsdelivr.net/npm/lit@3.3.3/index.js",
+    "lit/": "https://cdn.jsdelivr.net/npm/lit@3.3.3/",
+    "lit-element/lit-element.js": "https://cdn.jsdelivr.net/npm/lit-element@4.2.1/lit-element.js",
+    "lit-html": "https://cdn.jsdelivr.net/npm/lit-html@3.3.3/lit-html.js",
+    "lit-html/": "https://cdn.jsdelivr.net/npm/lit-html@3.3.3/",
+    "@lit/reactive-element": "https://cdn.jsdelivr.net/npm/@lit/reactive-element@2.1.2/reactive-element.js",
+    "@lit/reactive-element/": "https://cdn.jsdelivr.net/npm/@lit/reactive-element@2.1.2/",
+    "@lit/context": "https://cdn.jsdelivr.net/npm/@lit/context@1.1.6/index.js",
+    "@lit/context/": "https://cdn.jsdelivr.net/npm/@lit/context@1.1.6/",
+    "tslib": "https://cdn.jsdelivr.net/npm/tslib@2.8.1/tslib.es6.js"
+  }
+}
+</script>
 </head>
 <body data-view="home" data-scrolled="0" data-nav="none">
 
-<header class="top" id="top">
-  <div class="shell top__in">
-    <a class="top__back" id="back" href="#/" aria-label="Back">
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg><span>Back</span>
-    </a>
-    <span class="top__title notranslate" id="top-title" translate="no">alpha's trashdump</span>
-    <a class="top__act" id="people-link" href="#/people" aria-label="Maintainers" data-icon="people"></a>
+<!-- Boot splash. The app is a module graph that has to come off jsDelivr, so on a
+     slow connection the first paint would otherwise be a bare page with two
+     half-upgraded icon buttons in the corner. This covers the page until the app
+     paints (or gives up), carries no text motion, and is centred. -->
+<div class="boot" id="boot">
+  <div class="boot__mark">
+    <p class="boot__name">alpha&rsquo;s trashdump</p>
+    <div class="boot__bar" aria-hidden="true"><i></i></div>
+    <p class="boot__hint" id="boot-hint" role="status">Loading</p>
+  </div>
+</div>
+<noscript><style>.boot{display:none!important}</style></noscript>
+
+<header class="top-bar" id="top">
+  <div class="shell top-bar__row">
+    <md-text-button id="back" class="top-bar__back" href="#" aria-label="Back">
+      <md-icon slot="icon"><svg class="ico ico--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></md-icon>
+      Back
+    </md-text-button>
+    <span class="top-bar__title t-title-large notranslate" id="top-title" translate="no">alpha's trashdump</span>
+    <div class="top-bar__acts">
+      <md-icon-button id="people-link" href="#/people" aria-label="Maintainers">
+        <md-icon><svg class="ico ico--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></md-icon>
+      </md-icon-button>
+      <md-icon-button id="settings-link" href="#/settings" aria-label="Settings">
+        <md-icon><svg class="ico ico--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></md-icon>
+      </md-icon-button>
+    </div>
   </div>
 </header>
 
 <main class="shell" id="app">
   <div class="loading">
-    <span class="spin spin--lg" role="status" aria-label="Loading builds">
-      <svg viewBox="0 0 14 14">
-        <circle class="spin__ring" cx="7" cy="7" r="6.3" fill="none" stroke="currentColor" stroke-width="1.4"/>
-        <circle class="spin__dot" cx="4.2" cy="7" r="1.4" fill="currentColor"/>
-      </svg>
-    </span>
-    <span>Loading builds</span>
+    <md-linear-progress indeterminate role="status" aria-label="Loading builds"></md-linear-progress>
+    <span class="t-body-medium">Loading builds</span>
   </div>
-  <noscript><div class="empty"><h3>JavaScript is off</h3><p>The build list needs it to render.</p></div></noscript>
+  <noscript><style>.loading{display:none!important}</style><div class="empty"><h3 class="t-title-medium">JavaScript is off</h3><p class="t-body-medium muted">The build list needs it to render.</p></div></noscript>
 </main>
 
 <footer class="foot shell">
-  <a href="#/people">Maintainers</a>
+  <md-text-button href="#/people">Maintainers</md-text-button>
+  <md-text-button href="https://t.me/trashdumpchat" target="_blank">Telegram Chat</md-text-button>
 </footer>
 
-<div class="lb" id="lb" data-open="0" data-closing="0" role="dialog" aria-modal="true" aria-label="Screenshots">
-  <div class="lb__track" id="lb-track"></div>
-  <button class="lb__close press" id="lb-close" type="button" aria-label="Close">
-    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
-  </button>
-  <div class="lb__count" id="lb-count"></div>
+<div class="lightbox" id="lb" data-open="0" data-closing="0" role="dialog" aria-modal="true" aria-label="Screenshots">
+  <div class="lightbox__track" id="lb-track"></div>
+  <md-icon-button id="lb-close" class="lightbox__close" aria-label="Close">
+    <md-icon><svg class="ico ico--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></md-icon>
+  </md-icon-button>
+  <p class="lightbox__count t-label-medium" id="lb-count" role="status"></p>
 </div>
 
-<div class="alert" id="alert" data-open="0" data-closing="0" role="alertdialog" aria-modal="true"
-     aria-labelledby="alert-title" aria-describedby="alert-msg">
-  <div class="alert__bg"></div>
-  <div class="alert__box">
-    <div class="alert__body">
-      <h3 id="alert-title"></h3>
-      <p id="alert-msg"></p>
-      <span class="alert__host" id="alert-host"></span>
-    </div>
-    <div class="alert__acts">
-      <button type="button" id="alert-cancel">Cancel</button>
-      <button type="button" id="alert-go" class="alert__pri">Continue</button>
-    </div>
+<md-dialog class="alert" id="alert" type="alert" aria-describedby="alert-msg">
+  <h2 slot="headline" id="alert-title"></h2>
+  <div slot="content">
+    <p id="alert-msg" class="t-body-medium muted"></p>
+    <p id="alert-host" class="t-body-small alert__host"></p>
+    <md-linear-progress id="alert-progress" class="alert__progress" indeterminate role="status" aria-label="Preparing link"></md-linear-progress>
   </div>
-</div>
+  <div slot="actions">
+    <md-text-button id="alert-cancel">Cancel</md-text-button>
+    <md-filled-button id="alert-go" disabled>Continue</md-filled-button>
+  </div>
+</md-dialog>
 
-<div class="toast" id="toast" data-show="0" role="status" aria-live="polite"></div>
+<div class="snackbar" id="toast" data-show="0" role="status" aria-live="polite"></div>
 
+<!-- Splash fallback. Pure CSS cannot know whether app.js ever arrived, so this
+     gives it a deadline: if the module graph is still not up after 8s the splash
+     says so instead of spinning forever. app.js cancels the timer when it boots. -->
+<script>
+(function () {
+  var hint = document.getElementById("boot-hint");
+  setTimeout(function () {
+    if (document.documentElement.dataset.booted) return;
+    if (hint) hint.textContent = "Still loading — check your connection";
+  }, 8000);
+})();
+</script>
 <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>

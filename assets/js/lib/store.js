@@ -36,6 +36,18 @@ function normalize(json) {
   const byCodename = new Map(devices.map((d) => [d.codename, d]));
   const releases = (json.releases || []).map((r) => ({
     ...r,
+    /* every list a view walks: one missing key must not throw inside a
+       template, which would blank the whole page rather than one block */
+    mirrors: r.mirrors || [],
+    extras: r.extras || [],
+    install: r.install || [],
+    bugs: r.bugs || [],
+    changelog: r.changelog || [],
+    screenshots: r.screenshots || [],
+    supports: r.supports || [],
+    size: r.size || "",
+    android: r.android ?? "",
+    notes: r.notes || "",
     device_: byCodename.get(r.device) || { codename: r.device, name: r.device },
     maintainer_: json.maintainers?.[r.maintainer] || { id: r.maintainer, name: r.maintainer },
     _haystack: [
@@ -95,7 +107,8 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 
 export function fmtDate(iso) {
   const [y, m, d] = String(iso).split("-").map(Number);
-  if (!y || !m || !d) return String(iso);
+  /* a bad date must render as itself, never as "31 NaN 2026" */
+  if (!y || !m || !d || !MONTHS[m - 1]) return String(iso);
   return `${String(d).padStart(2, "0")} ${MONTHS[m - 1]} ${y}`;
 }
 

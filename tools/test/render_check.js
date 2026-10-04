@@ -19,8 +19,8 @@ if (!raw) throw new Error("data/index.json missing - run tools/build_index.py");
 
 globalThis.fetch = async () => ({ ok: true, status: 200, json: async () => JSON.parse(raw) });
 
-const store = await import("../../assets/js/store.js");
-const ui = await import("../../assets/js/ui.js");
+const store = await import("../../assets/js/lib/store.js");
+const ui = await import("../../assets/js/views/index.js");
 
 await store.loadIndex();
 
@@ -44,7 +44,7 @@ store.state.query = "hyperos";
 check("home+query", ui.renderHome());
 store.state.query = "zzzz-nothing";
 const empty = ui.renderHome();
-if (!/nothing here/.test(empty)) { failures++; console.log("FAIL empty state missing"); }
+if (!/No Results/.test(empty)) { failures++; console.log("FAIL empty state missing"); }
 else console.log("ok   empty state");
 store.state.query = "";
 
@@ -66,10 +66,11 @@ const thumbs = (galleryHtml.match(/data-shot="/g) || []).length;
 if (thumbs !== 3) { failures++; console.log(`FAIL gallery rendered ${thumbs} thumbs, expected 3`); }
 else console.log("ok   gallery (3 thumbs + lightbox hooks)");
 
-/* album fallback when there are no local screenshots */
+/* album fallback when there are no local screenshots: just the album link,
+   there is nothing to fall back from */
 const albumOnly = { ...store.state.index.releases[0], screenshots: [], screenshotsAlbum: "https://t.me/x/1" };
 const albumHtml = ui.renderRelease(albumOnly);
-if (!/Open album/.test(albumHtml) || !/data-shots-fallback/.test(albumHtml)) { failures++; console.log("FAIL album-only fallback missing"); }
+if (!/Open album/.test(albumHtml) || !/Not mirrored here yet/.test(albumHtml)) { failures++; console.log("FAIL album-only fallback missing"); }
 else console.log("ok   album-only fallback");
 
 /* local shots AND an album: keep the album as a secondary link plus a runtime
@@ -96,7 +97,7 @@ if (!/src="https:\/\/i\.imgur\.com\/a\.png"/.test(ui.renderRelease(extShots))) {
 /* release notes are optional, and opt-in loud vs quiet */
 const base0 = store.state.index.releases[0];
 const noNote = ui.renderRelease({ ...base0, notes: null });
-if (/class="note"|quiet-note/.test(noNote)) { failures++; console.log("FAIL note rendered with no note set"); }
+if (/class="note/.test(noNote)) { failures++; console.log("FAIL note rendered with no note set"); }
 else console.log("ok   no note -> nothing rendered");
 
 const loud = ui.renderRelease({ ...base0, notes: "watch out", noteStyle: "callout" });
@@ -104,7 +105,7 @@ if (!/class="note"/.test(loud)) { failures++; console.log("FAIL callout note mis
 else console.log("ok   callout note");
 
 const quiet = ui.renderRelease({ ...base0, notes: "watch out", noteStyle: "quiet" });
-if (!/quiet-note/.test(quiet) || /class="note"/.test(quiet)) { failures++; console.log("FAIL quiet note missing"); }
+if (!/note--quiet/.test(quiet) || /class="note"/.test(quiet)) { failures++; console.log("FAIL quiet note missing"); }
 else console.log("ok   quiet note");
 
 /* the ported-from field is gone for good. Use a sentinel rather than a real
@@ -115,16 +116,17 @@ const withBase = ui.renderRelease({ ...base0, base: "ZZ-SENTINEL-BASE-ZZ" });
 if (/ZZ-SENTINEL-BASE-ZZ/.test(withBase)) { failures++; console.log("FAIL base still rendered"); }
 else console.log("ok   base not rendered");
 
-/* every view must ship a spinner for the loading state */
-if (!/spin__dot/.test(ui.renderLoading())) { failures++; console.log("FAIL loading spinner missing"); }
+/* every view must ship the M3 loading indicator */
+if (!/md-linear-progress/.test(ui.renderLoading())) { failures++; console.log("FAIL loading spinner missing"); }
 else console.log("ok   loading spinner");
-const shotSpinners = (ui.renderRelease(withShots).match(/spin__dot/g) || []).length;
-if (shotSpinners !== 3) { failures++; console.log(`FAIL ${shotSpinners} thumb spinners, expected 3`); }
-else console.log("ok   thumbnail spinners");
+/* the pre-M3 spinner markup must be gone: loading feedback is an md-icon now */
+if (/class="spin|spin__dot/.test(ui.renderRelease(withShots) + ui.renderPeople())) {
+  failures++; console.log("FAIL legacy spinner markup still rendered");
+} else console.log("ok   no legacy spinner markup");
 
 /* disclaimer wording is fixed copy, so pin it */
 const disclaimed = ui.renderRelease(base0);
-if (!/not responsible for any data loss or corrupt devices/.test(disclaimed)) {
+if (!/You flash this at your own risk\. Nobody here is responsible for lost data or a bricked device\./.test(disclaimed)) {
   failures++; console.log("FAIL disclaimer text missing from release page");
 } else console.log("ok   disclaimer wording");
 if (/brick the phone|wipes everything/.test(disclaimed)) {
@@ -152,3 +154,21 @@ else console.log("ok   hostile data escaped");
 
 console.log(failures ? `\n${failures} failure(s)` : "\nall render checks passed");
 if (failures) bail(1);
+
+/* settings view */
+const settingsHtml = ui.renderSettings();
+check("settings", settingsHtml);
+if (!/md-switch/.test(settingsHtml)) { failures++; console.log("FAIL settings: no theme switch"); }
+else console.log("ok   settings: theme switch");
+const accents = [...settingsHtml.matchAll(/data-accent="([a-z]+)"/g)].map((m) => m[1]);
+if (accents.length < 5) { failures++; console.log(`FAIL settings: only ${accents.length} accents`); }
+else console.log(`ok   settings: ${accents.length} accents (${accents.join(", ")})`);
+
+/* Copy that was deliberately cut, pinned so it cannot drift back in. The theme
+   row is a single line now and the page carries no subtitle. */
+for (const gone of ["Saved on this device only", "same tokens"]) {
+  if (settingsHtml.includes(gone)) { failures++; console.log(`FAIL settings still renders "${gone}"`); }
+}
+if (/<span slot="supporting-text">/.test(settingsHtml)) {
+  failures++; console.log("FAIL settings still has a supporting-text line");
+} else console.log("ok   settings: no subtitle, theme row is one line");

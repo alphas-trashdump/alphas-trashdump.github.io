@@ -1,35 +1,10 @@
 /* ------------------------------------------------------------------
-   tokens
+   base: page frame, reset, type helpers, component tokens, motion
    ------------------------------------------------------------------ */
 :root {
-  color-scheme: dark;
-
-  --bg: #000;
-  --bg-2: #1c1c1e;
-  --card: #1c1c1e;
-  --card-2: #2c2c2e;
-  --card-3: #3a3a3c;
-  --fill: rgba(120, 120, 128, 0.24);
-  --fill-2: rgba(120, 120, 128, 0.36);
-  --line: rgba(84, 84, 88, 0.6);
-
-  --fg: #fff;
-  --fg-2: rgba(235, 235, 245, 0.6);
-  --fg-3: rgba(235, 235, 245, 0.3);
-
-  --accent: #0a84ff;
-  --accent-soft: rgba(10, 132, 255, 0.16);
-
-  --r-card: 14px;
-  --r-md: 12px;
-  --r-sm: 10px;
-  --r-pill: 999px;
-
-  --sans: -apple-system, BlinkMacSystemFont, "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
-
   --page: 640px;
   --gutter: 16px;
-  --header-h: 50px;
+  --top-bar-h: 64px;
 
   --sa-t: env(safe-area-inset-top, 0px);
   --sa-b: env(safe-area-inset-bottom, 0px);
@@ -37,39 +12,26 @@
   --sa-r: env(safe-area-inset-right, 0px);
   --gx-l: max(var(--gutter), var(--sa-l));
   --gx-r: max(var(--gutter), var(--sa-r));
-
-  --ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --spring-smooth: cubic-bezier(0.22, 1, 0.36, 1);
-  --spring-snappy: cubic-bezier(0.3, 1.1, 0.4, 1);
-  --spring-bouncy: cubic-bezier(0.3, 1.3, 0.5, 1);
-  --spring-lift: cubic-bezier(0.34, 1.45, 0.64, 1);
-  --t-smooth: 0.8s;
-  --t-snappy: 0.6s;
-  --t-bouncy: 0.72s;
-  --t-lift: 0.75s;
 }
 
-/* damped springs sampled into linear(): smooth ζ=1, snappy ζ=.85, bouncy ζ=.7, lift ζ=.6 (page entrance) */
-@supports (animation-timing-function: linear(0, 1)) {
-  :root {
-    --spring-smooth: linear(0, 0.091 5%, 0.266 10%, 0.445 15%, 0.597 20%, 0.715 25%, 0.803 30%, 0.866 35%, 0.91 40%, 0.94 45%, 0.96 50%, 0.983 60%, 0.993 70%, 0.997 80%, 0.999 90%, 1);
-    --spring-snappy: linear(0, 0.095 6.7%, 0.285 13.3%, 0.486 20%, 0.657 26.7%, 0.786 33.3%, 0.877 40%, 0.936 46.7%, 0.972 53.3%, 0.992 60%, 1.002 66.7%, 1.006 73.3%, 1.006 80%, 1.006 86.7%, 1.004 93.3%, 1);
-    --spring-bouncy: linear(0, 0.1 5.6%, 0.308 11.1%, 0.535 16.7%, 0.729 22.2%, 0.874 27.8%, 0.968 33.3%, 1.02 38.9%, 1.042 44.4%, 1.046 50%, 1.039 55.6%, 1.029 61.1%, 1.019 66.7%, 1.011 72.2%, 1.005 77.8%, 1.001 83.3%, 0.999 88.9%, 1);
-    --spring-lift: linear(0, 0.18 6.7%, 0.519 13.3%, 0.817 20%, 1.005 26.7%, 1.084 33.3%, 1.092 40%, 1.066 46.7%, 1.034 53.3%, 1.009 60%, 0.996 66.7%, 0.991 73.3%, 0.992 80%, 0.995 86.7%, 0.998 93.3%, 1);
-  }
-}
-
-/* ------------------------------------------------------------------
-   reset
-   ------------------------------------------------------------------ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; }
+/* Reset only what the UA actually gives us, and only on elements we author.
+   A blanket `* { margin: 0; padding: 0 }` is not safe here: a declaration in the
+   document tree beats a component's `:host` and `::slotted()` rules whatever the
+   specificity (tree context is sorted first), so it silently strips Material
+   Web's own spacing - md-dialog centres itself with `margin: auto` from :host
+   and pads its headline/content/actions through ::slotted. */
+h1, h2, h3, h4, p, ul, ol, dl, dt, dd, figure, figcaption, form, fieldset, blockquote, pre, hr, table { margin: 0; }
+ul, ol { padding-left: 0; }
+button { padding: 0; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
   min-height: 100dvh;
-  background: var(--bg);
-  color: var(--fg);
-  font: 400 16px/1.4 var(--sans);
-  letter-spacing: -0.012em;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  font: var(--md-sys-typescale-body-medium-weight) var(--md-sys-typescale-body-medium-size) /
+        var(--md-sys-typescale-body-medium-line-height) var(--md-ref-typeface-plain);
+  letter-spacing: var(--md-sys-typescale-body-medium-tracking);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   overscroll-behavior-y: none;
@@ -79,110 +41,163 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 img { display: block; max-width: 100%; }
 ul, ol { list-style: none; }
 h1, h2, h3 { font-size: inherit; font-weight: inherit; }
-input { font: inherit; color: inherit; }
-input[type="search"] { -webkit-appearance: none; appearance: none; }
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; display: none; }
 svg { display: block; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
-::selection { background: var(--accent); color: #fff; }
+:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+::selection { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+/* hidden must beat a component's own :host display */
+[hidden] { display: none !important; }
 
-/* ------------------------------------------------------------------
-   primitives
-   ------------------------------------------------------------------ */
 .shell { width: 100%; max-width: var(--page); margin: 0 auto; padding-left: var(--gx-l); padding-right: var(--gx-r); }
 
-.press { transition: transform var(--t-snappy) var(--spring-snappy), opacity 0.2s, background 0.25s var(--ease-out); }
-.press:active { transform: scale(0.96); transition: transform 0.09s var(--ease-out), background 0.05s; }
+/* Page content gets its own stacking context. Measured, not guessed: without it
+   the tag chips in the release header paint *over* the sticky app bar while the
+   page scrolls (elementsFromPoint at y=56 inside the 64px bar returned the chip,
+   not the header), so the tags showed through the bar. Isolating #app confines
+   everything to it and the bar's z-index resolves against it. The bar stays at
+   z-index 1 because md-dialog's scrim is position:fixed z-index:1 in the root
+   context and wins on tree order - raising it would put the bar over the scrim. */
+#app { isolation: isolate; }
 
-.cap {
-  display: flex; align-items: baseline; gap: 8px;
-  padding: 0 16px 7px;
-  font-size: 13px; color: var(--fg-2);
-  text-transform: uppercase; letter-spacing: 0.01em;
+/* type-scale helpers for the text Material Web does not own */
+.t-display-small { font: var(--md-sys-typescale-display-small-weight) var(--md-sys-typescale-display-small-size) / var(--md-sys-typescale-display-small-line-height) var(--md-ref-typeface-brand); letter-spacing: var(--md-sys-typescale-display-small-tracking); }
+.t-headline-large { font: var(--md-sys-typescale-headline-large-weight) var(--md-sys-typescale-headline-large-size) / var(--md-sys-typescale-headline-large-line-height) var(--md-ref-typeface-brand); letter-spacing: var(--md-sys-typescale-headline-large-tracking); }
+.t-title-large { font: var(--md-sys-typescale-title-large-weight) var(--md-sys-typescale-title-large-size) / var(--md-sys-typescale-title-large-line-height) var(--md-ref-typeface-plain); letter-spacing: var(--md-sys-typescale-title-large-tracking); }
+.t-title-medium { font: var(--md-sys-typescale-title-medium-weight) var(--md-sys-typescale-title-medium-size) / var(--md-sys-typescale-title-medium-line-height) var(--md-ref-typeface-plain); letter-spacing: var(--md-sys-typescale-title-medium-tracking); }
+.t-title-small { font: var(--md-sys-typescale-title-small-weight) var(--md-sys-typescale-title-small-size) / var(--md-sys-typescale-title-small-line-height) var(--md-ref-typeface-plain); letter-spacing: var(--md-sys-typescale-title-small-tracking); }
+.t-body-large { font: var(--md-sys-typescale-body-large-weight) var(--md-sys-typescale-body-large-size) / var(--md-sys-typescale-body-large-line-height) var(--md-ref-typeface-plain); letter-spacing: var(--md-sys-typescale-body-large-tracking); }
+.t-body-medium { font: var(--md-sys-typescale-body-medium-weight) var(--md-sys-typescale-body-medium-size) / var(--md-sys-typescale-body-medium-line-height) var(--md-ref-typeface-plain); letter-spacing: var(--md-sys-typescale-body-medium-tracking); }
+.t-body-small { font: var(--md-sys-typescale-body-small-weight) var(--md-sys-typescale-body-small-size) / var(--md-sys-typescale-body-small-line-height) var(--md-ref-typeface-plain); letter-spacing: var(--md-sys-typescale-body-small-tracking); }
+.t-label-large { font: var(--md-sys-typescale-label-large-weight) var(--md-sys-typescale-label-large-size) / var(--md-sys-typescale-label-large-line-height) var(--md-ref-typeface-plain); letter-spacing: var(--md-sys-typescale-label-large-tracking); }
+.t-label-medium { font: var(--md-sys-typescale-label-medium-weight) var(--md-sys-typescale-label-medium-size) / var(--md-sys-typescale-label-medium-line-height) var(--md-ref-typeface-plain); letter-spacing: var(--md-sys-typescale-label-medium-tracking); }
+
+.muted { color: var(--md-sys-color-on-surface-variant); }
+.truncate { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* section label above a card: M3 "list subheader", neutral not accent */
+.subhead {
+  display: flex; align-items: baseline; gap: var(--md-sys-space-200);
+  padding: 0 var(--md-sys-space-400) var(--md-sys-space-200);
+  color: var(--md-sys-color-on-surface-variant);
 }
-.cap span { min-width: 0; margin-left: auto; text-transform: none; color: var(--fg-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.card { background: var(--card); border-radius: var(--r-card); overflow: hidden; }
-.card + .cap { margin-top: 26px; }
-
-.cell {
-  position: relative;
-  display: flex; align-items: center; gap: 12px;
-  min-height: 52px;
-  padding: 11px 14px 11px 16px;
-  transition: background 0.25s var(--ease-out), transform var(--t-snappy) var(--spring-snappy);
-}
-.cell + .cell::before { content: ""; position: absolute; top: 0; left: 16px; right: 0; height: 1px; background: var(--line); transform: scaleY(0.5); transform-origin: top; }
-a.cell:active, button.cell:active { background: var(--card-2); transition-duration: 0.05s; }
-.cell__ico { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 8px; background: var(--accent); color: #fff; }
-.cell__ico--dim { background: var(--card-3); color: var(--fg); }
-.cell__body { flex: 1; min-width: 0; }
-.cell__t { display: flex; align-items: center; gap: 8px; font-size: 17px; line-height: 1.3; letter-spacing: -0.02em; }
-.cell__t > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cell__s { margin-top: 2px; font-size: 13px; color: var(--fg-2); }
-.cell__v { flex: none; font-size: 15px; color: var(--fg-2); white-space: nowrap; }
-.cell__chev { flex: none; width: 14px; height: 14px; stroke-width: 2.4; color: var(--fg-3); }
-
-.pill {
-  display: inline-flex; align-items: center; gap: 5px;
-  height: 26px; padding: 0 10px;
-  border-radius: var(--r-pill);
-  background: var(--fill);
-  font-size: 13px; font-weight: 500; color: var(--fg-2);
-  white-space: nowrap;
-}
-.pill--accent { background: var(--accent-soft); color: var(--accent); }
-
-.badge { flex: none; padding: 1px 6px; border-radius: 6px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; line-height: 1.5; letter-spacing: 0.02em; }
-
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 50px; padding: 0 20px;
-  border-radius: 14px;
-  background: var(--fill-2);
-  font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: var(--fg);
-}
-.btn--primary { background: var(--accent); color: #fff; }
-.btn--block { width: 100%; }
-
-.ico { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
-.ico--sm { width: 16px; height: 16px; }
-.ico--lg { width: 22px; height: 22px; }
-
-.spin { display: inline-block; width: 22px; height: 22px; flex: none; color: var(--fg-2); }
-.spin svg { width: 100%; height: 100%; }
-.spin__ring { opacity: 0.25; }
-.spin__dot { transform-origin: 7px 7px; animation: spin-dot 0.9s linear infinite; }
-.spin--sm { width: 16px; height: 16px; }
-.spin--lg { width: 28px; height: 28px; }
-.spin--on-dark { color: #fff; }
-@keyframes spin-dot { to { transform: rotate(360deg); } }
-
-.loading { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 80px 20px; color: var(--fg-3); font-size: 15px; }
-.empty { padding: 56px 16px; text-align: center; }
-.empty h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
-.empty p { font-size: 15px; color: var(--fg-2); }
+.empty { padding: var(--md-sys-space-600) var(--md-sys-space-400); text-align: center; }
+.empty h3 { margin-bottom: var(--md-sys-space-100); color: var(--md-sys-color-on-surface); }
+.empty p { color: var(--md-sys-color-on-surface-variant); }
+.empty md-filled-button { margin-top: var(--md-sys-space-500); }
 
 /* ------------------------------------------------------------------
-   text motion — blur only on glyphs (headings) and words (subtitles)
+   Material Web: component-level token overrides
+   One accent (primary) for anything interactive or a status; everything
+   else stays on surface / on-surface-variant / outline.
+   ------------------------------------------------------------------ */
+/* <md-icon> still owns the sizing; the glyph is an inline Feather svg
+   (assets/js/icons.js), so there is no icon font and nothing to wait for.
+   The document tree also carries the box, so an md-icon that has not upgraded
+   yet (slow CDN) still reserves its M3 square instead of collapsing to the
+   svg's intrinsic size. Same values the component sets on :host. */
+md-icon { --md-icon-size: 24px; display: inline-flex; width: var(--md-icon-size); height: var(--md-icon-size); }
+md-icon-button { display: inline-flex; }
+md-icon > svg { width: 100%; height: 100%; flex: none; }
+
+/* nothing scrolls or takes taps while the splash is up */
+body:has(.boot:not([hidden])) { overflow: hidden; }
+
+/* Feather's contract, restated in CSS. md-icon carries ::slotted(svg){fill:currentColor}
+   for icon *fonts*; that is a style rule, so it beats the fill="none" presentation
+   attribute on our svgs and filled every shape solid. Author CSS wins here. */
+.ico {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* lists inside a card must not paint their own surface */
+md-outlined-card md-list { --md-list-container-color: transparent; }
+
+/* Chips come in two roles. `tag-beta`/`status` is the one status tag the site
+   shows (Beta; experimental reads Beta) and must look the same everywhere it
+   appears. `meta` is the quiet metadata beside it - otherwise a status tag just
+   reads as another category. The chip component has no fill token (outline
+   only), so the tag is carried by its label and outline colour. */
+md-assist-chip.tag-beta,
+md-assist-chip.status {
+  --md-assist-chip-container-height: 24px;
+  --md-assist-chip-label-text-size: var(--md-sys-typescale-label-small-size);
+  --md-assist-chip-label-text-line-height: var(--md-sys-typescale-label-small-line-height);
+  --md-assist-chip-label-text-weight: var(--md-ref-typeface-weight-semibold);
+  --md-assist-chip-label-text-color: var(--md-sys-color-primary);
+  --md-assist-chip-outline-color: var(--md-sys-color-primary);
+  --md-assist-chip-leading-space: var(--md-sys-space-200);
+  --md-assist-chip-trailing-space: var(--md-sys-space-200);
+}
+md-assist-chip.meta {
+  --md-assist-chip-container-height: 24px;
+  --md-assist-chip-label-text-size: var(--md-sys-typescale-label-small-size);
+  --md-assist-chip-label-text-line-height: var(--md-sys-typescale-label-small-line-height);
+  --md-assist-chip-label-text-weight: var(--md-ref-typeface-weight-medium);
+  --md-assist-chip-label-text-color: var(--md-sys-color-on-surface-variant);
+  --md-assist-chip-outline-color: var(--md-sys-color-outline);
+  --md-assist-chip-leading-space: var(--md-sys-space-200);
+  --md-assist-chip-trailing-space: var(--md-sys-space-200);
+}
+/* "New" is a dot, not a chip, so it can never change the row height. */
+.dot {
+  flex: none; width: 8px; height: 8px; border-radius: var(--md-sys-shape-corner-full);
+  background: var(--md-sys-color-primary);
+}
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+
+/* Device filter: selected chip uses the one accent, unselected stays neutral. */
+md-filter-chip {
+  --md-filter-chip-selected-container-color: var(--md-sys-color-primary-container);
+  --md-filter-chip-selected-label-text-color: var(--md-sys-color-on-primary-container);
+  --md-filter-chip-selected-hover-state-layer-color: var(--md-sys-color-on-primary-container);
+  --md-filter-chip-selected-pressed-state-layer-color: var(--md-sys-color-on-primary-container);
+  --md-filter-chip-selected-outline-width: 0px;
+  --md-filter-chip-outline-color: var(--md-sys-color-outline);
+  --md-filter-chip-label-text-color: var(--md-sys-color-on-surface-variant);
+}
+
+/* the outbound-link alert is a plain M3 dialog on the surface container role.
+   md-dialog centres itself with `margin: auto` inherited from its own :host, so
+   nothing in the document tree may set a margin on it. */
+md-dialog { margin: auto; }
+md-dialog.alert { --md-dialog-container-color: var(--md-sys-color-surface-container-high); }
+.alert__host {
+  margin-top: var(--md-sys-space-200);
+  color: var(--md-sys-color-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.alert__progress {
+  width: 100%;
+  margin-top: var(--md-sys-space-300);
+}
+
+/* ------------------------------------------------------------------
+   text motion — M3 easing tokens only: one move in, no blur
    ------------------------------------------------------------------ */
 .w { display: inline-block; white-space: nowrap; }
-.ch, .wd, .dg { display: inline-block; }
-.ch { animation: rise-t var(--t-bouncy) var(--spring-bouncy) both, blur-in 0.45s var(--ease-out) both; animation-delay: var(--d, 0ms), var(--d, 0ms); }
-.wd { animation: rise-w var(--t-snappy) var(--spring-snappy) both, blur-in 0.4s var(--ease-out) both; animation-delay: var(--d, 0ms), var(--d, 0ms); }
-@keyframes rise-t { from { transform: translateY(0.45em) scale(0.9); } }
-@keyframes rise-w { from { opacity: 0; transform: translateY(0.35em); } }
-@keyframes blur-in { from { opacity: 0; filter: blur(2px); } to { opacity: 1; filter: blur(0); } }
+.ch, .dg, .rl { display: inline-block; }
+.ch {
+  animation: rise-t var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate) both;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes rise-t { from { opacity: 0; transform: translateY(0.45em) scale(0.9); } }
 
 .num { display: inline-flex; overflow: hidden; vertical-align: bottom; line-height: 1.2; }
-.dg { animation: dg-in var(--t-snappy) var(--spring-snappy) both; animation-delay: var(--d, 0ms); }
+.dg { animation: dg-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate) both; animation-delay: var(--d, 0ms); }
 @keyframes dg-in { from { transform: translateY(110%); opacity: 0; } }
-.rl { display: inline-block; }
-.rl--in { animation: rl-in 0.5s var(--spring-snappy) both; }
+.rl--in { animation: rl-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate) both; }
 @keyframes rl-in { from { transform: translateY(calc(var(--dir, 1) * 90%)); opacity: 0; } }
 
-.in { animation: in var(--t-snappy) var(--spring-snappy) both; animation-delay: calc(min(var(--i, 0), 6) * 45ms); }
+.in { animation: in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate) both; animation-delay: calc(min(var(--i, 0), 6) * 45ms); }
 @keyframes in { from { opacity: 0; transform: translateY(14px) scale(0.99); } }
 
 @media (prefers-reduced-motion: reduce) {
