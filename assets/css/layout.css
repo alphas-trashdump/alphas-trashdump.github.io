@@ -196,7 +196,18 @@ md-list-item.cell--go { background: var(--md-sys-color-surface-container-high); 
 .release__flow { display: block; }
 .release__head { padding: var(--md-sys-space-400) 0 var(--md-sys-space-100); }
 .release__head p { margin-top: var(--md-sys-space-100); color: var(--md-sys-color-on-surface-variant); }
-.release__head h1 { color: var(--md-sys-color-on-surface); }
+.release__head h1 {
+  color: var(--md-sys-color-on-surface);
+  font-size: 23px;
+  line-height: 30px;
+  letter-spacing: -0.01em;
+}
+@media (min-width: 600px) {
+  .release__head h1 {
+    font-size: 26px;
+    line-height: 34px;
+  }
+}
 .title .ch, .release__head h1 .ch { animation-delay: calc(min(var(--n), 26) * 22ms + 120ms); }
 .release__chips { margin-top: var(--md-sys-space-300); }
 .release__chips md-assist-chip { flex: none; }

@@ -133,55 +133,55 @@
   --md-sys-space-900: 36px;
 
   /* --- md.ref --- */
-  --md-ref-typeface-brand: "Inter";
-  --md-ref-typeface-plain: "Inter";
+  --md-ref-typeface-brand: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --md-ref-typeface-plain: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --md-ref-typeface-weight-regular: 400;
   --md-ref-typeface-weight-medium: 500;
   --md-ref-typeface-weight-semibold: 600;
   --md-ref-typeface-weight-bold: 700;
 
-  /* --- md.sys.typescale (M3 values, Inter) --- */
-  --md-sys-typescale-display-large-font: var(--md-ref-typeface-plain);
+  /* --- md.sys.typescale (M3 values) --- */
+  --md-sys-typescale-display-large-font: var(--md-ref-typeface-brand);
   --md-sys-typescale-display-large-weight: var(--md-ref-typeface-weight-bold);
   --md-sys-typescale-display-large-size: 57px;
   --md-sys-typescale-display-large-line-height: 64px;
   --md-sys-typescale-display-large-tracking: -0.25px;
-  --md-sys-typescale-display-medium-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-display-medium-font: var(--md-ref-typeface-brand);
   --md-sys-typescale-display-medium-weight: var(--md-ref-typeface-weight-bold);
   --md-sys-typescale-display-medium-size: 45px;
   --md-sys-typescale-display-medium-line-height: 52px;
   --md-sys-typescale-display-medium-tracking: 0px;
-  --md-sys-typescale-display-small-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-display-small-font: var(--md-ref-typeface-brand);
   --md-sys-typescale-display-small-weight: var(--md-ref-typeface-weight-bold);
   --md-sys-typescale-display-small-size: 36px;
   --md-sys-typescale-display-small-line-height: 44px;
   --md-sys-typescale-display-small-tracking: 0px;
-  --md-sys-typescale-headline-large-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-headline-large-font: var(--md-ref-typeface-brand);
   --md-sys-typescale-headline-large-weight: var(--md-ref-typeface-weight-bold);
   --md-sys-typescale-headline-large-size: 32px;
   --md-sys-typescale-headline-large-line-height: 40px;
   --md-sys-typescale-headline-large-tracking: 0px;
-  --md-sys-typescale-headline-medium-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-headline-medium-font: var(--md-ref-typeface-brand);
   --md-sys-typescale-headline-medium-weight: var(--md-ref-typeface-weight-bold);
   --md-sys-typescale-headline-medium-size: 28px;
   --md-sys-typescale-headline-medium-line-height: 36px;
   --md-sys-typescale-headline-medium-tracking: 0px;
-  --md-sys-typescale-headline-small-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-headline-small-font: var(--md-ref-typeface-brand);
   --md-sys-typescale-headline-small-weight: var(--md-ref-typeface-weight-bold);
   --md-sys-typescale-headline-small-size: 24px;
   --md-sys-typescale-headline-small-line-height: 32px;
   --md-sys-typescale-headline-small-tracking: 0px;
-  --md-sys-typescale-title-large-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-title-large-font: var(--md-ref-typeface-brand);
   --md-sys-typescale-title-large-weight: var(--md-ref-typeface-weight-semibold);
   --md-sys-typescale-title-large-size: 22px;
   --md-sys-typescale-title-large-line-height: 28px;
   --md-sys-typescale-title-large-tracking: 0px;
-  --md-sys-typescale-title-medium-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-title-medium-font: var(--md-ref-typeface-brand);
   --md-sys-typescale-title-medium-weight: var(--md-ref-typeface-weight-semibold);
   --md-sys-typescale-title-medium-size: 16px;
   --md-sys-typescale-title-medium-line-height: 24px;
   --md-sys-typescale-title-medium-tracking: 0.15px;
-  --md-sys-typescale-title-small-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-title-small-font: var(--md-ref-typeface-brand);
   --md-sys-typescale-title-small-weight: var(--md-ref-typeface-weight-semibold);
   --md-sys-typescale-title-small-size: 14px;
   --md-sys-typescale-title-small-line-height: 20px;
