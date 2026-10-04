@@ -13,11 +13,11 @@ function avatar(m) {
 }
 
 export function personRow(m, count) {
-  const sub = [esc(m.tag || ""), m.pronouns ? esc(m.pronouns) : ""].filter(Boolean).join(" · ");
+  const sub = [m.tag ? `<span class="notranslate" translate="no">${esc(m.tag)}</span>` : "", m.pronouns ? esc(m.pronouns) : ""].filter(Boolean).join(" · ");
   return `
     <md-list-item type="text" class="person">
       ${avatar(m)}
-      <span slot="headline">${esc(m.name)}</span>
+      <span slot="headline" class="notranslate" translate="no">${esc(m.name)}</span>
       <span slot="supporting-text">${sub}${m.bio ? `<br>${esc(m.bio)}` : ""}</span>
       ${count != null ? `<span slot="trailing-supporting-text">${count} build${count === 1 ? "" : "s"}</span>` : ""}
       <span slot="supporting-text" class="person__chips">${badges(m)}${links(m)}</span>

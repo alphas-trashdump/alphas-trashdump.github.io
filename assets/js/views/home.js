@@ -24,7 +24,7 @@ export function renderHome() {
           </md-outlined-text-field>
           <md-chip-set id="seg" class="filters" aria-label="Device">
             ${devices.map((d) => `
-              <md-filter-chip label="${esc(d.name)}" data-key="${esc(d.codename)}" data-href="${d.codename === "all" ? "#/" : `#/d/${enc(d.codename)}`}"${state.device === d.codename ? " selected" : ""}></md-filter-chip>`).join("")}
+              <md-filter-chip ${d.codename !== "all" ? 'class="notranslate" translate="no" ' : ""}label="${esc(d.name)}" data-key="${esc(d.codename)}" data-href="${d.codename === "all" ? "#/" : `#/d/${enc(d.codename)}`}"${state.device === d.codename ? " selected" : ""}></md-filter-chip>`).join("")}
           </md-chip-set>
         </div>
       </div>
@@ -37,7 +37,7 @@ function renderList() {
   if (!rows.length) return `<div class="empty in"><h3 class="t-title-medium">No Results</h3><p class="t-body-medium muted">Try the codename or the Android version.</p></div>`;
   return groupByDevice(rows).map(({ device, list }, i) => `
     <section class="group in" style="--i:${i + 3}">
-      <h2 class="subhead t-title-small">${esc(device.name)}</h2>
+      <h2 class="subhead t-title-small notranslate" translate="no">${esc(device.name)}</h2>
       <md-outlined-card>
         <md-list>${list.map(row).join("")}</md-list>
       </md-outlined-card>

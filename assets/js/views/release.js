@@ -14,7 +14,7 @@ export function renderRelease(rel) {
     <article class="release">
       <header class="release__head">
         <h1 class="t-headline-large notranslate" translate="no" aria-label="${esc(rel.name)}"><span aria-hidden="true" translate="no" class="notranslate">${letters(rel.name)}</span></h1>
-        <p class="t-body-medium muted">${esc(rel.device_.fullName || rel.device_.name)} · ${esc(rel.maintainer_.name)}</p>
+        <p class="t-body-medium muted"><span class="notranslate" translate="no">${esc(rel.device_.fullName || rel.device_.name)}</span> · <span class="notranslate" translate="no">${esc(rel.maintainer_.name)}</span></p>
         <md-chip-set class="release__chips" aria-label="Build details">
           ${tag ? `<md-assist-chip class="tag-beta" label="${esc(tag)}"></md-assist-chip>` : ""}
           <md-assist-chip class="meta" label="Android ${esc(rel.android)}"></md-assist-chip>
@@ -168,9 +168,9 @@ function infoBlock(rel) {
   const badgeDark = `${hits}&color=e2e0df&labelColor=2c2a29`;
   const badgeLight = `${hits}&color=1d1b1a&labelColor=eeeceb`;
   const rows = [
-    ["Device", esc(rel.device_.name)],
-    ["Codename", esc(rel.device)],
-    rel.supports?.length ? ["Also supports", rel.supports.map(esc).join(", ")] : null,
+    ["Device", `<span class="notranslate" translate="no">${esc(rel.device_.name)}</span>`],
+    ["Codename", `<span class="notranslate" translate="no">${esc(rel.device)}</span>`],
+    rel.supports?.length ? ["Also supports", rel.supports.map((s) => `<span class="notranslate" translate="no">${esc(s)}</span>`).join(", ")] : null,
     ["Android", esc(rel.android)],
     ["Build date", `${fmtDate(rel.date)} · ${relDays(rel.date)}`],
     ["Views", `<span class="kv__views">
