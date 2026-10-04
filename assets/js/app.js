@@ -441,9 +441,11 @@ const settingsBtn = $("settings-btn"), settingsPopup = $("settings-popup"),
 
 function toggleHelp(open) {
   if (!helpPopup) return;
-  const show = open ?? helpPopup.hidden;
+  const show = open ?? (helpPopup.dataset.open !== "1");
   if (show) toggleSettings(false);
-  helpPopup.hidden = !show;
+  helpPopup.dataset.open = show ? "1" : "0";
+  helpPopup.toggleAttribute("inert", !show);
+  helpPopup.setAttribute("aria-hidden", String(!show));
   helpBtn?.setAttribute("aria-expanded", String(show));
 }
 
@@ -459,12 +461,14 @@ function syncSettingsPopup() {
 
 function toggleSettings(open) {
   if (!settingsPopup) return;
-  const show = open ?? settingsPopup.hidden;
+  const show = open ?? (settingsPopup.dataset.open !== "1");
   if (show) {
     toggleHelp(false);
     syncSettingsPopup();
   }
-  settingsPopup.hidden = !show;
+  settingsPopup.dataset.open = show ? "1" : "0";
+  settingsPopup.toggleAttribute("inert", !show);
+  settingsPopup.setAttribute("aria-hidden", String(!show));
   settingsBtn?.setAttribute("aria-expanded", String(show));
 }
 
@@ -504,18 +508,18 @@ if (popupAccents) {
 }
 
 document.addEventListener("click", (e) => {
-  if (helpPopup && !helpPopup.hidden && !helpPopup.contains(e.target) && !helpBtn?.contains(e.target)) {
+  if (helpPopup && helpPopup.dataset.open === "1" && !helpPopup.contains(e.target) && !helpBtn?.contains(e.target)) {
     toggleHelp(false);
   }
-  if (settingsPopup && !settingsPopup.hidden && !settingsPopup.contains(e.target) && !settingsBtn?.contains(e.target)) {
+  if (settingsPopup && settingsPopup.dataset.open === "1" && !settingsPopup.contains(e.target) && !settingsBtn?.contains(e.target)) {
     toggleSettings(false);
   }
 });
 
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    if (helpPopup && !helpPopup.hidden) { toggleHelp(false); return; }
-    if (settingsPopup && !settingsPopup.hidden) { toggleSettings(false); return; }
+    if (helpPopup && helpPopup.dataset.open === "1") { toggleHelp(false); return; }
+    if (settingsPopup && settingsPopup.dataset.open === "1") { toggleSettings(false); return; }
     if (lb.dataset.open === "1") closeLightbox();
   }
   if (e.key === "Enter" && alertOpen && alertReady) alertGo.click();
@@ -540,8 +544,8 @@ window.addEventListener("hashchange", () => {
   /* a Back we triggered has already popped the trail */
   if (popping) popping = false;
   else { trail.push(location.hash || "#/"); if (trail.length > 40) trail.shift(); }
-  if (helpPopup && !helpPopup.hidden) toggleHelp(false);
-  if (settingsPopup && !settingsPopup.hidden) toggleSettings(false);
+  if (helpPopup && helpPopup.dataset.open === "1") toggleHelp(false);
+  if (settingsPopup && settingsPopup.dataset.open === "1") toggleSettings(false);
   if (lb.dataset.open === "1") closeLightbox();
   if (alertOpen) alertEl.close("nav");
   route();

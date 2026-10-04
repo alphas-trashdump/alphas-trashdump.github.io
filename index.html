@@ -27,7 +27,7 @@
 <link rel="stylesheet" href="assets/css/tokens.css?v=6">
 <link rel="stylesheet" href="assets/css/accents.css?v=6">
 <link rel="stylesheet" href="assets/css/base.css?v=6">
-<link rel="stylesheet" href="assets/css/layout.css?v=6">
+<link rel="stylesheet" href="assets/css/layout.css?v=7">
 
 <!-- theme + accent must be on <html> before the first paint, or the site
      flashes its defaults. Keep in sync with assets/js/lib/settings.js. -->
@@ -79,7 +79,7 @@ try{var s=JSON.parse(localStorage.getItem("trashdump:settings")||"{}"),r=documen
         <md-icon-button id="help-btn" aria-label="Need help?" aria-expanded="false" aria-haspopup="dialog">
           <md-icon><svg class="ico ico--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></md-icon>
         </md-icon-button>
-        <div class="help-popup" id="help-popup" hidden role="dialog" aria-label="Need help?">
+        <div class="help-popup" id="help-popup" data-open="0" inert role="dialog" aria-hidden="true" aria-label="Need help?">
           <div class="help-popup__head">
             <span class="t-title-small">Need help?</span>
             <md-icon-button id="help-popup-close" class="help-popup__close" aria-label="Close help">
@@ -97,7 +97,7 @@ try{var s=JSON.parse(localStorage.getItem("trashdump:settings")||"{}"),r=documen
         <md-icon-button id="settings-btn" aria-label="Settings" aria-expanded="false" aria-haspopup="dialog">
           <md-icon><svg class="ico ico--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></md-icon>
         </md-icon-button>
-        <div class="settings-popup" id="settings-popup" hidden role="dialog" aria-label="Settings">
+        <div class="settings-popup" id="settings-popup" data-open="0" inert role="dialog" aria-hidden="true" aria-label="Settings">
           <div class="settings-popup__head">
             <span class="t-title-small">Settings</span>
             <md-icon-button id="settings-popup-close" class="help-popup__close" aria-label="Close settings">
@@ -171,6 +171,6 @@ try{var s=JSON.parse(localStorage.getItem("trashdump:settings")||"{}"),r=documen
   }, 8000);
 })();
 </script>
-<script type="module" src="assets/js/app.js?v=6"></script>
+<script type="module" src="assets/js/app.js?v=7"></script>
 </body>
 </html>

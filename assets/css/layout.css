@@ -78,7 +78,21 @@ body[data-view="release"][data-scrolled="1"] .top-bar__title { text-align: left;
   box-shadow: var(--md-sys-elevation-shadow-3);
   animation: pop-in var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate) both;
 }
-.help-popup[hidden] { display: none !important; }
+/* Visible when data-open="1"; always in DOM so Chrome translates it upfront */
+.help-popup[data-open="0"],
+.settings-popup[data-open="0"] {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px) scale(0.97);
+  animation: none;
+}
+.help-popup[data-open="1"],
+.settings-popup[data-open="1"] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+  animation: pop-in var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate) both;
+}
 .help-popup__head {
   display: flex;
   align-items: center;
@@ -118,7 +132,6 @@ body[data-view="release"][data-scrolled="1"] .top-bar__title { text-align: left;
   box-shadow: var(--md-sys-elevation-shadow-3);
   animation: pop-in var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate) both;
 }
-.settings-popup[hidden] { display: none !important; }
 .settings-popup__head {
   display: flex;
   align-items: center;
