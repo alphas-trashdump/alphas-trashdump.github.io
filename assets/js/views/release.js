@@ -31,12 +31,16 @@ export function renderRelease(rel) {
             <md-list>
               ${primary ? dlRow(primary, rel, true) : ""}
               ${mirrors.map((m) => dlRow(m, rel, false)).join("")}
+              ${rel.extras.length ? `
+                <li class="list-divider" role="separator"></li>
+                <li class="list-subhead" role="presentation">Also flash these</li>
+                ${rel.extras.map((e) => linkRow(e, "external-link")).join("")}` : ""}
+              ${rel.recovery ? `
+                <li class="list-divider" role="separator"></li>
+                <li class="list-subhead" role="presentation">Recovery</li>
+                ${linkRow(rel.recovery, "external-link")}` : ""}
             </md-list>
           </md-outlined-card>
-          ${rel.extras.length ? `<h3 class="subhead t-title-small">Also flash these</h3>
-            <md-outlined-card><md-list>${rel.extras.map((e) => linkRow(e, "external-link")).join("")}</md-list></md-outlined-card>` : ""}
-          ${rel.recovery ? `<h3 class="subhead t-title-small">Recovery</h3>
-            <md-outlined-card><md-list>${linkRow(rel.recovery, "external-link")}</md-list></md-outlined-card>` : ""}
         </section>
 
         ${shotsBlock(rel)}
@@ -154,7 +158,7 @@ function listBlock(title, items, kind, i, empty) {
     : `<md-list-item type="text"><span slot="headline" class="muted">${esc(empty)}</span></md-list-item>`;
   return `<section class="block in" style="--i:${i}">
     <h2 class="subhead t-title-small">${esc(title)}</h2>
-    <md-outlined-card><md-list>${body}</md-list></md-outlined-card></section>`;
+    <md-outlined-card class="card--list"><md-list>${body}</md-list></md-outlined-card></section>`;
 }
 
 function infoBlock(rel) {

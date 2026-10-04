@@ -35,6 +35,19 @@ body[data-view="home"] .top-bar__title { text-align: left; padding-left: 0; }
 body[data-view="release"] .top-bar__back,
 body[data-view="people"] .top-bar__back,
 body[data-view="settings"] .top-bar__back { display: inline-flex; }
+@media (max-width: 599px) {
+  .top-bar__back-text { display: none; }
+  .top-bar__back {
+    --md-text-button-leading-space: var(--md-sys-space-150);
+    --md-text-button-trailing-space: var(--md-sys-space-150);
+    min-width: 40px;
+    margin-left: calc(-1 * var(--md-sys-space-200));
+  }
+  .top-bar__title {
+    font-size: 1.125rem;
+    padding: 0 4px;
+  }
+}
 
 /* ------------------------------------------------------------------
    large title
@@ -57,14 +70,14 @@ body[data-view="settings"] .top-bar__back { display: inline-flex; }
 .group + .group { margin-top: var(--md-sys-space-600); }
 .group, .block { content-visibility: auto; contain-intrinsic-size: auto 240px; }
 
-/* Row rhythm. M3's two-line item is 72px with 16px of padding top and bottom;
-   at 12px the same content is 60px, which is what a phone list wants. */
+/* Row rhythm. Compact and comfortable for mobile touch targets (48-56px). */
 md-list-item {
-  --md-list-item-two-line-container-height: 60px;
+  --md-list-item-one-line-container-height: 48px;
+  --md-list-item-two-line-container-height: 56px;
   --md-list-item-label-text-size: 15px;
-  --md-list-item-label-text-line-height: 22px;
-  --md-list-item-top-space: var(--md-sys-space-300);
-  --md-list-item-bottom-space: var(--md-sys-space-300);
+  --md-list-item-label-text-line-height: 20px;
+  --md-list-item-top-space: var(--md-sys-space-200);
+  --md-list-item-bottom-space: var(--md-sys-space-200);
 }
 
 .cell__title { display: flex; align-items: center; gap: var(--md-sys-space-200); }
@@ -86,9 +99,9 @@ md-list-item.cell--go { background: var(--md-sys-color-surface-container-high); 
 .release__chips { margin-top: var(--md-sys-space-300); }
 .release__chips md-assist-chip { flex: none; }
 
-.block { margin-top: var(--md-sys-space-500); }
+.block { margin-top: var(--md-sys-space-400); }
 .block h2 + md-outlined-card, .block h3 + md-outlined-card { margin-top: 0; }
-.block h3 { margin-top: var(--md-sys-space-400); }
+.block h3 { margin-top: var(--md-sys-space-300); }
 .block__actions {
   display: flex;
   flex-direction: column;
@@ -105,10 +118,10 @@ md-list-item.row--primary [slot="headline"] { font-weight: var(--md-ref-typeface
 md-list-item.row--primary md-icon[slot="start"] { color: var(--md-sys-color-primary); }
 
 /* build note */
-md-outlined-card.note { margin-top: var(--md-sys-space-400); }
-.note__body { display: flex; gap: var(--md-sys-space-300); align-items: flex-start; padding: var(--md-sys-space-300); }
-.note__body md-icon { flex: none; color: var(--md-sys-color-primary); }
-.note__body p { color: var(--md-sys-color-on-surface); }
+md-outlined-card.note { margin-top: var(--md-sys-space-300); }
+.note__body { display: flex; gap: var(--md-sys-space-250); align-items: flex-start; padding: var(--md-sys-space-250) var(--md-sys-space-300); }
+.note__body md-icon { flex: none; color: var(--md-sys-color-primary); margin-top: 2px; }
+.note__body p { color: var(--md-sys-color-on-surface); font-size: 14px; line-height: 20px; }
 .note__body a { color: var(--md-sys-color-primary); }
 .note--quiet .note__body p { color: var(--md-sys-color-on-surface-variant); }
 .note--quiet .note__body md-icon { color: var(--md-sys-color-outline); }
@@ -116,11 +129,48 @@ md-outlined-card.note { margin-top: var(--md-sys-space-400); }
 /* numbered steps + bullet lists */
 .step {
   flex: none; display: grid; place-items: center;
-  width: 24px; height: 24px; border-radius: var(--md-sys-shape-corner-full);
+  width: 20px; height: 20px; border-radius: var(--md-sys-shape-corner-full);
   background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary);
-  font-size: var(--md-sys-typescale-label-small-size);
+  font-size: 11px;
   font-weight: var(--md-ref-typeface-weight-bold);
   line-height: 1;
+}
+
+/* reading lists: changelogs, bugs & steps */
+.card--list md-list-item {
+  --md-list-item-one-line-container-height: auto;
+  --md-list-item-two-line-container-height: auto;
+  --md-list-item-top-space: var(--md-sys-space-200);
+  --md-list-item-bottom-space: var(--md-sys-space-200);
+  --md-list-item-leading-space: var(--md-sys-space-300);
+  --md-list-item-trailing-space: var(--md-sys-space-300);
+  min-height: 36px;
+}
+.card--list md-list-item [slot="headline"] {
+  font-size: 14px;
+  line-height: 20px;
+  white-space: normal;
+}
+
+/* subheadings and dividers within unified cards */
+.list-divider {
+  display: block;
+  height: 1px;
+  margin: var(--md-sys-space-100) var(--md-sys-space-300);
+  background: var(--md-sys-color-outline-variant);
+  opacity: 0.35;
+  list-style: none;
+}
+.list-subhead {
+  display: flex;
+  align-items: center;
+  padding: var(--md-sys-space-250) var(--md-sys-space-400) var(--md-sys-space-100);
+  color: var(--md-sys-color-primary);
+  font-size: 11px;
+  font-weight: var(--md-ref-typeface-weight-bold);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  list-style: none;
 }
 
 /* Details key/value. Both halves get body-large: the value is
@@ -128,10 +178,13 @@ md-outlined-card.note { margin-top: var(--md-sys-space-400); }
    right-hand side at 14px - smaller than the label next to it, which is what
    "the details text is too small" was. */
 .block--details md-list-item {
-  --md-list-item-label-text-size: 16px;
-  --md-list-item-label-text-line-height: 24px;
-  --md-list-item-trailing-supporting-text-size: 16px;
-  --md-list-item-trailing-supporting-text-line-height: 24px;
+  --md-list-item-one-line-container-height: 42px;
+  --md-list-item-top-space: var(--md-sys-space-150);
+  --md-list-item-bottom-space: var(--md-sys-space-150);
+  --md-list-item-label-text-size: 14px;
+  --md-list-item-label-text-line-height: 20px;
+  --md-list-item-trailing-supporting-text-size: 14px;
+  --md-list-item-trailing-supporting-text-line-height: 20px;
   --md-list-item-trailing-supporting-text-weight: var(--md-ref-typeface-weight-medium);
   --md-list-item-trailing-supporting-text-color: var(--md-sys-color-on-surface);
 }
@@ -175,7 +228,8 @@ md-outlined-card.note { margin-top: var(--md-sys-space-400); }
 /* md-item centres slotted content vertically. On a list row that is right for
    icons, but a leading marker that belongs to the first line of a wrapped
    paragraph reads as a mistake, so bullets and step numbers hang from the top. */
-md-list-item [slot="start"].dot, md-list-item [slot="start"].step { align-self: flex-start; margin-top: var(--md-sys-space-150); }
+md-list-item [slot="start"].dot { align-self: flex-start; margin-top: 6px; margin-right: -8px; }
+md-list-item [slot="start"].step { align-self: flex-start; margin-top: 1px; margin-right: -6px; }
 .person__chips { display: flex; flex-wrap: wrap; gap: var(--md-sys-space-200); margin-top: var(--md-sys-space-200); }
 md-list-item.person { --md-list-item-top-space: var(--md-sys-space-400); --md-list-item-bottom-space: var(--md-sys-space-400); }
 /* md-item centres slotted content vertically; the build count belongs on the
