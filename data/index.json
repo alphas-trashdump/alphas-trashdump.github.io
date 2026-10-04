@@ -1,8 +1,8 @@
 {
- "generated": "2026-10-03T21:45:32+00:00",
+ "generated": "2026-10-04T06:26:49+00:00",
  "counts": {
   "devices": 2,
-  "releases": 9
+  "releases": 10
  },
  "devices": [
   {
@@ -12,7 +12,7 @@
    "soc": "Snapdragon 425/430/435",
    "family": true,
    "order": 1,
-   "releaseCount": 3,
+   "releaseCount": 4,
    "latest": "hyperos-4.0.0.16-beta"
   },
   {
@@ -158,6 +158,86 @@
    ],
    "noteStyle": "callout",
    "_source": "data/releases/Mi8937/hyperos-4.0.0.16-beta.json"
+  },
+  {
+   "id": "hyperos-3-0-315-0-mi8937",
+   "device": "Mi8937",
+   "name": "HyperOS 3.0.315.0",
+   "shortName": null,
+   "android": "16",
+   "channel": "stable",
+   "date": "2026-07-04",
+   "size": "2.48 GB",
+   "maintainer": "alpha",
+   "supports": [
+    "santoni",
+    "ugg",
+    "land"
+   ],
+   "mirrors": [
+    {
+     "label": "Google Drive",
+     "url": "https://drive.usercontent.google.com/download?id=1Bk-UuK8FCRMh-PhPWIbiy6tjilF_A5Rx&export=download",
+     "primary": true
+    },
+    {
+     "label": "Telegram",
+     "url": "https://t.me/alphastrashdump/63",
+     "primary": false
+    }
+   ],
+   "extras": [
+    {
+     "label": "KSU Next Manager",
+     "url": "https://github.com/KernelSU-Next/KernelSU-Next/releases/download/v3.2.0/KernelSU_Next_v3.2.0_33129-release.apk"
+    },
+    {
+     "label": "DT2W Fix Module (webui)",
+     "url": "https://t.me/alphastrashdump/61"
+    }
+   ],
+   "recovery": {
+    "label": "Recommended recovery",
+    "url": "https://t.me/mi_msm8937/959"
+   },
+   "screenshots": [
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/01.webp",
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/02.webp",
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/03.webp",
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/04.webp",
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/05.webp",
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/06.webp",
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/07.webp",
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/08.webp",
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/09.webp",
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/10.webp",
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/11.webp",
+    "res/shots/Mi8937/hyperos-3-0-315-0-mi8937/12.webp"
+   ],
+   "screenshotsAlbum": null,
+   "install": [
+    "Wipe System, Vendor, Data, Dalvik/ART Cache, Cache, Metadata, Internal storage",
+    "Format data > yes",
+    "Flash the ROM zip",
+    "Reboot to system and wait 10 minutes to boot",
+    "Done"
+   ],
+   "bugs": [
+    "Fingerprint"
+   ],
+   "changelog": [
+    "Fixed Bluetooth & BT Audio",
+    "Fixed SIM Card & VoLTE",
+    "Fixed MTP",
+    "Fixed device naming issue",
+    "Switched to 4.19 & EROFS",
+    "Added Play Store by default",
+    "Update 🇮🇩 & 🇷🇺 language translations",
+    "Selinux Enforcing"
+   ],
+   "notes": "ROM needs atleast an hour to stabilize performance and battery\nNot recommended for 2/16, Mi8917\nWarning: Do not change kernel or else you will get bootloop",
+   "noteStyle": "quiet",
+   "_source": "data/releases/Mi8937/hyperos-3-0-315-0-mi8937.json"
   },
   {
    "id": "hyperos-3-0-313-0",
