@@ -161,7 +161,7 @@ check("settings", settingsHtml);
 if (!/md-switch/.test(settingsHtml)) { failures++; console.log("FAIL settings: no theme switch"); }
 else console.log("ok   settings: theme switch");
 const accents = [...settingsHtml.matchAll(/data-accent="([a-z]+)"/g)].map((m) => m[1]);
-if (accents.length < 5) { failures++; console.log(`FAIL settings: only ${accents.length} accents`); }
+if (accents.length < 4) { failures++; console.log(`FAIL settings: only ${accents.length} accents`); }
 else console.log(`ok   settings: ${accents.length} accents (${accents.join(", ")})`);
 
 /* Copy that was deliberately cut, pinned so it cannot drift back in. The theme

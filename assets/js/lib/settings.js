@@ -3,11 +3,8 @@
 const KEY = "trashdump:settings";
 export const ACCENTS = [
   { id: "orange", label: "Orange" },
-  { id: "red", label: "Red" },
-  { id: "pink", label: "Pink" },
   { id: "purple", label: "Purple" },
   { id: "blue", label: "Blue" },
-  { id: "cyan", label: "Cyan" },
   { id: "green", label: "Green" },
 ];
 

@@ -68,11 +68,8 @@ function palette(hue, peak) {
 /* --- the accents the site offers --- */
 const ACCENTS = [
   { id: "orange", label: "Orange", seed: "#e65100" },
-  { id: "red", label: "Red", seed: "#c62f2f" },
-  { id: "pink", label: "Pink", seed: "#e0347f" },
   { id: "purple", label: "Purple", seed: "#7b4dd8" },
   { id: "blue", label: "Blue", seed: "#1565d8" },
-  { id: "cyan", label: "Cyan", seed: "#00929f" },
   { id: "green", label: "Green", seed: "#3c7c34" },
 ];
 

@@ -32,7 +32,7 @@
 <!-- theme + accent must be on <html> before the first paint, or the site
      flashes its defaults. Keep in sync with assets/js/lib/settings.js. -->
 <script>
-try{var s=JSON.parse(localStorage.getItem("trashdump:settings")||"{}"),r=document.documentElement;r.dataset.theme=s.theme==="light"?"light":"dark";r.dataset.accent=["orange","red","pink","purple","blue","cyan","green"].indexOf(s.accent)>-1?s.accent:"orange";}catch(e){}
+try{var s=JSON.parse(localStorage.getItem("trashdump:settings")||"{}"),r=document.documentElement;r.dataset.theme=s.theme==="light"?"light":"dark";r.dataset.accent=["orange","purple","blue","green"].indexOf(s.accent)>-1?s.accent:"orange";}catch(e){}
 </script>
 
 <script type="importmap">
@@ -75,12 +75,50 @@ try{var s=JSON.parse(localStorage.getItem("trashdump:settings")||"{}"),r=documen
     </md-text-button>
     <span class="top-bar__title t-title-large notranslate" id="top-title" translate="no">alpha's trashdump</span>
     <div class="top-bar__acts">
-      <md-icon-button id="people-link" href="#/people" aria-label="Maintainers">
-        <md-icon><svg class="ico ico--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></md-icon>
-      </md-icon-button>
-      <md-icon-button id="settings-link" href="#/settings" aria-label="Settings">
-        <md-icon><svg class="ico ico--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></md-icon>
-      </md-icon-button>
+      <div class="help-anchor">
+        <md-icon-button id="help-btn" aria-label="Need help?" aria-expanded="false" aria-haspopup="dialog">
+          <md-icon><svg class="ico ico--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></md-icon>
+        </md-icon-button>
+        <div class="help-popup" id="help-popup" hidden role="dialog" aria-label="Need help?">
+          <div class="help-popup__head">
+            <span class="t-title-small">Need help?</span>
+            <md-icon-button id="help-popup-close" class="help-popup__close" aria-label="Close help">
+              <md-icon><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></md-icon>
+            </md-icon-button>
+          </div>
+          <p class="t-body-small muted help-popup__text">Join @trashdumpchat on Telegram for flashing help, ROM questions, and discussions.</p>
+          <md-filled-button id="help-popup-go" class="help-popup__cta">
+            <md-icon slot="icon"><svg class="ico ico--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></md-icon>
+            Open Telegram Chat
+          </md-filled-button>
+        </div>
+      </div>
+      <div class="settings-anchor">
+        <md-icon-button id="settings-btn" aria-label="Settings" aria-expanded="false" aria-haspopup="dialog">
+          <md-icon><svg class="ico ico--md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></md-icon>
+        </md-icon-button>
+        <div class="settings-popup" id="settings-popup" hidden role="dialog" aria-label="Settings">
+          <div class="settings-popup__head">
+            <span class="t-title-small">Settings</span>
+            <md-icon-button id="settings-popup-close" class="help-popup__close" aria-label="Close settings">
+              <md-icon><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></md-icon>
+            </md-icon-button>
+          </div>
+          <div class="settings-popup__row">
+            <span class="t-body-medium">Dark theme</span>
+            <md-switch id="popup-theme-switch" aria-label="Dark theme"></md-switch>
+          </div>
+          <div class="settings-popup__accents">
+            <span class="settings-popup__label t-label-small muted">ACCENT COLOR</span>
+            <md-chip-set class="filters" id="popup-accents" aria-label="Accent colour">
+              <md-filter-chip label="Orange" data-accent="orange"></md-filter-chip>
+              <md-filter-chip label="Purple" data-accent="purple"></md-filter-chip>
+              <md-filter-chip label="Blue" data-accent="blue"></md-filter-chip>
+              <md-filter-chip label="Green" data-accent="green"></md-filter-chip>
+            </md-chip-set>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -133,6 +171,6 @@ try{var s=JSON.parse(localStorage.getItem("trashdump:settings")||"{}"),r=documen
   }, 8000);
 })();
 </script>
-<script type="module" src="assets/js/app.js"></script>
+<script type="module" src="assets/js/app.js?v=4"></script>
 </body>
 </html>

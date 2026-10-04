@@ -20,7 +20,7 @@
 /* same default the site boots with: dark unless the visitor chose light */
 try{var s=JSON.parse(localStorage.getItem("trashdump:settings")||"{}"),r=document.documentElement;
 r.dataset.theme=s.theme==="light"?"light":"dark";
-r.dataset.accent=["orange","red","pink","purple","blue","cyan","green"].indexOf(s.accent)>-1?s.accent:"orange";}catch(e){}
+r.dataset.accent=["orange","purple","blue","green"].indexOf(s.accent)>-1?s.accent:"orange";}catch(e){}
 </script>
 
 <script type="importmap">

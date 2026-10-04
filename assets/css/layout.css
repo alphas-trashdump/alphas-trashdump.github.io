@@ -28,9 +28,17 @@ body[data-scrolled="1"] .top-bar::after { opacity: 1; }
 }
 body[data-scrolled="1"] .top-bar__title { opacity: 1; transform: none; }
 body[data-view="home"] .top-bar__title { text-align: left; padding-left: 0; }
-.top-bar .top-bar__acts { display: flex; align-items: center; flex: none; }
-.top-bar md-icon-button { margin-right: calc(-1 * var(--md-sys-space-200)); }
-.top-bar md-icon-button:last-child { margin-right: 0; }
+.top-bar .top-bar__acts { display: flex; align-items: center; flex: none; gap: var(--md-sys-space-50); }
+.top-bar md-icon-button {
+  --md-icon-button-icon-size: 20px;
+  --md-icon-button-state-layer-width: 36px;
+  --md-icon-button-state-layer-height: 36px;
+  --md-icon-button-icon-color: var(--md-sys-color-on-surface-variant);
+  width: 36px;
+  height: 36px;
+}
+.top-bar md-icon-button md-icon { --md-icon-size: 20px; }
+.top-bar md-icon-button:last-child { margin-right: -4px; }
 .top-bar__back { display: none; margin-left: calc(-1 * var(--md-sys-space-300)); }
 body[data-view="release"] .top-bar__back,
 body[data-view="people"] .top-bar__back,
@@ -47,6 +55,100 @@ body[data-view="settings"] .top-bar__back { display: inline-flex; }
     font-size: 1.125rem;
     padding: 0 4px;
   }
+}
+
+/* On release view when scrolled, remove right header icons so the title takes the full bar without jitter */
+body[data-view="release"][data-scrolled="1"] .top-bar__acts { display: none; }
+body[data-view="release"][data-scrolled="1"] .top-bar__title { text-align: left; padding-left: var(--md-sys-space-200); }
+
+/* ------------------------------------------------------------------
+   help popup (anchored under ? icon)
+   ------------------------------------------------------------------ */
+.help-anchor { position: relative; display: inline-flex; }
+.help-popup {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: -6px;
+  z-index: 100;
+  width: min(290px, calc(100vw - 32px));
+  padding: var(--md-sys-space-300);
+  border-radius: var(--md-sys-shape-corner-large);
+  background: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  box-shadow: var(--md-sys-elevation-shadow-3);
+  animation: pop-in var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate) both;
+}
+.help-popup[hidden] { display: none !important; }
+.help-popup__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--md-sys-space-100);
+}
+.help-popup__head span { color: var(--md-sys-color-on-surface); font-weight: var(--md-ref-typeface-weight-semibold); }
+.help-popup__close {
+  --md-icon-button-icon-size: 16px;
+  --md-icon-button-state-layer-width: 28px;
+  --md-icon-button-state-layer-height: 28px;
+  width: 28px;
+  height: 28px;
+  margin: -6px -6px 0 0;
+}
+.help-popup__close md-icon { --md-icon-size: 16px; }
+.help-popup__text {
+  margin-bottom: var(--md-sys-space-300);
+  line-height: 18px;
+}
+.help-popup__cta { width: 100%; }
+
+/* ------------------------------------------------------------------
+   settings popup (anchored under ⚙ icon)
+   ------------------------------------------------------------------ */
+.settings-anchor { position: relative; display: inline-flex; }
+.settings-popup {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: -4px;
+  z-index: 100;
+  width: min(300px, calc(100vw - 24px));
+  padding: var(--md-sys-space-300);
+  border-radius: var(--md-sys-shape-corner-large);
+  background: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  box-shadow: var(--md-sys-elevation-shadow-3);
+  animation: pop-in var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate) both;
+}
+.settings-popup[hidden] { display: none !important; }
+.settings-popup__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--md-sys-space-200);
+}
+.settings-popup__head span {
+  color: var(--md-sys-color-on-surface);
+  font-weight: var(--md-ref-typeface-weight-semibold);
+}
+.settings-popup__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--md-sys-space-100) 0;
+  color: var(--md-sys-color-on-surface);
+}
+.settings-popup__accents {
+  margin-top: var(--md-sys-space-200);
+  padding-top: var(--md-sys-space-200);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+.settings-popup__label {
+  display: block;
+  margin-bottom: var(--md-sys-space-150);
+  font-weight: var(--md-ref-typeface-weight-bold);
+  letter-spacing: 0.8px;
+}
+.settings-popup md-chip-set {
+  gap: var(--md-sys-space-100);
 }
 
 /* ------------------------------------------------------------------
@@ -311,7 +413,6 @@ md-assist-chip.role--owner {
    it is one more thing to look at, so both drop it. body[data-view] is set by
    paint() on every navigation. */
 body:not([data-view="home"]):not([data-view="release"]) .foot { display: none; }
-body:not([data-view="home"]):not([data-view="release"]) #people-link { display: none; }
 
 /* ------------------------------------------------------------------
    boot splash

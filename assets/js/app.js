@@ -105,8 +105,10 @@ function watchTitle() {
   titleIO?.disconnect();
   const h1 = root.querySelector("h1");
   if (!h1) { document.body.dataset.scrolled = "1"; return; }
-  titleIO = new IntersectionObserver(([e]) => { document.body.dataset.scrolled = e.isIntersecting ? "0" : "1"; },
-    { rootMargin: `-${top.offsetHeight}px 0px 0px 0px` });
+  titleIO = new IntersectionObserver(([e]) => {
+    document.body.dataset.scrolled = e.isIntersecting ? "0" : "1";
+    if (!e.isIntersecting) { toggleHelp(false); toggleSettings(false); }
+  }, { rootMargin: `-${top.offsetHeight}px 0px 0px 0px` });
   titleIO.observe(h1);
 }
 
@@ -253,30 +255,36 @@ function watchShots() {
 }
 
 async function route() {
-  const r = parseHash();
-  let idx = state.index;
-  if (!idx) {
-    paint(renderLoading(), "home");
-    try { idx = await loadIndex(); }
-    catch (err) { paint(renderError(err.message || String(err)), "home"); dismissBoot(); return; }
+  try {
+    const r = parseHash();
+    let idx = state.index;
+    if (!idx) {
+      paint(renderLoading(), "home");
+      try { idx = await loadIndex(); }
+      catch (err) { paint(renderError(err.message || String(err)), "home"); dismissBoot(); return; }
+    }
+    if (r.view === "people") {
+      setTitle(["Maintainers"]); paint(renderPeople(), "people", "Maintainers"); window.scrollTo(0, 0); dismissBoot(); return;
+    }
+    if (r.view === "settings") {
+      applySettings();
+      setTitle(["Settings"]); paint(renderSettings(), "settings", "Settings"); window.scrollTo(0, 0); dismissBoot(); return;
+    }
+    if (r.view === "release") {
+      const rel = getRelease(r.device, r.id);
+      if (!rel) { location.replace("#/"); dismissBoot(); return; }
+      shots = rel.screenshots;
+      setTitle([rel.name]); paint(renderRelease(rel), "release", rel.name); window.scrollTo(0, 0); dismissBoot(); return;
+    }
+    state.device = r.device && idx.byCodename.has(r.device) ? r.device : "all";
+    setTitle([]);
+    paint(renderHome(), "home");
+    dismissBoot();
+  } catch (err) {
+    console.error(err);
+    paint(renderError(err.message || String(err)), "home");
+    dismissBoot();
   }
-  if (r.view === "people") {
-    setTitle(["Maintainers"]); paint(renderPeople(), "people", "Maintainers"); window.scrollTo(0, 0); dismissBoot(); return;
-  }
-  if (r.view === "settings") {
-    applySettings();
-    setTitle(["Settings"]); paint(renderSettings(), "settings", "Settings"); window.scrollTo(0, 0); dismissBoot(); return;
-  }
-  if (r.view === "release") {
-    const rel = getRelease(r.device, r.id);
-    if (!rel) { location.replace("#/"); return; }
-    shots = rel.screenshots;
-    setTitle([rel.name]); paint(renderRelease(rel), "release", rel.name); window.scrollTo(0, 0); dismissBoot(); return;
-  }
-  state.device = r.device && idx.byCodename.has(r.device) ? r.device : "all";
-  setTitle([]);
-  paint(renderHome(), "home");
-  dismissBoot();
 }
 
 /* ---- lightbox ------------------------------------------------------ */
@@ -343,9 +351,9 @@ function describe(url, label) {
   if (APP_HOSTS.has(hostOf(url))) {
     if (url.includes("trashdumpchat")) {
       return {
-        title: "Open Telegram Chat?",
-        msg: "Join @trashdumpchat on Telegram for discussion, updates, and feedback.",
-        go: "Open",
+        title: label || "Need help?",
+        msg: "Join @trashdumpchat on Telegram for help, questions, and discussions with maintainers and users.",
+        go: "Open Chat",
       };
     }
     return {
@@ -418,12 +426,98 @@ backBtn.addEventListener("click", (e) => {
   if (trail.length > 1) { popping = true; trail.pop(); history.back(); }
   else { popping = true; location.hash = "#/"; }
 });
-$("people-link").addEventListener("click", () => { navDir = "push"; });
-$("settings-link").addEventListener("click", () => { navDir = "push"; });
+$("people-link")?.addEventListener("click", () => { navDir = "push"; });
+$("settings-link")?.addEventListener("click", () => { navDir = "push"; });
 applySettings();
 
+/* ---- help & settings popups --------------------------------------- */
+const helpBtn = $("help-btn"), helpPopup = $("help-popup"),
+      helpClose = $("help-popup-close"), helpGo = $("help-popup-go");
+
+const settingsBtn = $("settings-btn"), settingsPopup = $("settings-popup"),
+      settingsClose = $("settings-popup-close"),
+      popupThemeSwitch = $("popup-theme-switch"),
+      popupAccents = $("popup-accents");
+
+function toggleHelp(open) {
+  if (!helpPopup) return;
+  const show = open ?? helpPopup.hidden;
+  if (show) toggleSettings(false);
+  helpPopup.hidden = !show;
+  helpBtn?.setAttribute("aria-expanded", String(show));
+}
+
+function syncSettingsPopup() {
+  if (popupThemeSwitch) popupThemeSwitch.selected = settings.theme === "dark";
+  if (popupAccents) {
+    const chips = popupAccents.querySelectorAll("md-filter-chip");
+    chips.forEach((c) => {
+      c.selected = c.dataset.accent === settings.accent;
+    });
+  }
+}
+
+function toggleSettings(open) {
+  if (!settingsPopup) return;
+  const show = open ?? settingsPopup.hidden;
+  if (show) {
+    toggleHelp(false);
+    syncSettingsPopup();
+  }
+  settingsPopup.hidden = !show;
+  settingsBtn?.setAttribute("aria-expanded", String(show));
+}
+
+helpBtn?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  toggleHelp();
+});
+helpClose?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  toggleHelp(false);
+});
+helpGo?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  toggleHelp(false);
+  window.open("https://t.me/trashdumpchat", "_blank", "noopener,noreferrer");
+});
+
+settingsBtn?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  toggleSettings();
+});
+settingsClose?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  toggleSettings(false);
+});
+
+popupThemeSwitch?.addEventListener("change", () => {
+  settings.theme = popupThemeSwitch.selected ? "dark" : "light";
+  saveSettings();
+});
+
+if (popupAccents) {
+  singleSelect(popupAccents, (chip) => {
+    settings.accent = chip.dataset.accent;
+    saveSettings();
+  });
+}
+
+document.addEventListener("click", (e) => {
+  if (helpPopup && !helpPopup.hidden && !helpPopup.contains(e.target) && !helpBtn?.contains(e.target)) {
+    toggleHelp(false);
+  }
+  if (settingsPopup && !settingsPopup.hidden && !settingsPopup.contains(e.target) && !settingsBtn?.contains(e.target)) {
+    toggleSettings(false);
+  }
+});
+
 window.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && lb.dataset.open === "1") closeLightbox();
+  if (e.key === "Escape") {
+    if (helpPopup && !helpPopup.hidden) { toggleHelp(false); return; }
+    if (settingsPopup && !settingsPopup.hidden) { toggleSettings(false); return; }
+    if (lb.dataset.open === "1") closeLightbox();
+  }
   if (e.key === "Enter" && alertOpen && alertReady) alertGo.click();
 });
 $("lb-close").addEventListener("click", closeLightbox);
@@ -446,6 +540,8 @@ window.addEventListener("hashchange", () => {
   /* a Back we triggered has already popped the trail */
   if (popping) popping = false;
   else { trail.push(location.hash || "#/"); if (trail.length > 40) trail.shift(); }
+  if (helpPopup && !helpPopup.hidden) toggleHelp(false);
+  if (settingsPopup && !settingsPopup.hidden) toggleSettings(false);
   if (lb.dataset.open === "1") closeLightbox();
   if (alertOpen) alertEl.close("nav");
   route();
